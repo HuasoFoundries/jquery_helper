@@ -3,6 +3,7 @@ define([
 	'jquery.cookie',
 	'jquery.waitforChild',
 	'jquery-serializejson',
+	'jquery-csv',
 	'jquery-ui/ui/core',
 	'jquery-ui/ui/widget',
 	'jquery-ui/ui/mouse',
@@ -21,7 +22,6 @@ define([
 
 	'./plugins/jquery-impromptu',
 	'./plugins/jquery.ajax.progress',
-	'./plugins/jquery.csv',
 	'./plugins/jquery.hotkeys',
 	'./plugins/jquery.iconpicker',
 	'./plugins/jquery.ui.rotatable',
