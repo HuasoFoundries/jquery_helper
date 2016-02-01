@@ -11,7 +11,20 @@
  *
  */
 
-(function ($) {
+(function (root, factory) {
+
+	if (typeof define === "function" && define.amd) {
+		// AMD (+ global for extensions)
+		define(['jquery'], factory);
+
+	} else if (typeof module !== 'undefined' && typeof exports === "object") {
+		// CommonJS
+		module.exports = factory(require('jquery'));
+	} else {
+		// Browser
+		root.jQuery = factory(root.jQuery);
+	}
+}(this, function ($) {
 
 	/**
 	 * setDefaults - Sets the default options
@@ -336,7 +349,8 @@
 					marginLeft: 0,
 					width: (pos.width !== undefined) ? pos.width : null
 				});
-				top = (offset.top + pos.y) - ($.prompt.options.top.toString().indexOf('%') >= 0 ? (windowHeight * (parseInt($.prompt.options.top, 10) / 100)) : parseInt($.prompt.options.top, 10));
+				top = (offset.top + pos.y) - ($.prompt.options.top.toString().indexOf('%') >= 0 ? (windowHeight * (parseInt($.prompt.options.top, 10) / 100)) : parseInt($.prompt.options.top,
+					10));
 				$('html,body').animate({
 					scrollTop: top
 				}, 'slow', 'swing', function () {});
@@ -428,7 +442,7 @@
 
 		for (k in stateobj.buttons) {
 			v = stateobj.buttons[k],
-			defbtn = stateobj.focus === i ? ($.prompt.currentPrefix + 'defaultbutton ' + opts.classes.defaultButton) : '';
+				defbtn = stateobj.focus === i ? ($.prompt.currentPrefix + 'defaultbutton ' + opts.classes.defaultButton) : '';
 
 			if (typeof v == 'object') {
 				state += '<button class="' + opts.classes.button + ' ' + defbtn;
@@ -437,10 +451,12 @@
 					state += ' ' + ($.isArray(v.classes) ? v.classes.join(' ') : v.classes) + ' ';
 				}
 
-				state += '" name="' + opts.prefix + '_' + statename + '_button' + v.title.replace(/[^a-z0-9]+/gi, '') + '" id="' + opts.prefix + '_' + statename + '_button' + v.title.replace(/[^a-z0-9]+/gi, '') + '" value="' + v.value + '">' + v.title + '</button>';
+				state += '" name="' + opts.prefix + '_' + statename + '_button' + v.title.replace(/[^a-z0-9]+/gi, '') + '" id="' + opts.prefix + '_' + statename + '_button' + v.title.replace(
+					/[^a-z0-9]+/gi, '') + '" value="' + v.value + '">' + v.title + '</button>';
 
 			} else {
-				state += '<button class="' + opts.classes.button + ' ' + defbtn + '" name="' + opts.prefix + '_' + statename + '_button' + k + '" id="' + opts.prefix + '_' + statename + '_button' + k + '" value="' + v + '">' + k + '</button>';
+				state += '<button class="' + opts.classes.button + ' ' + defbtn + '" name="' + opts.prefix + '_' + statename + '_button' + k + '" id="' + opts.prefix + '_' + statename +
+					'_button' + k + '" value="' + v + '">' + k + '</button>';
 
 			}
 			i++;
@@ -659,4 +675,4 @@
 		$.prompt($(this).clone(options.withDataAndEvents).html(), options);
 	};
 
-})(jQuery);
+}));

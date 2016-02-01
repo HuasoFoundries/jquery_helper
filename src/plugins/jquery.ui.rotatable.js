@@ -6,10 +6,10 @@
 
 		// AMD. Register as an anonymous module.
 		define([
-			"jquery",
-			"./core",
-			"./mouse",
-			"./widget"
+			'jquery',
+			'jquery-ui/ui/core',
+			'jquery-ui/ui/widget',
+			'jquery-ui/ui/mouse'
 		], factory);
 	} else {
 

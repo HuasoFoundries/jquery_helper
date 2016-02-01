@@ -1,7 +1,7 @@
 define([
 	'jquery',
-	'underscore',
-	'css!styles/vendor/iconpicker.css'
+	'lodash',
+	'css!./iconpicker.css'
 ], function (jQuery, _) {
 
 

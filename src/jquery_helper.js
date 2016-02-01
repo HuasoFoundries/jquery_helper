@@ -19,12 +19,12 @@ define([
 	'jquery-ui/ui/tabs',
 
 
-	'helpers/jquery_plugins/jquery-impromptu',
-	'helpers/jquery_plugins/jquery.ajax.progress',
-	'helpers/jquery_plugins/jquery.csv',
-	'helpers/jquery_plugins/jquery.hotkeys',
-	'helpers/jquery_plugins/jquery.iconpicker',
-	'helpers/jquery_plugins/jquery.ui.rotatable',
+	'./plugins/jquery-impromptu',
+	'./plugins/jquery.ajax.progress',
+	'./plugins/jquery.csv',
+	'./plugins/jquery.hotkeys',
+	'./plugins/jquery.iconpicker',
+	'./plugins/jquery.ui.rotatable',
 	'css!./colorpicker.css'
 
 ], function (jQuery) {

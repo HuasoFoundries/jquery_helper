@@ -12,7 +12,8 @@
       "jquery-serializejson": "npm:jquery-serializejson@^2.6.2",
       "jquery-ui": "github:components/jqueryui@^1.11.4",
       "jquery.cookie": "github:carhartl/jquery-cookie@^1.4.1",
-      "jquery.waitforChild": "npm:jquery.waitforChild@^0.1.1"
+      "jquery.waitforChild": "npm:jquery.waitforChild@^0.1.1",
+      "lodash": "npm:lodash@^4.1.0"
     }
   }
 }
