@@ -1,11 +1,9 @@
 {
   "name": "jquery_helper",
-  "main": "jquery_helper",
+  "main": "dist/jquery_helper",
   "jspm": {
     "format": "amd",
-    "directories": {
-      "lib": "src"
-    },
+
     "dependencies": {
       "css": "github:systemjs/plugin-css@^0.1.20",
       "jquery": "npm:jquery@^2.2.0",
@@ -15,6 +13,9 @@
       "jquery.cookie": "github:carhartl/jquery-cookie@^1.4.1",
       "jquery.waitforChild": "npm:jquery.waitforChild@^0.1.1",
       "lodash": "npm:lodash@^4.1.0"
+    },
+    "devDependencies": {
+      "clean-css": "npm:clean-css@^3.4.9"
     }
   }
 }
