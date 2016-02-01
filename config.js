@@ -9,6 +9,13 @@ System.config({
   pluginFirst: true,
 
   meta: {
+    "jquery_helper": {
+      "deps": [
+        "jquery"
+      ],
+      "exports": "jquery",
+      "format": "amd"
+    },
     "jquery-csv": {
       "deps": [
         "jquery"
@@ -24,6 +31,7 @@ System.config({
   },
 
   map: {
+    "jquery_helper": "src/jquery_helper",
     "clean-css": "npm:clean-css@3.4.9",
     "css": "github:systemjs/plugin-css@0.1.20",
     "jquery": "npm:jquery@2.2.0",
