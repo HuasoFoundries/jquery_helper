@@ -1,0 +1,1 @@
+module.exports = require("npm:jquery-serializejson@2.6.2/jquery.serializejson.js");
