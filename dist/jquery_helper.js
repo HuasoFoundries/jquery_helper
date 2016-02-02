@@ -20268,4 +20268,3 @@ $__System.register('github:systemjs/plugin-css@0.1.20!src/colorpicker.css', [], 
   else
     factory();
 });
-//# sourceMappingURL=jquery_helper.js.map
