@@ -31,7 +31,6 @@ System.config({
   },
 
   map: {
-    "jquery_helper": "src/jquery_helper",
     "clean-css": "npm:clean-css@3.4.9",
     "css": "github:systemjs/plugin-css@0.1.20",
     "jquery": "npm:jquery@2.2.0",
@@ -40,7 +39,8 @@ System.config({
     "jquery-ui": "github:components/jqueryui@1.11.4",
     "jquery.cookie": "github:carhartl/jquery-cookie@1.4.1",
     "jquery.waitforChild": "npm:jquery.waitforChild@0.1.1",
-    "lodash": "npm:lodash@4.1.0",
+    "jquery_helper": "src/jquery_helper",
+    "lodash": "npm:lodash@3.10.1",
     "github:components/jqueryui@1.11.4": {
       "jquery": "npm:jquery@2.2.0"
     },
@@ -135,7 +135,7 @@ System.config({
     "npm:jquery-serializejson@2.6.2": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:lodash@4.1.0": {
+    "npm:lodash@3.10.1": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:os-browserify@0.1.2": {
