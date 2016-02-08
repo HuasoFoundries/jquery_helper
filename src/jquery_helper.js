@@ -58,9 +58,21 @@ define([
 		}));
 	});
 
+	/**
+	 * Devuelve el elemento que calza con el selector, o crea un nuevo elemento
+	 * @param  {String} selector  selector CSS para buscar si existe el elemento
+	 * @param  {String} html  definicion del elemento a crear
+	 * @return {jQuery Object} uno o mas elementos que calzan con el criterio de seleccion
+	 */
+	jQuery.getOrCreate = function (selector, html) {
+		var elemento = jQuery(selector);
 
+		if (elemento.length === 0) {
+			elemento = jQuery(html);
+		}
 
-
+		return elemento;
+	};
 
 	var _idx = 0,
 		isIE = false,
