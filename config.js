@@ -31,8 +31,10 @@ System.config({
   },
 
   map: {
+    "bootstrap": "github:twbs/bootstrap@3.3.6",
     "clean-css": "npm:clean-css@3.4.9",
     "css": "github:systemjs/plugin-css@0.1.20",
+    "datatables": "github:DataTables/DataTables@1.10.11",
     "jquery": "npm:jquery@2.2.0",
     "jquery-csv": "github:evanplaice/jquery-csv@0.8.1",
     "jquery-serializejson": "npm:jquery-serializejson@2.6.2",
@@ -41,6 +43,11 @@ System.config({
     "jquery.waitforChild": "npm:jquery.waitforChild@0.1.1",
     "jquery_helper": "src/jquery_helper",
     "lodash": "npm:lodash@3.10.1",
+    "select2": "github:select2/select2@4.0.1",
+    "github:DataTables/DataTables@1.10.11": {
+      "css": "github:systemjs/plugin-css@0.1.20",
+      "jquery": "npm:jquery@2.2.0"
+    },
     "github:components/jqueryui@1.11.4": {
       "jquery": "npm:jquery@2.2.0"
     },
@@ -81,6 +88,9 @@ System.config({
     },
     "github:jspm/nodelibs-util@0.1.0": {
       "util": "npm:util@0.10.3"
+    },
+    "github:twbs/bootstrap@3.3.6": {
+      "jquery": "github:components/jquery@2.2.0"
     },
     "npm:amdefine@1.0.0": {
       "fs": "github:jspm/nodelibs-fs@0.1.2",

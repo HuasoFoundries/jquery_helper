@@ -1,14 +1,19 @@
 
 ## InstaGIS jQuery Helper
 
-Este helper encapsula jQuery + sus plugins en un solo bundle monolitico.
-Esto no incluye plugins que se usan en landings particulares o de los cuales
-coexisten varias versiones (datatables, bootstrap2, bootstrap3, select2)
+This helper bundles jQuery library plus all its plugins our app uses in
+one monolythic file. 
 
-Para generar el build después de algún cambio, correr:
+It comes in two flavors: 
 
-```js
-jspm bundle-sfx src/jquery_helper dist/jquery_helper.js --format amd --skip-source-maps -m
+- `jquery_helper.js` : jQuery, some jQuery UI components, jQuery plugins
+- `jquery_helper_extended.js`: the former plus Bootstrap3, Select2 and DataTables
+
+After changing anything, remember to build before committing and tagging a new version
+
+```sh
+make build
+make build-extended
 ```
 
-Luego taggear, subir a github y actualizar en las apps que lo requieran
+Then tag and push to github
