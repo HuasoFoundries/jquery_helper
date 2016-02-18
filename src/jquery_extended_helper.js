@@ -32,7 +32,6 @@ define([
 
 	'css!select2/css/select2.css',
 	'css!./css/select2-bootstrap.css',
-	'css!./css/dataTables.bootstrap.min.css',
 	'css!./css/colorpicker.css'
 
 ], function (jQuery) {
