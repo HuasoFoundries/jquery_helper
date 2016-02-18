@@ -29,7 +29,7 @@ define([
 	'datatables/js/jquery.dataTables.min',
 	'bootstrap',
 	'select2',
-	'css!bootstrap/css/bootstrap.css',
+
 	'css!select2/css/select2.css',
 	'css!./css/select2-bootstrap.css',
 	'css!./css/dataTables.bootstrap.min.css',
