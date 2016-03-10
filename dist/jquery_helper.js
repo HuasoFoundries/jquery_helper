@@ -12383,7 +12383,7 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   var toString = class2type.toString;
   var hasOwn = class2type.hasOwnProperty;
   var support = {};
-  var version = "2.2.0",
+  var version = "2.2.1",
       jQuery = function(selector, context) {
         return new jQuery.fn.init(selector, context);
       },
@@ -14998,7 +14998,7 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
     if (fn === false) {
       fn = returnFalse;
     } else if (!fn) {
-      return this;
+      return elem;
     }
     if (one === 1) {
       origFn = fn;
@@ -15435,10 +15435,7 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
       rscriptTypeMasked = /^true\/(.*)/,
       rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g;
   function manipulationTarget(elem, content) {
-    if (jQuery.nodeName(elem, "table") && jQuery.nodeName(content.nodeType !== 11 ? content : content.firstChild, "tr")) {
-      return elem.getElementsByTagName("tbody")[0] || elem;
-    }
-    return elem;
+    return jQuery.nodeName(elem, "table") && jQuery.nodeName(content.nodeType !== 11 ? content : content.firstChild, "tr") ? elem.getElementsByTagName("tbody")[0] || elem.appendChild(elem.ownerDocument.createElement("tbody")) : elem;
   }
   function disableScript(elem) {
     elem.type = (elem.getAttribute("type") !== null) + "/" + elem.type;
@@ -15790,7 +15787,7 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   var rnumnonpx = new RegExp("^(" + pnum + ")(?!px)[a-z%]+$", "i");
   var getStyles = function(elem) {
     var view = elem.ownerDocument.defaultView;
-    if (!view.opener) {
+    if (!view || !view.opener) {
       view = window;
     }
     return view.getComputedStyle(elem);
@@ -15881,11 +15878,11 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
         ret,
         style = elem.style;
     computed = computed || getStyles(elem);
+    ret = computed ? computed.getPropertyValue(name) || computed[name] : undefined;
+    if ((ret === "" || ret === undefined) && !jQuery.contains(elem.ownerDocument, elem)) {
+      ret = jQuery.style(elem, name);
+    }
     if (computed) {
-      ret = computed.getPropertyValue(name) || computed[name];
-      if (ret === "" && !jQuery.contains(elem.ownerDocument, elem)) {
-        ret = jQuery.style(elem, name);
-      }
       if (!support.pixelMarginRight() && rnumnonpx.test(ret) && rmargin.test(name)) {
         width = style.width;
         minWidth = style.minWidth;
@@ -18265,8 +18262,8 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
         if (!jQuery.nodeName(offsetParent[0], "html")) {
           parentOffset = offsetParent.offset();
         }
-        parentOffset.top += jQuery.css(offsetParent[0], "borderTopWidth", true) - offsetParent.scrollTop();
-        parentOffset.left += jQuery.css(offsetParent[0], "borderLeftWidth", true) - offsetParent.scrollLeft();
+        parentOffset.top += jQuery.css(offsetParent[0], "borderTopWidth", true);
+        parentOffset.left += jQuery.css(offsetParent[0], "borderLeftWidth", true);
       }
       return {
         top: offset.top - parentOffset.top - jQuery.css(elem, "marginTop", true),

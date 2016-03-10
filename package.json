@@ -1,6 +1,9 @@
 {
-  "name": "jquery_helper",
+  "name": "instagis/jquery_helper",
+  "version": "0.5.2",
+  "registry": "github",
   "main": "dist/jquery_helper",
+
   "jspm": {
     "format": "amd",
     "dependencies": {
@@ -8,13 +11,13 @@
       "jquery": "npm:jquery@^2.2.0",
       "jquery-csv": "github:evanplaice/jquery-csv@^0.8.1",
       "jquery-serializejson": "npm:jquery-serializejson@^2.6.2",
-      "jquery-ui": "github:components/jqueryui@^1.11.4",
       "jquery.cookie": "github:carhartl/jquery-cookie@^1.4.1",
       "jquery.waitforChild": "npm:jquery.waitforChild@^0.1.1",
       "lodash": "github:lodash/lodash@3.10.1"
     },
     "devDependencies": {
-      "clean-css": "npm:clean-css@^3.4.9"
+      "clean-css": "npm:clean-css@^3.4.9",
+      "jquery-ui": "github:components/jqueryui@^1.11.4"
     },
     "overrides": {
       "github:lodash/lodash@3.10.1": {

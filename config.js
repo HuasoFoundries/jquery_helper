@@ -31,9 +31,9 @@ System.config({
   },
 
   map: {
-    "clean-css": "npm:clean-css@3.4.9",
+    "clean-css": "npm:clean-css@3.4.10",
     "css": "github:systemjs/plugin-css@0.1.20",
-    "jquery": "npm:jquery@2.2.0",
+    "jquery": "npm:jquery@2.2.1",
     "jquery-csv": "github:evanplaice/jquery-csv@0.8.1",
     "jquery-serializejson": "npm:jquery-serializejson@2.6.2",
     "jquery-ui": "github:components/jqueryui@1.11.4",
@@ -42,7 +42,7 @@ System.config({
     "jquery_helper": "src/jquery_helper",
     "lodash": "github:lodash/lodash@3.10.1",
     "github:components/jqueryui@1.11.4": {
-      "jquery": "npm:jquery@2.2.0"
+      "jquery": "npm:jquery@2.2.1"
     },
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
@@ -99,7 +99,7 @@ System.config({
       "isarray": "npm:isarray@1.0.0",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:clean-css@3.4.9": {
+    "npm:clean-css@3.4.10": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
       "commander": "npm:commander@2.8.1",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
