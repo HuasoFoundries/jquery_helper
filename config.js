@@ -40,7 +40,7 @@ System.config({
     "jquery.cookie": "github:carhartl/jquery-cookie@1.4.1",
     "jquery.waitforChild": "npm:jquery.waitforChild@0.1.1",
     "jquery_helper": "src/jquery_helper",
-    "lodash": "npm:lodash@3.10.1",
+    "lodash": "github:lodash/lodash@3.10.1",
     "github:components/jqueryui@1.11.4": {
       "jquery": "npm:jquery@2.2.0"
     },
@@ -133,9 +133,6 @@ System.config({
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
     "npm:jquery-serializejson@2.6.2": {
-      "process": "github:jspm/nodelibs-process@0.1.2"
-    },
-    "npm:lodash@3.10.1": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:os-browserify@0.1.2": {

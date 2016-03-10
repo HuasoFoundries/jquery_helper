@@ -11,10 +11,19 @@
       "jquery-ui": "github:components/jqueryui@^1.11.4",
       "jquery.cookie": "github:carhartl/jquery-cookie@^1.4.1",
       "jquery.waitforChild": "npm:jquery.waitforChild@^0.1.1",
-      "lodash": "npm:lodash@^3"
+      "lodash": "github:lodash/lodash@3.10.1"
     },
     "devDependencies": {
       "clean-css": "npm:clean-css@^3.4.9"
+    },
+    "overrides": {
+      "github:lodash/lodash@3.10.1": {
+        "main": "lodash.js",
+        "files": [
+          "lodash.js",
+          "lodash.min.js"
+        ]
+      }
     }
   }
 }
