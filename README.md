@@ -1,5 +1,5 @@
 
-## InstaGIS jQuery Helper
+## IG jQuery Helper
 
 This helper bundles jQuery library plus all its plugins our app uses in
 one monolythic file. 

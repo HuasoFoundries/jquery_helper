@@ -1,6 +1,6 @@
 {
   "name": "instagis/jquery_helper",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "registry": "github",
   "main": "dist/jquery_helper.js",
   "jspm": {
