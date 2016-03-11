@@ -1,6 +1,6 @@
 {
   "name": "ig_jquery_helper",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "registry": "github",
   "main": "dist/jquery_helper.js",
   "jspm": {
