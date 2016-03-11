@@ -86,13 +86,21 @@ define("4", ["2"], function(main) {
 
 _removeDefine();
 })();
-$__System.registerDynamic("5", [], true, function($__require, exports, module) {
+$__System.registerDynamic("5", ["3"], true, function($__require, exports, module) {
   ;
   var global = this,
       __define = global.define;
   global.define = undefined;
   "format cjs";
-  (function($) {
+  (function(root, factory) {
+    if (typeof define === "function" && define.amd) {
+      define(['jquery'], factory);
+    } else if (typeof module !== 'undefined' && typeof exports === "object") {
+      module.exports = factory($__require('3'));
+    } else {
+      root.jQuery = factory(root.jQuery);
+    }
+  }(this, function($) {
     'use strict';
     $.fn.waitforChild = function(onFound, querySelector, once) {
       if (typeof arguments[0] === 'object') {
@@ -158,7 +166,7 @@ $__System.registerDynamic("5", [], true, function($__require, exports, module) {
       }
       return $this;
     };
-  }(jQuery));
+  }));
   global.define = __define;
   return module.exports;
 });
@@ -173,302 +181,316 @@ $__System.registerDynamic("6", ["5"], true, function($__require, exports, module
   return module.exports;
 });
 
-$__System.registerDynamic("7", ["3"], true, function($__require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  "format cjs";
-  (function(factory) {
-    if (typeof define === 'function' && define.amd) {
-      define(['jquery'], factory);
-    } else if (typeof exports === 'object') {
-      var jQuery = $__require('3');
-      module.exports = factory(jQuery);
-    } else {
-      factory(window.jQuery || window.Zepto || window.$);
-    }
-  }(function($) {
-    "use strict";
-    $.fn.serializeJSON = function(options) {
-      var serializedObject,
-          formAsArray,
-          keys,
-          type,
-          value,
-          _ref,
-          f,
-          opts;
+(function() {
+var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+(function(factory) {
+  if (typeof define === 'function' && define.amd) {
+    define("7", ["3"], factory);
+  } else if (typeof exports === 'object') {
+    var jQuery = require('jquery');
+    module.exports = factory(jQuery);
+  } else {
+    factory(window.jQuery || window.Zepto || window.$);
+  }
+}(function($) {
+  "use strict";
+  $.fn.serializeJSON = function(options) {
+    var f,
+        $form,
+        opts,
+        formAsArray,
+        serializedObject,
+        name,
+        value,
+        _obj,
+        nameWithNoType,
+        type,
+        keys;
+    f = $.serializeJSON;
+    $form = this;
+    opts = f.setupOpts(options);
+    formAsArray = $form.serializeArray();
+    f.readCheckboxUncheckedValues(formAsArray, opts, $form);
+    serializedObject = {};
+    $.each(formAsArray, function(i, obj) {
+      name = obj.name;
+      value = obj.value;
+      _obj = f.extractTypeAndNameWithNoType(name);
+      nameWithNoType = _obj.nameWithNoType;
+      type = _obj.type;
+      if (!type)
+        type = f.tryToFindTypeFromDataAttr(name, $form);
+      f.validateType(name, type, opts);
+      if (type !== 'skip') {
+        keys = f.splitInputNameIntoKeysArray(nameWithNoType);
+        value = f.parseValue(value, name, type, opts);
+        f.deepSet(serializedObject, keys, value, opts);
+      }
+    });
+    return serializedObject;
+  };
+  $.serializeJSON = {
+    defaultOptions: {
+      checkboxUncheckedValue: undefined,
+      parseNumbers: false,
+      parseBooleans: false,
+      parseNulls: false,
+      parseAll: false,
+      parseWithFunction: null,
+      customTypes: {},
+      defaultTypes: {
+        "string": function(str) {
+          return String(str);
+        },
+        "number": function(str) {
+          return Number(str);
+        },
+        "boolean": function(str) {
+          var falses = ["false", "null", "undefined", "", "0"];
+          return falses.indexOf(str) === -1;
+        },
+        "null": function(str) {
+          var falses = ["false", "null", "undefined", "", "0"];
+          return falses.indexOf(str) === -1 ? str : null;
+        },
+        "array": function(str) {
+          return JSON.parse(str);
+        },
+        "object": function(str) {
+          return JSON.parse(str);
+        },
+        "auto": function(str) {
+          return $.serializeJSON.parseValue(str, null, null, {
+            parseNumbers: true,
+            parseBooleans: true,
+            parseNulls: true
+          });
+        },
+        "skip": null
+      },
+      useIntKeysAsArrayIndex: false
+    },
+    setupOpts: function(options) {
+      var opt,
+          validOpts,
+          defaultOptions,
+          optWithDefault,
+          parseAll,
+          f;
       f = $.serializeJSON;
-      opts = f.setupOpts(options);
-      formAsArray = this.serializeArray();
-      f.readCheckboxUncheckedValues(formAsArray, this, opts);
-      serializedObject = {};
-      $.each(formAsArray, function(i, input) {
-        keys = f.splitInputNameIntoKeysArray(input.name, opts);
-        type = keys.pop();
-        if (type !== 'skip') {
-          value = f.parseValue(input.value, type, opts);
-          if (opts.parseWithFunction && type === '_') {
-            value = opts.parseWithFunction(value, input.name);
-          }
-          f.deepSet(serializedObject, keys, value, opts);
+      if (options == null) {
+        options = {};
+      }
+      defaultOptions = f.defaultOptions || {};
+      validOpts = ['checkboxUncheckedValue', 'parseNumbers', 'parseBooleans', 'parseNulls', 'parseAll', 'parseWithFunction', 'customTypes', 'defaultTypes', 'useIntKeysAsArrayIndex'];
+      for (opt in options) {
+        if (validOpts.indexOf(opt) === -1) {
+          throw new Error("serializeJSON ERROR: invalid option '" + opt + "'. Please use one of " + validOpts.join(', '));
         }
-      });
-      return serializedObject;
-    };
-    $.serializeJSON = {
-      defaultOptions: {
-        checkboxUncheckedValue: undefined,
-        parseNumbers: false,
-        parseBooleans: false,
-        parseNulls: false,
-        parseAll: false,
-        parseWithFunction: null,
-        customTypes: {},
-        defaultTypes: {
-          "string": function(str) {
-            return String(str);
-          },
-          "number": function(str) {
-            return Number(str);
-          },
-          "boolean": function(str) {
-            var falses = ["false", "null", "undefined", "", "0"];
-            return falses.indexOf(str) === -1;
-          },
-          "null": function(str) {
-            var falses = ["false", "null", "undefined", "", "0"];
-            return falses.indexOf(str) === -1 ? str : null;
-          },
-          "array": function(str) {
-            return JSON.parse(str);
-          },
-          "object": function(str) {
-            return JSON.parse(str);
-          },
-          "auto": function(str) {
-            return $.serializeJSON.parseValue(str, null, {
-              parseNumbers: true,
-              parseBooleans: true,
-              parseNulls: true
+      }
+      optWithDefault = function(key) {
+        return (options[key] !== false) && (options[key] !== '') && (options[key] || defaultOptions[key]);
+      };
+      parseAll = optWithDefault('parseAll');
+      return {
+        checkboxUncheckedValue: optWithDefault('checkboxUncheckedValue'),
+        parseNumbers: parseAll || optWithDefault('parseNumbers'),
+        parseBooleans: parseAll || optWithDefault('parseBooleans'),
+        parseNulls: parseAll || optWithDefault('parseNulls'),
+        parseWithFunction: optWithDefault('parseWithFunction'),
+        typeFunctions: $.extend({}, optWithDefault('defaultTypes'), optWithDefault('customTypes')),
+        useIntKeysAsArrayIndex: optWithDefault('useIntKeysAsArrayIndex')
+      };
+    },
+    parseValue: function(valStr, inputName, type, opts) {
+      var f,
+          parsedVal;
+      f = $.serializeJSON;
+      parsedVal = valStr;
+      if (opts.typeFunctions && type && opts.typeFunctions[type]) {
+        parsedVal = opts.typeFunctions[type](valStr);
+      } else if (opts.parseNumbers && f.isNumeric(valStr)) {
+        parsedVal = Number(valStr);
+      } else if (opts.parseBooleans && (valStr === "true" || valStr === "false")) {
+        parsedVal = (valStr === "true");
+      } else if (opts.parseNulls && valStr == "null") {
+        parsedVal = null;
+      }
+      if (opts.parseWithFunction && !type) {
+        parsedVal = opts.parseWithFunction(parsedVal, inputName);
+      }
+      return parsedVal;
+    },
+    isObject: function(obj) {
+      return obj === Object(obj);
+    },
+    isUndefined: function(obj) {
+      return obj === void 0;
+    },
+    isValidArrayIndex: function(val) {
+      return /^[0-9]+$/.test(String(val));
+    },
+    isNumeric: function(obj) {
+      return obj - parseFloat(obj) >= 0;
+    },
+    optionKeys: function(obj) {
+      if (Object.keys) {
+        return Object.keys(obj);
+      } else {
+        var key,
+            keys = [];
+        for (key in obj) {
+          keys.push(key);
+        }
+        return keys;
+      }
+    },
+    readCheckboxUncheckedValues: function(formAsArray, opts, $form) {
+      var selector,
+          $uncheckedCheckboxes,
+          $el,
+          dataUncheckedValue,
+          f;
+      if (opts == null) {
+        opts = {};
+      }
+      f = $.serializeJSON;
+      selector = 'input[type=checkbox][name]:not(:checked):not([disabled])';
+      $uncheckedCheckboxes = $form.find(selector).add($form.filter(selector));
+      $uncheckedCheckboxes.each(function(i, el) {
+        $el = $(el);
+        dataUncheckedValue = $el.attr('data-unchecked-value');
+        if (dataUncheckedValue) {
+          formAsArray.push({
+            name: el.name,
+            value: dataUncheckedValue
+          });
+        } else {
+          if (!f.isUndefined(opts.checkboxUncheckedValue)) {
+            formAsArray.push({
+              name: el.name,
+              value: opts.checkboxUncheckedValue
             });
           }
-        },
-        useIntKeysAsArrayIndex: false
-      },
-      setupOpts: function(options) {
-        var opt,
-            validOpts,
-            defaultOptions,
-            optWithDefault,
-            parseAll,
-            f;
-        f = $.serializeJSON;
-        if (options == null) {
-          options = {};
         }
-        defaultOptions = f.defaultOptions || {};
-        validOpts = ['checkboxUncheckedValue', 'parseNumbers', 'parseBooleans', 'parseNulls', 'parseAll', 'parseWithFunction', 'customTypes', 'defaultTypes', 'useIntKeysAsArrayIndex'];
-        for (opt in options) {
-          if (validOpts.indexOf(opt) === -1) {
-            throw new Error("serializeJSON ERROR: invalid option '" + opt + "'. Please use one of " + validOpts.join(', '));
-          }
-        }
-        optWithDefault = function(key) {
-          return (options[key] !== false) && (options[key] !== '') && (options[key] || defaultOptions[key]);
-        };
-        parseAll = optWithDefault('parseAll');
+      });
+    },
+    extractTypeAndNameWithNoType: function(name) {
+      var match;
+      if (match = name.match(/(.*):([^:]+)$/)) {
         return {
-          checkboxUncheckedValue: optWithDefault('checkboxUncheckedValue'),
-          parseNumbers: parseAll || optWithDefault('parseNumbers'),
-          parseBooleans: parseAll || optWithDefault('parseBooleans'),
-          parseNulls: parseAll || optWithDefault('parseNulls'),
-          parseWithFunction: optWithDefault('parseWithFunction'),
-          typeFunctions: $.extend({}, optWithDefault('defaultTypes'), optWithDefault('customTypes')),
-          useIntKeysAsArrayIndex: optWithDefault('useIntKeysAsArrayIndex')
+          nameWithNoType: match[1],
+          type: match[2]
         };
-      },
-      parseValue: function(str, type, opts) {
-        var typeFunction,
-            f;
-        f = $.serializeJSON;
-        typeFunction = opts.typeFunctions && opts.typeFunctions[type];
-        if (typeFunction) {
-          return typeFunction(str);
-        }
-        if (opts.parseNumbers && f.isNumeric(str)) {
-          return Number(str);
-        }
-        if (opts.parseBooleans && (str === "true" || str === "false")) {
-          return str === "true";
-        }
-        if (opts.parseNulls && str == "null") {
-          return null;
-        }
-        return str;
-      },
-      isObject: function(obj) {
-        return obj === Object(obj);
-      },
-      isUndefined: function(obj) {
-        return obj === void 0;
-      },
-      isValidArrayIndex: function(val) {
-        return /^[0-9]+$/.test(String(val));
-      },
-      isNumeric: function(obj) {
-        return obj - parseFloat(obj) >= 0;
-      },
-      optionKeys: function(obj) {
-        if (Object.keys) {
-          return Object.keys(obj);
+      } else {
+        return {
+          nameWithNoType: name,
+          type: null
+        };
+      }
+    },
+    tryToFindTypeFromDataAttr: function(name, $form) {
+      var escapedName,
+          selector,
+          $input,
+          typeFromDataAttr;
+      escapedName = name.replace(/(:|\.|\[|\]|\s)/g, '\\$1');
+      selector = '[name="' + escapedName + '"]';
+      $input = $form.find(selector).add($form.filter(selector));
+      typeFromDataAttr = $input.attr('data-value-type');
+      return typeFromDataAttr || null;
+    },
+    validateType: function(name, type, opts) {
+      var validTypes,
+          f;
+      f = $.serializeJSON;
+      validTypes = f.optionKeys(opts ? opts.typeFunctions : f.defaultOptions.defaultTypes);
+      if (!type || validTypes.indexOf(type) !== -1) {
+        return true;
+      } else {
+        throw new Error("serializeJSON ERROR: Invalid type " + type + " found in input name '" + name + "', please use one of " + validTypes.join(', '));
+      }
+    },
+    splitInputNameIntoKeysArray: function(nameWithNoType) {
+      var keys,
+          f;
+      f = $.serializeJSON;
+      keys = nameWithNoType.split('[');
+      keys = $.map(keys, function(key) {
+        return key.replace(/\]/g, '');
+      });
+      if (keys[0] === '') {
+        keys.shift();
+      }
+      return keys;
+    },
+    deepSet: function(o, keys, value, opts) {
+      var key,
+          nextKey,
+          tail,
+          lastIdx,
+          lastVal,
+          f;
+      if (opts == null) {
+        opts = {};
+      }
+      f = $.serializeJSON;
+      if (f.isUndefined(o)) {
+        throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");
+      }
+      if (!keys || keys.length === 0) {
+        throw new Error("ArgumentError: param 'keys' expected to be an array with least one element");
+      }
+      key = keys[0];
+      if (keys.length === 1) {
+        if (key === '') {
+          o.push(value);
         } else {
-          var key,
-              keys = [];
-          for (key in obj) {
-            keys.push(key);
-          }
-          return keys;
+          o[key] = value;
         }
-      },
-      splitInputNameIntoKeysArray: function(name, opts) {
-        var keys,
-            nameWithoutType,
-            type,
-            _ref,
-            f;
-        f = $.serializeJSON;
-        _ref = f.extractTypeFromInputName(name, opts);
-        nameWithoutType = _ref[0];
-        type = _ref[1];
-        keys = nameWithoutType.split('[');
-        keys = $.map(keys, function(key) {
-          return key.replace(/\]/g, '');
-        });
-        if (keys[0] === '') {
-          keys.shift();
-        }
-        keys.push(type);
-        return keys;
-      },
-      extractTypeFromInputName: function(name, opts) {
-        var match,
-            validTypes,
-            f;
-        if (match = name.match(/(.*):([^:]+)$/)) {
-          f = $.serializeJSON;
-          validTypes = f.optionKeys(opts ? opts.typeFunctions : f.defaultOptions.defaultTypes);
-          validTypes.push('skip');
-          if (validTypes.indexOf(match[2]) !== -1) {
-            return [match[1], match[2]];
+      } else {
+        nextKey = keys[1];
+        if (key === '') {
+          lastIdx = o.length - 1;
+          lastVal = o[lastIdx];
+          if (f.isObject(lastVal) && (f.isUndefined(lastVal[nextKey]) || keys.length > 2)) {
+            key = lastIdx;
           } else {
-            throw new Error("serializeJSON ERROR: Invalid type " + match[2] + " found in input name '" + name + "', please use one of " + validTypes.join(', '));
+            key = lastIdx + 1;
+          }
+        }
+        if (nextKey === '') {
+          if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
+            o[key] = [];
           }
         } else {
-          return [name, '_'];
-        }
-      },
-      deepSet: function(o, keys, value, opts) {
-        var key,
-            nextKey,
-            tail,
-            lastIdx,
-            lastVal,
-            f;
-        if (opts == null) {
-          opts = {};
-        }
-        f = $.serializeJSON;
-        if (f.isUndefined(o)) {
-          throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");
-        }
-        if (!keys || keys.length === 0) {
-          throw new Error("ArgumentError: param 'keys' expected to be an array with least one element");
-        }
-        key = keys[0];
-        if (keys.length === 1) {
-          if (key === '') {
-            o.push(value);
-          } else {
-            o[key] = value;
-          }
-        } else {
-          nextKey = keys[1];
-          if (key === '') {
-            lastIdx = o.length - 1;
-            lastVal = o[lastIdx];
-            if (f.isObject(lastVal) && (f.isUndefined(lastVal[nextKey]) || keys.length > 2)) {
-              key = lastIdx;
-            } else {
-              key = lastIdx + 1;
-            }
-          }
-          if (nextKey === '') {
+          if (opts.useIntKeysAsArrayIndex && f.isValidArrayIndex(nextKey)) {
             if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
               o[key] = [];
             }
           } else {
-            if (opts.useIntKeysAsArrayIndex && f.isValidArrayIndex(nextKey)) {
-              if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
-                o[key] = [];
-              }
-            } else {
-              if (f.isUndefined(o[key]) || !f.isObject(o[key])) {
-                o[key] = {};
-              }
+            if (f.isUndefined(o[key]) || !f.isObject(o[key])) {
+              o[key] = {};
             }
           }
-          tail = keys.slice(1);
-          f.deepSet(o[key], tail, value, opts);
         }
-      },
-      readCheckboxUncheckedValues: function(formAsArray, $form, opts) {
-        var selector,
-            $uncheckedCheckboxes,
-            $el,
-            dataUncheckedValue,
-            f;
-        if (opts == null) {
-          opts = {};
-        }
-        f = $.serializeJSON;
-        selector = 'input[type=checkbox][name]:not(:checked):not([disabled])';
-        $uncheckedCheckboxes = $form.find(selector).add($form.filter(selector));
-        $uncheckedCheckboxes.each(function(i, el) {
-          $el = $(el);
-          dataUncheckedValue = $el.attr('data-unchecked-value');
-          if (dataUncheckedValue) {
-            formAsArray.push({
-              name: el.name,
-              value: dataUncheckedValue
-            });
-          } else {
-            if (!f.isUndefined(opts.checkboxUncheckedValue)) {
-              formAsArray.push({
-                name: el.name,
-                value: opts.checkboxUncheckedValue
-              });
-            }
-          }
-        });
+        tail = keys.slice(1);
+        f.deepSet(o[key], tail, value, opts);
       }
-    };
-  }));
-  global.define = __define;
-  return module.exports;
+    }
+  };
+}));
+
+_removeDefine();
+})();
+(function() {
+var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+define("8", ["7"], function(main) {
+  return main;
 });
 
-$__System.registerDynamic("8", ["7"], true, function($__require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = $__require('7');
-  global.define = __define;
-  return module.exports;
-});
-
+_removeDefine();
+})();
 $__System.registerDynamic("9", [], true, function($__require, exports, module) {
   ;
   var global = this,
@@ -19422,10 +19444,10 @@ define("1", ["3", "4", "6", "8", "a", "c", "e", "d", "14", "b", "f", "10", "11",
 
 _removeDefine();
 })();
-$__System.register('github:systemjs/plugin-css@0.1.20.js!src/plugins/iconpicker.css', [], false, function() {});
-$__System.register('github:systemjs/plugin-css@0.1.20.js!src/css/colorpicker.css', [], false, function() {});
-(function(c){if (typeof document == 'undefined') return; var d=document,a='appendChild',i='styleSheet',s=d.createElement('style');s.type='text/css';d.getElementsByTagName('head')[0][a](s);s[i]?s[i].cssText=c:s[a](d.createTextNode(c));})
-(".iconpicker_character{font-family:\"Material Icons\";font-style:normal;font-weight:400;speak:none;cursor:pointer;display:inline-block}.iconNew,.newCharacter{width:24px;height:27px}i.fontello_character{min-width:10px;text-align:center}.insidepopover td{padding:1px}.insidepopover button{padding:1px 3px}.insidepopover button{background-color:#F0F0F0}.insidepopover .selected{background-color:#CCC}.popover{width:auto!important;z-index:1100!important;height:auto!important}.popover-title{font-weight:700!important}#controles .popover-content{padding:2px 4px}#controles .popover{height:100px;width:210px!important}#controles .popover button{margin:-1px;font-family:\"Material Icons\";font-style:normal;font-weight:400;speak:none;cursor:pointer;display:inline-block}.iconpicker.popover{margin-top:110px}.iconpicker.popover.right .arrow{top:20px}.dataseticon{vertical-align:middle}.grad_ex{width:260px;height:20px;margin:-5px -5px 25px 0;float:right}.gradientPicker-preview{width:100%;height:100%;border:1px solid rgba(0,0,0,.2)}.gradientPicker-ctrlPt{width:8px;height:8px;border:2px solid gray;position:absolute;display:inline-block}.gradientPicker-ctrlPts{position:relative;height:10px;width:100%}.gradientPicker-ptConfig{position:absolute;width:35px;height:40px;z-index:1;margin-top:2px;background-color:#fff;border-radius:5px;border:1px solid rgba(0,0,0,.2);padding:0 3px;-webkit-box-shadow:0 5px 10px rgba(0,0,0,.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,.2);box-shadow:0 5px 10px rgba(0,0,0,.2)}.gradientPicker-close{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background-image:url(img/gradientpicker/circle_remove.png)}.gradientPicker-ptConfig .color-chooser{float:left}.colorpicker{width:356px;height:176px;overflow:hidden;position:absolute;background:url(img/gradientpicker/colorpicker_background.png);font-family:Arial,Helvetica,sans-serif;display:none;z-index:500}.color-chooser{width:30px;height:30px;margin-top:5px;background:url(img/gradientpicker/select.png) center}.color-chooser>div{width:30px;height:30px;background:url(img/gradientpicker/select.png) center}.colorpicker_color{width:150px;height:150px;left:14px;top:13px;position:absolute;background:red;overflow:hidden;cursor:crosshair}.colorpicker_color div{position:absolute;top:0;left:0;width:150px;height:150px;background:url(img/gradientpicker/colorpicker_overlay.png)}.colorpicker_color div div{position:absolute;top:0;left:0;width:11px;height:11px;overflow:hidden;background:url(img/gradientpicker/colorpicker_select.gif);margin:-5px 0 0 -5px}.colorpicker_hue{position:absolute;top:13px;left:171px;width:35px;height:150px;cursor:n-resize}.colorpicker_hue div{position:absolute;width:35px;height:9px;overflow:hidden;background:url(img/gradientpicker/colorpicker_indic.gif) left top;margin:-4px 0 0 0;left:0}.colorpicker_new_color{position:absolute;width:60px;height:30px;left:213px;top:13px;background:red}.colorpicker_current_color{position:absolute;width:60px;height:30px;left:283px;top:13px;background:red}.colorpicker input{background-color:transparent!important;border:1px solid transparent!important;position:absolute!important;font-size:10px!important;font-family:Arial,Helvetica,sans-serif!important;color:#898989!important;top:4px!important;right:11px!important;text-align:right!important;margin:0!important;padding:0!important;height:11px!important;line-height:11px!important}.colorpicker_hex{position:absolute;width:72px;height:22px;background:url(img/gradientpicker/colorpicker_hex.png) top;left:212px;top:142px}.colorpicker_hex input{right:6px}.colorpicker_field{height:22px;width:62px;background-position:top;position:absolute}.colorpicker_field>input{width:42px}.colorpicker_hex>input{width:42px}.colorpicker_field span{position:absolute;width:12px;height:22px;overflow:hidden;top:0;right:0;cursor:n-resize}.colorpicker_rgb_r{background-image:url(img/gradientpicker/colorpicker_rgb_r.png);top:52px;left:212px}.colorpicker_rgb_g{background-image:url(img/gradientpicker/colorpicker_rgb_g.png);top:82px;left:212px}.colorpicker_rgb_b{background-image:url(img/gradientpicker/colorpicker_rgb_b.png);top:112px;left:212px}.colorpicker_hsb_h{background-image:url(img/gradientpicker/colorpicker_hsb_h.png);top:52px;left:282px}.colorpicker_hsb_s{background-image:url(img/gradientpicker/colorpicker_hsb_s.png);top:82px;left:282px}.colorpicker_hsb_b{background-image:url(img/gradientpicker/colorpicker_hsb_b.png);top:112px;left:282px}.colorpicker_submit{position:absolute;width:22px;height:22px;background:url(img/gradientpicker/colorpicker_submit.png) top;left:322px;top:142px;overflow:hidden}.colorpicker_focus{background-position:center}.colorpicker_hex.colorpicker_focus{background-position:bottom}.colorpicker_submit.colorpicker_focus{background-position:bottom}.colorpicker_slider{background-position:bottom}.grad_ex input.invisible{display:none;position:absolute}#jquery-colour-picker{background:#fafafa;background-image:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#eee));width:180px;padding:10px 5px 5px 10px;border:1px solid #666;-moz-border-radius:2px;-webkit-border-radius:2px;border-radius:2px;-moz-box-shadow:5px 5px 5px rgba(0,0,0,.3);-webkit-box-shadow:5px 5px 5px rgba(0,0,0,.3);box-shadow:5px 5px 5px rgba(0,0,0,.3);z-index:1199}#jquery-colour-picker h2{margin:0 0 5px 0;font-size:14px}#jquery-colour-picker ul{margin:0;padding:0;list-style-type:none;zoom:1}#jquery-colour-picker ul:after{content:\".\";display:block;height:0;visibility:hidden;clear:both}#jquery-colour-picker ul li{float:left;margin:0 5px 5px 0}#jquery-colour-picker ul li a{display:block;width:13px;height:13px;text-decoration:none;text-indent:-100000px;outline:0;border:1px solid #aaa}#jquery-colour-picker ul li a:hover{border-color:#000}.evo-pop{z-index:10000;width:204px;padding:3px 3px 0}.evo-pop-ie{z-index:10000;width:212px;padding:3px}.evo-palette,.evo-palette-ie{border-collapse:separate;border-spacing:4px 0}.evo-palette td{font-size:1px;border:solid 1px silver;padding:7px;cursor:pointer}.evo-palette tr.top td{border-bottom:0}.evo-palette tr.in td{border-top:0;border-bottom:0}.evo-palette tr.bottom td{border-top:0}.evo-palette th,.evo-palette-ie th{border:0;padding:5px 3px;text-align:left;font-weight:400;background:0 0!important}.evo-palette div.sep{height:3px}.evo-palette-ie td{font-size:1px;border:solid 1px silver;padding:7px;cursor:pointer}.evo-palette2,.evo-palette2-ie{margin:auto;border-collapse:collapse}.evo-palette2 td,.evo-palette2-ie td{font-size:1px;cursor:pointer}.evo-palette2 td{padding:6px 7px}.evo-palette2-ie td{padding:5px}.evo-palcenter{padding:5px;text-align:center}.colorpickerafter.evo-colorind,.colorpickerafter.evo-colorind-ff,.colorpickerafter.evo-colorind-ie{border:solid 1px #c3c3c3;width:12px!important;height:12px!important;float:left}.context_menu_item .colorpickerafter.evo-colorind,.context_menu_item .colorpickerafter.evo-colorind-ff,.context_menu_item .colorpickerafter.evo-colorind-ie{margin-right:5px}.cr.gradient .gradientpicker.evo-colorind,.cr.gradient .gradientpicker.evo-colorind-ie{border-right:solid 1px #c3c3c3;border-bottom:solid 1px #c3c3c3;width:99%!important;margin:1px 1% 1px 0;height:13px!important;float:left}.evo-colorind{position:relative;top:2px}.evo-colorind-ie{position:relative;left:-16px;top:2px}.evo-colorbox-ie{font-size:8px;padding:3px 9px!important}.evo-colortxt-ie{position:relative;top:-6px}.evo-cHist:after,.evo-color span:after,.evo-colorind-ff:after,.evo-colorind-ie:after,.evo-colorind:after,.evo-pop-ie:after,.evo-pop:after{content:\".\";display:block;height:0;clear:both;visibility:hidden;font-size:0}.evo-color{width:94px;padding:1px 3px 0 4px}.evo-color div{border:solid 1px grey;border-right:solid 1px silver;border-bottom:solid 1px silver;padding:3px;margin-bottom:5px;width:10px;height:10px;float:left}.evo-color span{font-size:15px;margin:1px 0 4px 3px;float:left}.evo-sep{height:10px;font-size:0}.evo-more{padding:4px 5px 4px;font-size:smaller}.evo-cHist{padding:3px}.evo-cHist div{cursor:pointer;border:solid 1px silver;padding:3px;margin:5px;width:10px;height:10px;float:left}a.evo-hist{margin-left:6px}.evo-pointer{cursor:pointer}.pickercolor input{display:inline-block;width:20px;margin-left:10px;height:14px;padding:3px;margin:2px 12px;color:transparent!important}");
+System.register('github:HuasoFoundries/systemjs-less-plugin@1.4.2.js!src/plugins/iconpicker.less', [], false, function() {});
+System.register('github:HuasoFoundries/systemjs-less-plugin@1.4.2.js!src/css/colorpicker.less', [], false, function() {});
+(function(c){var d=document,a='appendChild',i='styleSheet',s=d.createElement('style');s.type='text/css';d.getElementsByTagName('head')[0][a](s);s[i]?s[i].cssText=c:s[a](d.createTextNode(c));})
+(".iconpicker_character {\n  font-family: \"Material Icons\";\n  font-style: normal;\n  font-weight: normal;\n  speak: none;\n  cursor: pointer;\n  display: inline-block;\n}\n.newCharacter,\n.iconNew {\n  width: 24px;\n  height: 27px;\n}\ni.fontello_character {\n  min-width: 10px;\n  text-align: center;\n}\n.insidepopover td {\n  padding: 1px;\n}\n.insidepopover button {\n  padding: 1px 3px;\n}\n.insidepopover button {\n  background-color: #F0F0F0;\n}\n.insidepopover .selected {\n  background-color: #CCCCCC;\n}\n.popover {\n  width: auto !important;\n  z-index: 1100 !important;\n  height: auto !important;\n}\n.popover-title {\n  font-weight: bold !important;\n}\n#controles .popover-content {\n  padding: 2px 4px;\n}\n#controles .popover {\n  /*top: -5px !important;*/\n  height: 100px;\n  width: 210px !important;\n}\n#controles .popover button {\n  margin: -1px;\n  font-family: \"Material Icons\";\n  font-style: normal;\n  font-weight: normal;\n  speak: none;\n  cursor: pointer;\n  display: inline-block;\n}\n.iconpicker.popover {\n  margin-top: 110px;\n}\n.iconpicker.popover.right .arrow {\n  top: 20px;\n}\n.dataseticon {\n  vertical-align: middle;\n}\n/************** GRADIENTPICKER ******/\n.grad_ex {\n  width: 260px;\n  height: 20px;\n  margin: -5px -5px 25px 0;\n  float: right;\n}\n.gradientPicker-preview {\n  width: 100%;\n  height: 100%;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  /*box-sizing: border-box;\n    -moz-box-sizing: border-box;*/\n}\n.gradientPicker-ctrlPt {\n  width: 8px;\n  height: 8px;\n  border: 2px solid gray;\n  position: absolute;\n  display: inline-block;\n}\n.gradientPicker-ctrlPts {\n  position: relative;\n  height: 10px;\n  width: 100%;\n}\n.gradientPicker-ptConfig {\n  position: absolute;\n  width: 35px;\n  height: 40px;\n  z-index: 1;\n  margin-top: 2px;\n  background-color: white;\n  border-radius: 5px;\n  border: 1px solid rgba(0, 0, 0, 0.2);\n  padding: 0 3px;\n  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);\n  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);\n  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);\n}\n.gradientPicker-close {\n  position: absolute;\n  top: -4px;\n  right: -4px;\n  width: 16px;\n  height: 16px;\n  background-image: url(../../img/gradientpicker/circle_remove.png);\n}\n.gradientPicker-ptConfig .color-chooser {\n  float: left;\n}\n.colorpicker {\n  width: 356px;\n  height: 176px;\n  overflow: hidden;\n  position: absolute;\n  background: url(../../img/gradientpicker/colorpicker_background.png);\n  font-family: Arial, Helvetica, sans-serif;\n  display: none;\n  z-index: 500;\n}\n.color-chooser {\n  width: 30px;\n  height: 30px;\n  margin-top: 5px;\n  background: url(../../img/gradientpicker/select.png) center;\n}\n.color-chooser > div {\n  width: 30px;\n  height: 30px;\n  background: url(../../img/gradientpicker/select.png) center;\n}\n.colorpicker_color {\n  width: 150px;\n  height: 150px;\n  left: 14px;\n  top: 13px;\n  position: absolute;\n  background: #f00;\n  overflow: hidden;\n  cursor: crosshair;\n}\n.colorpicker_color div {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 150px;\n  height: 150px;\n  background: url(../../img/gradientpicker/colorpicker_overlay.png);\n}\n.colorpicker_color div div {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 11px;\n  height: 11px;\n  overflow: hidden;\n  background: url(../../img/gradientpicker/colorpicker_select.gif);\n  margin: -5px 0 0 -5px;\n}\n.colorpicker_hue {\n  position: absolute;\n  top: 13px;\n  left: 171px;\n  width: 35px;\n  height: 150px;\n  cursor: n-resize;\n}\n.colorpicker_hue div {\n  position: absolute;\n  width: 35px;\n  height: 9px;\n  overflow: hidden;\n  background: url(../../img/gradientpicker/colorpicker_indic.gif) left top;\n  margin: -4px 0 0 0;\n  left: 0 ;\n}\n.colorpicker_new_color {\n  position: absolute;\n  width: 60px;\n  height: 30px;\n  left: 213px;\n  top: 13px;\n  background: #f00;\n}\n.colorpicker_current_color {\n  position: absolute;\n  width: 60px;\n  height: 30px;\n  left: 283px;\n  top: 13px;\n  background: #f00;\n}\n.colorpicker input {\n  background-color: transparent !important;\n  border: 1px solid transparent !important;\n  position: absolute !important;\n  font-size: 10px !important;\n  font-family: Arial, Helvetica, sans-serif !important;\n  color: #898989 !important;\n  top: 4px !important;\n  right: 11px !important;\n  text-align: right !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  height: 11px !important;\n  line-height: 11px !important;\n}\n.colorpicker_hex {\n  position: absolute;\n  width: 72px;\n  height: 22px;\n  background: url(../../img/gradientpicker/colorpicker_hex.png) top;\n  left: 212px;\n  top: 142px;\n}\n.colorpicker_hex input {\n  right: 6px;\n}\n.colorpicker_field {\n  height: 22px;\n  width: 62px;\n  background-position: top;\n  position: absolute;\n}\n.colorpicker_field > input {\n  width: 42px;\n}\n.colorpicker_hex > input {\n  width: 42px;\n}\n.colorpicker_field span {\n  position: absolute;\n  width: 12px;\n  height: 22px;\n  overflow: hidden;\n  top: 0;\n  right: 0;\n  cursor: n-resize;\n}\n.colorpicker_rgb_r {\n  background-image: url(../../img/gradientpicker/colorpicker_rgb_r.png);\n  top: 52px;\n  left: 212px;\n}\n.colorpicker_rgb_g {\n  background-image: url(../../img/gradientpicker/colorpicker_rgb_g.png);\n  top: 82px;\n  left: 212px;\n}\n.colorpicker_rgb_b {\n  background-image: url(../../img/gradientpicker/colorpicker_rgb_b.png);\n  top: 112px;\n  left: 212px;\n}\n.colorpicker_hsb_h {\n  background-image: url(../../img/gradientpicker/colorpicker_hsb_h.png);\n  top: 52px;\n  left: 282px;\n}\n.colorpicker_hsb_s {\n  background-image: url(../../img/gradientpicker/colorpicker_hsb_s.png);\n  top: 82px;\n  left: 282px;\n}\n.colorpicker_hsb_b {\n  background-image: url(../../img/gradientpicker/colorpicker_hsb_b.png);\n  top: 112px;\n  left: 282px;\n}\n.colorpicker_submit {\n  position: absolute;\n  width: 22px;\n  height: 22px;\n  background: url(../../img/gradientpicker/colorpicker_submit.png) top;\n  left: 322px;\n  top: 142px;\n  overflow: hidden;\n}\n.colorpicker_focus {\n  background-position: center;\n}\n.colorpicker_hex.colorpicker_focus {\n  background-position: bottom;\n}\n.colorpicker_submit.colorpicker_focus {\n  background-position: bottom;\n}\n.colorpicker_slider {\n  background-position: bottom;\n}\n.grad_ex input.invisible {\n  display: none;\n  position: absolute;\n}\n#jquery-colour-picker {\n  background: #fafafa;\n  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));\n  width: 180px;\n  padding: 10px 5px 5px 10px;\n  border: 1px solid #666;\n  -moz-border-radius: 2px;\n  -webkit-border-radius: 2px;\n  border-radius: 2px;\n  -moz-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);\n  -webkit-box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);\n  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.3);\n  z-index: 1199;\n}\n#jquery-colour-picker h2 {\n  margin: 0 0 5px 0;\n  font-size: 14px;\n}\n#jquery-colour-picker ul {\n  margin: 0;\n  padding: 0;\n  list-style-type: none;\n  zoom: 1;\n}\n#jquery-colour-picker ul:after {\n  content: \".\";\n  display: block;\n  height: 0;\n  visibility: hidden;\n  clear: both;\n}\n#jquery-colour-picker ul li {\n  float: left;\n  margin: 0 5px 5px 0;\n}\n#jquery-colour-picker ul li a {\n  display: block;\n  width: 13px;\n  height: 13px;\n  text-decoration: none;\n  text-indent: -100000px;\n  outline: 0;\n  border: 1px solid #aaa;\n}\n#jquery-colour-picker ul li a:hover {\n  border-color: #000;\n}\n/************** END GRADIENTPICKER ******/\n/*  (c) 2013 Olivier Giulieri  */\n/*  ColorPicker widget for jQuery UI  */\n/* https://github.com/evoluteur/colorpicker */\n.evo-pop {\n  z-index: 10000;\n  width: 204px;\n  padding: 3px 3px 0;\n}\n.evo-pop-ie {\n  z-index: 10000;\n  width: 212px;\n  padding: 3px;\n}\n.evo-palette,\n.evo-palette-ie {\n  border-collapse: separate;\n  border-spacing: 4px 0 ;\n  *border-collapse: expression('separate', cellSpacing='2px');\n}\n.evo-palette td {\n  font-size: 1px;\n  border: solid 1px #c0c0c0;\n  padding: 7px;\n  cursor: pointer;\n}\n.evo-palette tr.top td {\n  border-bottom: 0;\n}\n.evo-palette tr.in td {\n  border-top: 0;\n  border-bottom: 0;\n}\n.evo-palette tr.bottom td {\n  border-top: 0;\n}\n.evo-palette th,\n.evo-palette-ie th {\n  border: 0;\n  padding: 5px 3px;\n  text-align: left;\n  font-weight: normal;\n  background: transparent !important;\n}\n.evo-palette div.sep {\n  height: 3px;\n}\n.evo-palette-ie td {\n  font-size: 1px;\n  border: solid 1px #c0c0c0;\n  padding: 7px;\n  cursor: pointer;\n}\n.evo-palette2,\n.evo-palette2-ie {\n  margin: auto;\n  border-collapse: collapse;\n}\n.evo-palette2 td,\n.evo-palette2-ie td {\n  font-size: 1px;\n  cursor: pointer;\n}\n.evo-palette2 td {\n  padding: 6px 7px;\n}\n.evo-palette2-ie td {\n  padding: 5px;\n}\n.evo-palcenter {\n  padding: 5px;\n  text-align: center;\n}\n/*#polygon_change_color,\n#marker_change_color {margin-left:15px;}*/\n.colorpickerafter.evo-colorind,\n.colorpickerafter.evo-colorind-ie,\n.colorpickerafter.evo-colorind-ff {\n  border: solid 1px #c3c3c3;\n  width: 12px !important;\n  height: 12px !important;\n  float: left;\n}\n.context_menu_item .colorpickerafter.evo-colorind,\n.context_menu_item .colorpickerafter.evo-colorind-ie,\n.context_menu_item .colorpickerafter.evo-colorind-ff {\n  margin-right: 5px;\n}\n.cr.gradient .gradientpicker.evo-colorind,\n.cr.gradient .gradientpicker.evo-colorind-ie {\n  border-right: solid 1px #c3c3c3;\n  border-bottom: solid 1px #c3c3c3;\n  width: 99% !important;\n  margin: 1px 1% 1px 0;\n  height: 13px !important;\n  float: left;\n}\n.evo-colorind {\n  position: relative;\n  top: 2px;\n}\n.evo-colorind-ie {\n  position: relative;\n  left: -16px;\n  top: 2px;\n}\n.evo-colorbox-ie {\n  font-size: 8px;\n  padding: 3px 9px !important;\n}\n.evo-colortxt-ie {\n  position: relative;\n  top: -6px;\n}\n.evo-pop:after,\n.evo-pop-ie:after,\n.evo-colorind:after,\n.evo-colorind-ie:after,\n.evo-colorind-ff:after,\n.evo-color span:after,\n.evo-cHist:after {\n  content: \".\";\n  display: block;\n  height: 0;\n  clear: both;\n  visibility: hidden;\n  font-size: 0;\n}\n.evo-color {\n  width: 94px;\n  padding: 1px 3px 0 4px;\n}\n.evo-color div {\n  border: solid 1px #808080;\n  border-right: solid 1px #c0c0c0;\n  border-bottom: solid 1px #c0c0c0;\n  padding: 3px;\n  margin-bottom: 5px;\n  width: 10px;\n  height: 10px;\n  float: left;\n}\n.evo-color span {\n  font-size: 15px;\n  margin: 1px 0 4px 3px;\n  float: left;\n}\n.evo-sep {\n  height: 10px;\n  font-size: 0;\n}\n.evo-more {\n  padding: 4px 5px 4px;\n  font-size: smaller;\n}\n.evo-cHist {\n  padding: 3px;\n}\n.evo-cHist div {\n  cursor: pointer;\n  border: solid 1px #c0c0c0;\n  padding: 3px;\n  margin: 5px;\n  width: 10px;\n  height: 10px;\n  float: left;\n}\na.evo-hist {\n  margin-left: 6px;\n}\n.evo-pointer {\n  cursor: pointer;\n}\n.pickercolor input {\n  display: inline-block;\n  width: 20px;\n  margin-left: 10px;\n  height: 14px;\n  padding: 3px;\n  margin: 2px 12px;\n  color: transparent !important;\n}\n");
 })
 (function(factory) {
   define([], factory);

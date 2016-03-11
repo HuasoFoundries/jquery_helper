@@ -25,7 +25,7 @@ define([
 	'./plugins/jquery.hotkeys',
 	'./plugins/jquery.iconpicker',
 	'./plugins/jquery.ui.rotatable',
-	'css!./css/colorpicker.css'
+	'less!./css/colorpicker.less'
 
 ], function (jQuery) {
 

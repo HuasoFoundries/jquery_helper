@@ -1,7 +1,7 @@
 define([
 	'jquery',
 	'lodash',
-	'css!./iconpicker.css'
+	'less!./iconpicker.less'
 ], function (jQuery, _) {
 
 
