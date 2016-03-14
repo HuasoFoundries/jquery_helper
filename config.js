@@ -4,8 +4,7 @@ System.config({
   transpiler: false,
   paths: {
     "npm:*": "jspm_packages/npm/*",
-    "github:*": "jspm_packages/github/*",
-    "jspm:*": "jspm_packages/jspm/*"
+    "github:*": "jspm_packages/github/*"
   },
   pluginFirst: true,
 
@@ -32,7 +31,7 @@ System.config({
   },
 
   map: {
-    "css": "jspm:systemjs-plugin-css@0.1.20",
+    "css": "github:systemjs/plugin-css@0.1.20",
     "jquery": "npm:jquery@2.2.1",
     "jquery-csv": "github:evanplaice/jquery-csv@0.8.1",
     "jquery-serializejson": "github:marioizquierdo/jquery.serializeJSON@2.7.2",
