@@ -4,7 +4,8 @@ System.config({
   transpiler: false,
   paths: {
     "npm:*": "jspm_packages/npm/*",
-    "github:*": "jspm_packages/github/*"
+    "github:*": "jspm_packages/github/*",
+    "jspm:*": "jspm_packages/jspm/*"
   },
   pluginFirst: true,
 
@@ -31,7 +32,7 @@ System.config({
   },
 
   map: {
-    "css": "github:systemjs/plugin-css@0.1.20",
+    "css": "jspm:systemjs-plugin-css@0.1.20",
     "jquery": "npm:jquery@2.2.1",
     "jquery-csv": "github:evanplaice/jquery-csv@0.8.1",
     "jquery-serializejson": "github:marioizquierdo/jquery.serializeJSON@2.7.2",
@@ -39,11 +40,7 @@ System.config({
     "jquery.cookie": "github:carhartl/jquery-cookie@1.4.1",
     "jquery.waitforChild": "npm:jquery.waitforChild@1.0.1",
     "jquery_helper": "src/jquery_helper",
-    "less": "github:HuasoFoundries/systemjs-less-plugin@1.4.2",
     "lodash": "github:lodash/lodash@3.10.1",
-    "github:HuasoFoundries/systemjs-less-plugin@1.4.2": {
-      "less.js": "github:distros/less@2.4.0"
-    },
     "github:components/jqueryui@1.11.4": {
       "jquery": "npm:jquery@2.2.1"
     }
