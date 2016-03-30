@@ -1,6 +1,6 @@
 {
   "name": "ig_jquery_helper",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "registry": "github",
   "main": "dist/jquery_helper.js",
   "devDependencies": {
@@ -13,6 +13,9 @@
     "load-grunt-tasks": "1.0.0",
     "win-spawn": "2.0.0"
   },
+  "scripts": {
+    "test": "At this point, jspm self executing bundle cannot run in node"
+  },
   "jspm": {
     "format": "amd",
     "dependencies": {
@@ -24,7 +27,7 @@
       "lodash": "lodash/lodash@3.10.1"
     },
     "devDependencies": {
-      "jquery": "components/jquery@^2.2.1",
+      "jquery": "npm:jquery@^2.2",
       "jquery-ui": "components/jqueryui@^1.11.4"
     },
     "overrides": {

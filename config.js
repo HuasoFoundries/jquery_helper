@@ -12,7 +12,9 @@ System.config({
     "jquery_helper": {
       "deps": [
         "jquery"
-      ]
+      ],
+      "exports": "jquery",
+      "format": "amd"
     },
     "jquery-csv": {
       "deps": [
@@ -30,7 +32,7 @@ System.config({
 
   map: {
     "css": "github:huasofoundries/plugin-css@0.1.21",
-    "jquery": "github:components/jquery@2.2.1",
+    "jquery": "npm:jquery@2.2.2",
     "jquery-csv": "github:evanplaice/jquery-csv@0.8.1",
     "jquery-serializejson": "github:marioizquierdo/jquery.serializeJSON@2.7.2",
     "jquery-ui": "github:components/jqueryui@1.11.4",
