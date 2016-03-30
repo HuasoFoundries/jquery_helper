@@ -1,6 +1,6 @@
 {
   "name": "ig_jquery_helper",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "registry": "github",
   "main": "dist/jquery_helper.js",
   "devDependencies": {
@@ -20,15 +20,15 @@
     "format": "amd",
     "dependencies": {
       "css": "huasofoundries/plugin-css@0.1.21",
-      "jquery-csv": "evanplaice/jquery-csv@^0.8.1",
-      "jquery-serializejson": "marioizquierdo/jquery.serializeJSON@~2.7",
-      "jquery.cookie": "carhartl/jquery-cookie@^1.4.1",
-      "jquery.waitforChild": "npm:jquery.waitforChild@^1",
       "lodash": "lodash/lodash@3.10.1"
     },
     "devDependencies": {
       "jquery": "npm:jquery@^2.2",
-      "jquery-ui": "components/jqueryui@^1.11.4"
+      "jquery-csv": "evanplaice/jquery-csv@^0.8.1",
+      "jquery-serializejson": "marioizquierdo/jquery.serializeJSON@~2.7",
+      "jquery-ui": "components/jqueryui@^1.11.4",
+      "jquery.cookie": "carhartl/jquery-cookie@^1.4.1",
+      "jquery.waitforChild": "npm:jquery.waitforChild@^1"
     },
     "overrides": {
       "github:lodash/lodash@3.10.1": {
