@@ -1,10 +1,14 @@
-"bundle";
+!function(e){function r(e,r,o){return 4===arguments.length?t.apply(this,arguments):void n(e,{declarative:!0,deps:r,declare:o})}function t(e,r,t,o){n(e,{declarative:!1,deps:r,executingRequire:t,execute:o})}function n(e,r){r.name=e,e in p||(p[e]=r),r.normalizedDeps=r.deps}function o(e,r){if(r[e.groupIndex]=r[e.groupIndex]||[],-1==v.call(r[e.groupIndex],e)){r[e.groupIndex].push(e);for(var t=0,n=e.normalizedDeps.length;n>t;t++){var a=e.normalizedDeps[t],u=p[a];if(u&&!u.evaluated){var d=e.groupIndex+(u.declarative!=e.declarative);if(void 0===u.groupIndex||u.groupIndex<d){if(void 0!==u.groupIndex&&(r[u.groupIndex].splice(v.call(r[u.groupIndex],u),1),0==r[u.groupIndex].length))throw new TypeError("Mixed dependency cycle detected");u.groupIndex=d}o(u,r)}}}}function a(e){var r=p[e];r.groupIndex=0;var t=[];o(r,t);for(var n=!!r.declarative==t.length%2,a=t.length-1;a>=0;a--){for(var u=t[a],i=0;i<u.length;i++){var s=u[i];n?d(s):l(s)}n=!n}}function u(e){return x[e]||(x[e]={name:e,dependencies:[],exports:{},importers:[]})}function d(r){if(!r.module){var t=r.module=u(r.name),n=r.module.exports,o=r.declare.call(e,function(e,r){if(t.locked=!0,"object"==typeof e)for(var o in e)n[o]=e[o];else n[e]=r;for(var a=0,u=t.importers.length;u>a;a++){var d=t.importers[a];if(!d.locked)for(var i=0;i<d.dependencies.length;++i)d.dependencies[i]===t&&d.setters[i](n)}return t.locked=!1,r},r.name);t.setters=o.setters,t.execute=o.execute;for(var a=0,i=r.normalizedDeps.length;i>a;a++){var l,s=r.normalizedDeps[a],c=p[s],v=x[s];v?l=v.exports:c&&!c.declarative?l=c.esModule:c?(d(c),v=c.module,l=v.exports):l=f(s),v&&v.importers?(v.importers.push(t),t.dependencies.push(v)):t.dependencies.push(null),t.setters[a]&&t.setters[a](l)}}}function i(e){var r,t=p[e];if(t)t.declarative?c(e,[]):t.evaluated||l(t),r=t.module.exports;else if(r=f(e),!r)throw new Error("Unable to load dependency "+e+".");return(!t||t.declarative)&&r&&r.__useDefault?r["default"]:r}function l(r){if(!r.module){var t={},n=r.module={exports:t,id:r.name};if(!r.executingRequire)for(var o=0,a=r.normalizedDeps.length;a>o;o++){var u=r.normalizedDeps[o],d=p[u];d&&l(d)}r.evaluated=!0;var c=r.execute.call(e,function(e){for(var t=0,n=r.deps.length;n>t;t++)if(r.deps[t]==e)return i(r.normalizedDeps[t]);throw new TypeError("Module "+e+" not declared as a dependency.")},t,n);c&&(n.exports=c),t=n.exports,t&&t.__esModule?r.esModule=t:r.esModule=s(t)}}function s(r){if(r===e)return r;var t={};if("object"==typeof r||"function"==typeof r)if(g){var n;for(var o in r)(n=Object.getOwnPropertyDescriptor(r,o))&&h(t,o,n)}else{var a=r&&r.hasOwnProperty;for(var o in r)(!a||r.hasOwnProperty(o))&&(t[o]=r[o])}return t["default"]=r,h(t,"__useDefault",{value:!0}),t}function c(r,t){var n=p[r];if(n&&!n.evaluated&&n.declarative){t.push(r);for(var o=0,a=n.normalizedDeps.length;a>o;o++){var u=n.normalizedDeps[o];-1==v.call(t,u)&&(p[u]?c(u,t):f(u))}n.evaluated||(n.evaluated=!0,n.module.execute.call(e))}}function f(e){if(D[e])return D[e];if("@node/"==e.substr(0,6))return y(e.substr(6));var r=p[e];if(!r)throw"Module "+e+" not present.";return a(e),c(e,[]),p[e]=void 0,r.declarative&&h(r.module.exports,"__esModule",{value:!0}),D[e]=r.declarative?r.module.exports:r.esModule}var p={},v=Array.prototype.indexOf||function(e){for(var r=0,t=this.length;t>r;r++)if(this[r]===e)return r;return-1},g=!0;try{Object.getOwnPropertyDescriptor({a:0},"a")}catch(m){g=!1}var h;!function(){try{Object.defineProperty({},"a",{})&&(h=Object.defineProperty)}catch(e){h=function(e,r,t){try{e[r]=t.value||t.get.call(e)}catch(n){}}}}();var x={},y="undefined"!=typeof System&&System._nodeRequire||"undefined"!=typeof require&&require.resolve&&"undefined"!=typeof process&&require,D={"@empty":{}};return function(e,n,o){return function(a){a(function(a){for(var u={_nodeRequire:y,register:r,registerDynamic:t,get:f,set:function(e,r){D[e]=r},newModule:function(e){return e}},d=0;d<n.length;d++)(function(e,r){r&&r.__esModule?D[e]=r:D[e]=s(r)})(n[d],arguments[d]);o(u);var i=f(e[0]);if(e.length>1)for(var d=1;d<e.length;d++)f(e[d]);return i.__useDefault?i["default"]:i})}}}("undefined"!=typeof self?self:global)
+
+(["1"], [], function($__System, require) {
+
+!function(e){function n(e,n){e=e.replace(l,"");var r=e.match(u),t=(r[1].split(",")[n]||"require").replace(s,""),i=p[t]||(p[t]=new RegExp(a+t+f,"g"));i.lastIndex=0;for(var o,c=[];o=i.exec(e);)c.push(o[2]||o[3]);return c}function r(e,n,t,o){if("object"==typeof e&&!(e instanceof Array))return r.apply(null,Array.prototype.splice.call(arguments,1,arguments.length-1));if("string"==typeof e&&"function"==typeof n&&(e=[e]),!(e instanceof Array)){if("string"==typeof e){var l=i.get(e);return l.__useDefault?l["default"]:l}throw new TypeError("Invalid require")}for(var a=[],f=0;f<e.length;f++)a.push(i["import"](e[f],o));Promise.all(a).then(function(e){n&&n.apply(null,e)},t)}function t(t,l,a){"string"!=typeof t&&(a=l,l=t,t=null),l instanceof Array||(a=l,l=["require","exports","module"].splice(0,a.length)),"function"!=typeof a&&(a=function(e){return function(){return e}}(a)),void 0===l[l.length-1]&&l.pop();var f,u,s;-1!=(f=o.call(l,"require"))&&(l.splice(f,1),t||(l=l.concat(n(a.toString(),f)))),-1!=(u=o.call(l,"exports"))&&l.splice(u,1),-1!=(s=o.call(l,"module"))&&l.splice(s,1);var p={name:t,deps:l,execute:function(n,t,o){for(var p=[],c=0;c<l.length;c++)p.push(n(l[c]));o.uri=o.id,o.config=function(){},-1!=s&&p.splice(s,0,o),-1!=u&&p.splice(u,0,t),-1!=f&&p.splice(f,0,function(e,t,l){return"string"==typeof e&&"function"!=typeof t?n(e):r.call(i,e,t,l,o.id)});var d=a.apply(-1==u?e:t,p);return"undefined"==typeof d&&o&&(d=o.exports),"undefined"!=typeof d?d:void 0}};if(t)c.anonDefine||c.isBundle?c.anonDefine&&c.anonDefine.name&&(c.anonDefine=null):c.anonDefine=p,c.isBundle=!0,i.registerDynamic(p.name,p.deps,!1,p.execute);else{if(c.anonDefine&&!c.anonDefine.name)throw new Error("Multiple anonymous defines in module "+t);c.anonDefine=p}}var i=$__System,o=Array.prototype.indexOf||function(e){for(var n=0,r=this.length;r>n;n++)if(this[n]===e)return n;return-1},l=/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/gm,a="(?:^|[^$_a-zA-Z\\xA0-\\uFFFF.])",f="\\s*\\(\\s*(\"([^\"]+)\"|'([^']+)')\\s*\\)",u=/\(([^\)]*)\)/,s=/^\s+|\s+$/g,p={};t.amd={};var c={isBundle:!1,anonDefine:null};i.amdDefine=t,i.amdRequire=r}("undefined"!=typeof self?self:global);
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 "format amd";
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
-    define("github:carhartl/jquery-cookie@1.4.1/jquery.cookie.js", ["npm:jquery@2.2.1.js"], factory);
+    define("2", ["3"], factory);
   } else if (typeof exports === 'object') {
     factory(require('jquery'));
   } else {
@@ -71,27 +75,25 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   };
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-define("github:carhartl/jquery-cookie@1.4.1.js", ["github:carhartl/jquery-cookie@1.4.1/jquery.cookie.js"], function(main) {
+var define = $__System.amdDefine;
+define("4", ["2"], function(main) {
   return main;
 });
 
-_removeDefine();
 })();
-System.registerDynamic("npm:jquery.waitforChild@1.0.1/jquery.waitforChild.js", ["npm:jquery@2.2.1.js"], true, function($__require, exports, module) {
+$__System.registerDynamic("5", ["3"], true, function($__require, exports, module) {
   ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
+  var define,
+      global = this,
+      GLOBAL = this;
   "format cjs";
   (function(root, factory) {
     if (typeof define === "function" && define.amd) {
       define(['jquery'], factory);
     } else if (typeof module !== 'undefined' && typeof exports === "object") {
-      module.exports = factory($__require('npm:jquery@2.2.1.js'));
+      module.exports = factory($__require('3'));
     } else {
       root.jQuery = factory(root.jQuery);
     }
@@ -162,335 +164,34 @@ System.registerDynamic("npm:jquery.waitforChild@1.0.1/jquery.waitforChild.js", [
       return $this;
     };
   }));
-  global.define = __define;
   return module.exports;
 });
 
-System.registerDynamic("npm:jquery.waitforChild@1.0.1.js", ["npm:jquery.waitforChild@1.0.1/jquery.waitforChild.js"], true, function($__require, exports, module) {
+$__System.registerDynamic("6", ["5"], true, function($__require, exports, module) {
   ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = $__require('npm:jquery.waitforChild@1.0.1/jquery.waitforChild.js');
-  global.define = __define;
+  var define,
+      global = this,
+      GLOBAL = this;
+  module.exports = $__require('5');
   return module.exports;
 });
 
-(function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-(function(factory) {
-  if (typeof define === 'function' && define.amd) {
-    define("github:marioizquierdo/jquery.serializeJSON@2.7.2/jquery.serializejson.js", ["npm:jquery@2.2.1.js"], factory);
-  } else if (typeof exports === 'object') {
-    var jQuery = require('jquery');
-    module.exports = factory(jQuery);
-  } else {
-    factory(window.jQuery || window.Zepto || window.$);
-  }
-}(function($) {
-  "use strict";
-  $.fn.serializeJSON = function(options) {
-    var f,
-        $form,
-        opts,
-        formAsArray,
-        serializedObject,
-        name,
-        value,
-        _obj,
-        nameWithNoType,
-        type,
-        keys;
-    f = $.serializeJSON;
-    $form = this;
-    opts = f.setupOpts(options);
-    formAsArray = $form.serializeArray();
-    f.readCheckboxUncheckedValues(formAsArray, opts, $form);
-    serializedObject = {};
-    $.each(formAsArray, function(i, obj) {
-      name = obj.name;
-      value = obj.value;
-      _obj = f.extractTypeAndNameWithNoType(name);
-      nameWithNoType = _obj.nameWithNoType;
-      type = _obj.type;
-      if (!type)
-        type = f.tryToFindTypeFromDataAttr(name, $form);
-      f.validateType(name, type, opts);
-      if (type !== 'skip') {
-        keys = f.splitInputNameIntoKeysArray(nameWithNoType);
-        value = f.parseValue(value, name, type, opts);
-        f.deepSet(serializedObject, keys, value, opts);
-      }
-    });
-    return serializedObject;
-  };
-  $.serializeJSON = {
-    defaultOptions: {
-      checkboxUncheckedValue: undefined,
-      parseNumbers: false,
-      parseBooleans: false,
-      parseNulls: false,
-      parseAll: false,
-      parseWithFunction: null,
-      customTypes: {},
-      defaultTypes: {
-        "string": function(str) {
-          return String(str);
-        },
-        "number": function(str) {
-          return Number(str);
-        },
-        "boolean": function(str) {
-          var falses = ["false", "null", "undefined", "", "0"];
-          return falses.indexOf(str) === -1;
-        },
-        "null": function(str) {
-          var falses = ["false", "null", "undefined", "", "0"];
-          return falses.indexOf(str) === -1 ? str : null;
-        },
-        "array": function(str) {
-          return JSON.parse(str);
-        },
-        "object": function(str) {
-          return JSON.parse(str);
-        },
-        "auto": function(str) {
-          return $.serializeJSON.parseValue(str, null, null, {
-            parseNumbers: true,
-            parseBooleans: true,
-            parseNulls: true
-          });
-        },
-        "skip": null
-      },
-      useIntKeysAsArrayIndex: false
-    },
-    setupOpts: function(options) {
-      var opt,
-          validOpts,
-          defaultOptions,
-          optWithDefault,
-          parseAll,
-          f;
-      f = $.serializeJSON;
-      if (options == null) {
-        options = {};
-      }
-      defaultOptions = f.defaultOptions || {};
-      validOpts = ['checkboxUncheckedValue', 'parseNumbers', 'parseBooleans', 'parseNulls', 'parseAll', 'parseWithFunction', 'customTypes', 'defaultTypes', 'useIntKeysAsArrayIndex'];
-      for (opt in options) {
-        if (validOpts.indexOf(opt) === -1) {
-          throw new Error("serializeJSON ERROR: invalid option '" + opt + "'. Please use one of " + validOpts.join(', '));
-        }
-      }
-      optWithDefault = function(key) {
-        return (options[key] !== false) && (options[key] !== '') && (options[key] || defaultOptions[key]);
-      };
-      parseAll = optWithDefault('parseAll');
-      return {
-        checkboxUncheckedValue: optWithDefault('checkboxUncheckedValue'),
-        parseNumbers: parseAll || optWithDefault('parseNumbers'),
-        parseBooleans: parseAll || optWithDefault('parseBooleans'),
-        parseNulls: parseAll || optWithDefault('parseNulls'),
-        parseWithFunction: optWithDefault('parseWithFunction'),
-        typeFunctions: $.extend({}, optWithDefault('defaultTypes'), optWithDefault('customTypes')),
-        useIntKeysAsArrayIndex: optWithDefault('useIntKeysAsArrayIndex')
-      };
-    },
-    parseValue: function(valStr, inputName, type, opts) {
-      var f,
-          parsedVal;
-      f = $.serializeJSON;
-      parsedVal = valStr;
-      if (opts.typeFunctions && type && opts.typeFunctions[type]) {
-        parsedVal = opts.typeFunctions[type](valStr);
-      } else if (opts.parseNumbers && f.isNumeric(valStr)) {
-        parsedVal = Number(valStr);
-      } else if (opts.parseBooleans && (valStr === "true" || valStr === "false")) {
-        parsedVal = (valStr === "true");
-      } else if (opts.parseNulls && valStr == "null") {
-        parsedVal = null;
-      }
-      if (opts.parseWithFunction && !type) {
-        parsedVal = opts.parseWithFunction(parsedVal, inputName);
-      }
-      return parsedVal;
-    },
-    isObject: function(obj) {
-      return obj === Object(obj);
-    },
-    isUndefined: function(obj) {
-      return obj === void 0;
-    },
-    isValidArrayIndex: function(val) {
-      return /^[0-9]+$/.test(String(val));
-    },
-    isNumeric: function(obj) {
-      return obj - parseFloat(obj) >= 0;
-    },
-    optionKeys: function(obj) {
-      if (Object.keys) {
-        return Object.keys(obj);
-      } else {
-        var key,
-            keys = [];
-        for (key in obj) {
-          keys.push(key);
-        }
-        return keys;
-      }
-    },
-    readCheckboxUncheckedValues: function(formAsArray, opts, $form) {
-      var selector,
-          $uncheckedCheckboxes,
-          $el,
-          dataUncheckedValue,
-          f;
-      if (opts == null) {
-        opts = {};
-      }
-      f = $.serializeJSON;
-      selector = 'input[type=checkbox][name]:not(:checked):not([disabled])';
-      $uncheckedCheckboxes = $form.find(selector).add($form.filter(selector));
-      $uncheckedCheckboxes.each(function(i, el) {
-        $el = $(el);
-        dataUncheckedValue = $el.attr('data-unchecked-value');
-        if (dataUncheckedValue) {
-          formAsArray.push({
-            name: el.name,
-            value: dataUncheckedValue
-          });
-        } else {
-          if (!f.isUndefined(opts.checkboxUncheckedValue)) {
-            formAsArray.push({
-              name: el.name,
-              value: opts.checkboxUncheckedValue
-            });
-          }
-        }
-      });
-    },
-    extractTypeAndNameWithNoType: function(name) {
-      var match;
-      if (match = name.match(/(.*):([^:]+)$/)) {
-        return {
-          nameWithNoType: match[1],
-          type: match[2]
-        };
-      } else {
-        return {
-          nameWithNoType: name,
-          type: null
-        };
-      }
-    },
-    tryToFindTypeFromDataAttr: function(name, $form) {
-      var escapedName,
-          selector,
-          $input,
-          typeFromDataAttr;
-      escapedName = name.replace(/(:|\.|\[|\]|\s)/g, '\\$1');
-      selector = '[name="' + escapedName + '"]';
-      $input = $form.find(selector).add($form.filter(selector));
-      typeFromDataAttr = $input.attr('data-value-type');
-      return typeFromDataAttr || null;
-    },
-    validateType: function(name, type, opts) {
-      var validTypes,
-          f;
-      f = $.serializeJSON;
-      validTypes = f.optionKeys(opts ? opts.typeFunctions : f.defaultOptions.defaultTypes);
-      if (!type || validTypes.indexOf(type) !== -1) {
-        return true;
-      } else {
-        throw new Error("serializeJSON ERROR: Invalid type " + type + " found in input name '" + name + "', please use one of " + validTypes.join(', '));
-      }
-    },
-    splitInputNameIntoKeysArray: function(nameWithNoType) {
-      var keys,
-          f;
-      f = $.serializeJSON;
-      keys = nameWithNoType.split('[');
-      keys = $.map(keys, function(key) {
-        return key.replace(/\]/g, '');
-      });
-      if (keys[0] === '') {
-        keys.shift();
-      }
-      return keys;
-    },
-    deepSet: function(o, keys, value, opts) {
-      var key,
-          nextKey,
-          tail,
-          lastIdx,
-          lastVal,
-          f;
-      if (opts == null) {
-        opts = {};
-      }
-      f = $.serializeJSON;
-      if (f.isUndefined(o)) {
-        throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");
-      }
-      if (!keys || keys.length === 0) {
-        throw new Error("ArgumentError: param 'keys' expected to be an array with least one element");
-      }
-      key = keys[0];
-      if (keys.length === 1) {
-        if (key === '') {
-          o.push(value);
-        } else {
-          o[key] = value;
-        }
-      } else {
-        nextKey = keys[1];
-        if (key === '') {
-          lastIdx = o.length - 1;
-          lastVal = o[lastIdx];
-          if (f.isObject(lastVal) && (f.isUndefined(lastVal[nextKey]) || keys.length > 2)) {
-            key = lastIdx;
-          } else {
-            key = lastIdx + 1;
-          }
-        }
-        if (nextKey === '') {
-          if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
-            o[key] = [];
-          }
-        } else {
-          if (opts.useIntKeysAsArrayIndex && f.isValidArrayIndex(nextKey)) {
-            if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
-              o[key] = [];
-            }
-          } else {
-            if (f.isUndefined(o[key]) || !f.isObject(o[key])) {
-              o[key] = {};
-            }
-          }
-        }
-        tail = keys.slice(1);
-        f.deepSet(o[key], tail, value, opts);
-      }
-    }
-  };
-}));
-
-_removeDefine();
-})();
-(function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-define("github:marioizquierdo/jquery.serializeJSON@2.7.2.js", ["github:marioizquierdo/jquery.serializeJSON@2.7.2/jquery.serializejson.js"], function(main) {
-  return main;
+$__System.registerDynamic("7", ["3"], true, function($__require, exports, module) {
+  ;
+  var define,
+      global = this,
+      GLOBAL = this;
+  define(["github:marioizquierdo/jquery.serializeJSON@2.7.2/jquery.serializejson.js"], function(main) {
+    return main;
+  });
+  return module.exports;
 });
 
-_removeDefine();
-})();
-System.registerDynamic("github:evanplaice/jquery-csv@0.8.1/src/jquery.csv.js", [], true, function($__require, exports, module) {
+$__System.registerDynamic("8", [], true, function($__require, exports, module) {
   ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
+  var define,
+      global = this,
+      GLOBAL = this;
   RegExp.escape = function(s) {
     return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
   };
@@ -1113,25 +814,24 @@ System.registerDynamic("github:evanplaice/jquery-csv@0.8.1/src/jquery.csv.js", [
       module.exports = $.csv;
     }
   }).call(this);
-  global.define = __define;
   return module.exports;
 });
 
-System.registerDynamic("github:evanplaice/jquery-csv@0.8.1.js", ["github:evanplaice/jquery-csv@0.8.1/src/jquery.csv.js"], true, function($__require, exports, module) {
+$__System.registerDynamic("9", ["8", "3"], true, function($__require, exports, module) {
   ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = $__require('github:evanplaice/jquery-csv@0.8.1/src/jquery.csv.js');
-  global.define = __define;
+  var define,
+      global = this,
+      GLOBAL = this;
+  module.exports = $__require('8');
   return module.exports;
 });
 
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/draggable.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("a", ["3", "b", "c", "d"], factory);
   } else {
     factory(jQuery);
   }
@@ -1926,13 +1626,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   return $.ui.draggable;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/droppable.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/draggable.js"], factory);
+    define("e", ["3", "b", "d", "c", "a"], factory);
   } else {
     factory(jQuery);
   }
@@ -2222,13 +1922,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   return $.ui.droppable;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/resizable.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("f", ["3", "b", "c", "d"], factory);
   } else {
     factory(jQuery);
   }
@@ -3143,13 +2843,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   return $.ui.resizable;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/selectable.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("10", ["3", "b", "c", "d"], factory);
   } else {
     factory(jQuery);
   }
@@ -3360,13 +3060,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/sortable.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("11", ["3", "b", "c", "d"], factory);
   } else {
     factory(jQuery);
   }
@@ -4313,13 +4013,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/autocomplete.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/position.js", "github:components/jqueryui@1.11.4/ui/menu.js"], factory);
+    define("12", ["3", "b", "d", "13", "14"], factory);
   } else {
     factory(jQuery);
   }
@@ -4778,13 +4478,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   return $.ui.autocomplete;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/position.js", ["npm:jquery@2.2.1.js"], factory);
+    define("13", ["3"], factory);
   } else {
     factory(jQuery);
   }
@@ -5204,13 +4904,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   return $.ui.position;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/menu.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/position.js"], factory);
+    define("14", ["3", "b", "d", "13"], factory);
   } else {
     factory(jQuery);
   }
@@ -5642,13 +5342,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/progressbar.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("15", ["3", "b", "d"], factory);
   } else {
     factory(jQuery);
   }
@@ -5742,13 +5442,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/slider.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("16", ["3", "b", "c", "d"], factory);
   } else {
     factory(jQuery);
   }
@@ -6335,13 +6035,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/tabs.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("17", ["3", "b", "d"], factory);
   } else {
     factory(jQuery);
   }
@@ -6959,13 +6659,12 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(root, factory) {
   if (typeof define === "function" && define.amd) {
-    define("src/plugins/jquery-impromptu.js", ["npm:jquery@2.2.1.js"], factory);
+    define("18", ["3"], factory);
   } else if (typeof module !== 'undefined' && typeof exports === "object") {
     module.exports = factory(require('jquery'));
   } else {
@@ -7377,13 +7076,12 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   };
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(root, factory) {
   if (typeof define === "function" && define.amd) {
-    define("src/plugins/jquery.ajax.progress.js", ["npm:jquery@2.2.1.js"], factory);
+    define("19", ["3"], factory);
   } else if (typeof module !== 'undefined' && typeof exports === "object") {
     module.exports = factory(require('jquery'));
   } else {
@@ -7412,13 +7110,12 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   })(jQuery);
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(root, factory) {
   if (typeof define === "function" && define.amd) {
-    define("src/plugins/jquery.hotkeys.js", ["npm:jquery@2.2.1.js"], factory);
+    define("1a", ["3"], factory);
   } else if (typeof module !== 'undefined' && typeof exports === "object") {
     module.exports = factory(require('jquery'));
   } else {
@@ -7552,10 +7249,9 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 ;
 (function() {
   var undefined;
@@ -11845,7 +11541,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   var _ = runInContext();
   if (typeof define == 'function' && typeof define.amd == 'object' && define.amd) {
     root._ = _;
-    define("github:lodash/lodash@3.10.1/lodash.js", [], function() {
+    define("1b", [], function() {
       return _;
     });
   } else if (freeExports && freeModule) {
@@ -11859,21 +11555,19 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   }
 }.call(this));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-define("github:lodash/lodash@3.10.1.js", ["github:lodash/lodash@3.10.1/lodash.js"], function(main) {
+var define = $__System.amdDefine;
+define("1c", ["1b"], function(main) {
   return main;
 });
 
-_removeDefine();
 })();
-System.register("github:systemjs/plugin-css@0.1.20.js!src/plugins/iconpicker.css", [], function() { return { setters: [], execute: function() {} } });
+$__System.register("1d", [], function() { return { setters: [], execute: function() {} } });
 
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-define("src/plugins/jquery.iconpicker.js", ["npm:jquery@2.2.1.js", "github:lodash/lodash@3.10.1.js", "github:systemjs/plugin-css@0.1.20.js!src/plugins/iconpicker.css"], function(jQuery, _) {
+var define = $__System.amdDefine;
+define("1e", ["3", "1c", "1d"], function(jQuery, _) {
   _.templateSettings = {
     interpolate: /\{\{(.+?)\}\}/g,
     evaluate: /\{\{(.+?)\}\}/g,
@@ -12140,13 +11834,13 @@ define("src/plugins/jquery.iconpicker.js", ["npm:jquery@2.2.1.js", "github:lodas
   return jQuery.ui.iconpicker;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/core.js", ["npm:jquery@2.2.1.js"], factory);
+    define("b", ["3"], factory);
   } else {
     factory(jQuery);
   }
@@ -12374,10 +12068,9 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   };
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(global, factory) {
   if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = global.document ? factory(global, true) : function(w) {
@@ -18369,8 +18062,10 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   });
   jQuery.fn.andSelf = jQuery.fn.addBack;
   if (typeof define === "function" && define.amd) {
-    define("npm:jquery@2.2.1/dist/jquery.js", [], function() {
+    define("1f", [], function() {
       return jQuery;
+    }), define("jquery", ["1f"], function(m) {
+      return m;
     });
   }
   var _jQuery = window.jQuery,
@@ -18390,21 +18085,20 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   return jQuery;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-define("npm:jquery@2.2.1.js", ["npm:jquery@2.2.1/dist/jquery.js"], function(main) {
+var define = $__System.amdDefine;
+define("3", ["1f"], function(main) {
   return main;
 });
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/widget.js", ["npm:jquery@2.2.1.js"], factory);
+    define("d", ["3"], factory);
   } else {
     factory(jQuery);
   }
@@ -18803,13 +18497,13 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   return $.widget;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/mouse.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("c", ["3", "d"], factory);
   } else {
     factory(jQuery);
   }
@@ -18932,13 +18626,12 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("src/plugins/jquery.ui.rotatable.js", ["npm:jquery@2.2.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js"], factory);
+    define("20", ["3", "b", "d", "c"], factory);
   } else {
     factory(jQuery);
   }
@@ -19084,13 +18777,12 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   return $.ui.rotatable;
 }));
 
-_removeDefine();
 })();
-System.register("github:systemjs/plugin-css@0.1.20.js!src/css/colorpicker.css", [], function() { return { setters: [], execute: function() {} } });
+$__System.register("21", [], function() { return { setters: [], execute: function() {} } });
 
 (function() {
-var _removeDefine = System.get("@@amd-helpers").createDefine();
-define("src/jquery_helper.js", ["npm:jquery@2.2.1.js", "github:carhartl/jquery-cookie@1.4.1.js", "npm:jquery.waitforChild@1.0.1.js", "github:marioizquierdo/jquery.serializeJSON@2.7.2.js", "github:evanplaice/jquery-csv@0.8.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/position.js", "github:components/jqueryui@1.11.4/ui/draggable.js", "github:components/jqueryui@1.11.4/ui/droppable.js", "github:components/jqueryui@1.11.4/ui/resizable.js", "github:components/jqueryui@1.11.4/ui/selectable.js", "github:components/jqueryui@1.11.4/ui/sortable.js", "github:components/jqueryui@1.11.4/ui/autocomplete.js", "github:components/jqueryui@1.11.4/ui/menu.js", "github:components/jqueryui@1.11.4/ui/progressbar.js", "github:components/jqueryui@1.11.4/ui/slider.js", "github:components/jqueryui@1.11.4/ui/tabs.js", "src/plugins/jquery-impromptu.js", "src/plugins/jquery.ajax.progress.js", "src/plugins/jquery.hotkeys.js", "src/plugins/jquery.iconpicker.js", "src/plugins/jquery.ui.rotatable.js", "github:systemjs/plugin-css@0.1.20.js!src/css/colorpicker.css"], function(jQuery) {
+var define = $__System.amdDefine;
+define("1", ["3", "4", "6", "7", "9", "b", "d", "c", "13", "a", "e", "f", "10", "11", "12", "14", "15", "16", "17", "18", "19", "1a", "1e", "20", "21"], function(jQuery) {
   'use strict';
   jQuery.error = function(message) {
     console.warn('jQuery.error', message);
@@ -19437,9 +19129,12 @@ define("src/jquery_helper.js", ["npm:jquery@2.2.1.js", "github:carhartl/jquery-c
   return jQuery;
 });
 
-_removeDefine();
 })();
-System.register('github:systemjs/plugin-css@0.1.20.js!src/plugins/iconpicker.css', [], false, function() {});
-System.register('github:systemjs/plugin-css@0.1.20.js!src/css/colorpicker.css', [], false, function() {});
+$__System.register('github:huasofoundries/plugin-css@0.1.21.js!src/plugins/iconpicker.css', [], false, function() {});
+$__System.register('github:huasofoundries/plugin-css@0.1.21.js!src/css/colorpicker.css', [], false, function() {});
 (function(c){if (typeof document == 'undefined') return; var d=document,a='appendChild',i='styleSheet',s=d.createElement('style');s.type='text/css';d.getElementsByTagName('head')[0][a](s);s[i]?s[i].cssText=c:s[a](d.createTextNode(c));})
 (".iconpicker_character{font-family:\"Material Icons\";font-style:normal;font-weight:400;speak:none;cursor:pointer;display:inline-block}.iconNew,.newCharacter{width:24px;height:27px}i.fontello_character{min-width:10px;text-align:center}.insidepopover td{padding:1px}.insidepopover button{padding:1px 3px}.insidepopover button{background-color:#F0F0F0}.insidepopover .selected{background-color:#CCC}.popover{width:auto!important;z-index:1100!important;height:auto!important}.popover-title{font-weight:700!important}#controles .popover-content{padding:2px 4px}#controles .popover{height:100px;width:210px!important}#controles .popover button{margin:-1px;font-family:\"Material Icons\";font-style:normal;font-weight:400;speak:none;cursor:pointer;display:inline-block}.iconpicker.popover{margin-top:110px}.iconpicker.popover.right .arrow{top:20px}.dataseticon{vertical-align:middle}.grad_ex{width:260px;height:20px;margin:-5px -5px 25px 0;float:right}.gradientPicker-preview{width:100%;height:100%;border:1px solid rgba(0,0,0,.2)}.gradientPicker-ctrlPt{width:8px;height:8px;border:2px solid gray;position:absolute;display:inline-block}.gradientPicker-ctrlPts{position:relative;height:10px;width:100%}.gradientPicker-ptConfig{position:absolute;width:35px;height:40px;z-index:1;margin-top:2px;background-color:#fff;border-radius:5px;border:1px solid rgba(0,0,0,.2);padding:0 3px;-webkit-box-shadow:0 5px 10px rgba(0,0,0,.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,.2);box-shadow:0 5px 10px rgba(0,0,0,.2)}.gradientPicker-close{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background-image:url(img/gradientpicker/circle_remove.png)}.gradientPicker-ptConfig .color-chooser{float:left}.colorpicker{width:356px;height:176px;overflow:hidden;position:absolute;background:url(img/gradientpicker/colorpicker_background.png);font-family:Arial,Helvetica,sans-serif;display:none;z-index:500}.color-chooser{width:30px;height:30px;margin-top:5px;background:url(img/gradientpicker/select.png) center}.color-chooser>div{width:30px;height:30px;background:url(img/gradientpicker/select.png) center}.colorpicker_color{width:150px;height:150px;left:14px;top:13px;position:absolute;background:red;overflow:hidden;cursor:crosshair}.colorpicker_color div{position:absolute;top:0;left:0;width:150px;height:150px;background:url(img/gradientpicker/colorpicker_overlay.png)}.colorpicker_color div div{position:absolute;top:0;left:0;width:11px;height:11px;overflow:hidden;background:url(img/gradientpicker/colorpicker_select.gif);margin:-5px 0 0 -5px}.colorpicker_hue{position:absolute;top:13px;left:171px;width:35px;height:150px;cursor:n-resize}.colorpicker_hue div{position:absolute;width:35px;height:9px;overflow:hidden;background:url(img/gradientpicker/colorpicker_indic.gif) left top;margin:-4px 0 0 0;left:0}.colorpicker_new_color{position:absolute;width:60px;height:30px;left:213px;top:13px;background:red}.colorpicker_current_color{position:absolute;width:60px;height:30px;left:283px;top:13px;background:red}.colorpicker input{background-color:transparent!important;border:1px solid transparent!important;position:absolute!important;font-size:10px!important;font-family:Arial,Helvetica,sans-serif!important;color:#898989!important;top:4px!important;right:11px!important;text-align:right!important;margin:0!important;padding:0!important;height:11px!important;line-height:11px!important}.colorpicker_hex{position:absolute;width:72px;height:22px;background:url(img/gradientpicker/colorpicker_hex.png) top;left:212px;top:142px}.colorpicker_hex input{right:6px}.colorpicker_field{height:22px;width:62px;background-position:top;position:absolute}.colorpicker_field>input{width:42px}.colorpicker_hex>input{width:42px}.colorpicker_field span{position:absolute;width:12px;height:22px;overflow:hidden;top:0;right:0;cursor:n-resize}.colorpicker_rgb_r{background-image:url(img/gradientpicker/colorpicker_rgb_r.png);top:52px;left:212px}.colorpicker_rgb_g{background-image:url(img/gradientpicker/colorpicker_rgb_g.png);top:82px;left:212px}.colorpicker_rgb_b{background-image:url(img/gradientpicker/colorpicker_rgb_b.png);top:112px;left:212px}.colorpicker_hsb_h{background-image:url(img/gradientpicker/colorpicker_hsb_h.png);top:52px;left:282px}.colorpicker_hsb_s{background-image:url(img/gradientpicker/colorpicker_hsb_s.png);top:82px;left:282px}.colorpicker_hsb_b{background-image:url(img/gradientpicker/colorpicker_hsb_b.png);top:112px;left:282px}.colorpicker_submit{position:absolute;width:22px;height:22px;background:url(img/gradientpicker/colorpicker_submit.png) top;left:322px;top:142px;overflow:hidden}.colorpicker_focus{background-position:center}.colorpicker_hex.colorpicker_focus{background-position:bottom}.colorpicker_submit.colorpicker_focus{background-position:bottom}.colorpicker_slider{background-position:bottom}.grad_ex input.invisible{display:none;position:absolute}#jquery-colour-picker{background:#fafafa;background-image:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#eee));width:180px;padding:10px 5px 5px 10px;border:1px solid #666;-moz-border-radius:2px;-webkit-border-radius:2px;border-radius:2px;-moz-box-shadow:5px 5px 5px rgba(0,0,0,.3);-webkit-box-shadow:5px 5px 5px rgba(0,0,0,.3);box-shadow:5px 5px 5px rgba(0,0,0,.3);z-index:1199}#jquery-colour-picker h2{margin:0 0 5px 0;font-size:14px}#jquery-colour-picker ul{margin:0;padding:0;list-style-type:none;zoom:1}#jquery-colour-picker ul:after{content:\".\";display:block;height:0;visibility:hidden;clear:both}#jquery-colour-picker ul li{float:left;margin:0 5px 5px 0}#jquery-colour-picker ul li a{display:block;width:13px;height:13px;text-decoration:none;text-indent:-100000px;outline:0;border:1px solid #aaa}#jquery-colour-picker ul li a:hover{border-color:#000}.evo-pop{z-index:10000;width:204px;padding:3px 3px 0}.evo-pop-ie{z-index:10000;width:212px;padding:3px}.evo-palette,.evo-palette-ie{border-collapse:separate;border-spacing:4px 0}.evo-palette td{font-size:1px;border:solid 1px silver;padding:7px;cursor:pointer}.evo-palette tr.top td{border-bottom:0}.evo-palette tr.in td{border-top:0;border-bottom:0}.evo-palette tr.bottom td{border-top:0}.evo-palette th,.evo-palette-ie th{border:0;padding:5px 3px;text-align:left;font-weight:400;background:0 0!important}.evo-palette div.sep{height:3px}.evo-palette-ie td{font-size:1px;border:solid 1px silver;padding:7px;cursor:pointer}.evo-palette2,.evo-palette2-ie{margin:auto;border-collapse:collapse}.evo-palette2 td,.evo-palette2-ie td{font-size:1px;cursor:pointer}.evo-palette2 td{padding:6px 7px}.evo-palette2-ie td{padding:5px}.evo-palcenter{padding:5px;text-align:center}.colorpickerafter.evo-colorind,.colorpickerafter.evo-colorind-ff,.colorpickerafter.evo-colorind-ie{border:solid 1px #c3c3c3;width:12px!important;height:12px!important;float:left}.context_menu_item .colorpickerafter.evo-colorind,.context_menu_item .colorpickerafter.evo-colorind-ff,.context_menu_item .colorpickerafter.evo-colorind-ie{margin-right:5px}.cr.gradient .gradientpicker.evo-colorind,.cr.gradient .gradientpicker.evo-colorind-ie{border-right:solid 1px #c3c3c3;border-bottom:solid 1px #c3c3c3;width:99%!important;margin:1px 1% 1px 0;height:13px!important;float:left}.evo-colorind{position:relative;top:2px}.evo-colorind-ie{position:relative;left:-16px;top:2px}.evo-colorbox-ie{font-size:8px;padding:3px 9px!important}.evo-colortxt-ie{position:relative;top:-6px}.evo-cHist:after,.evo-color span:after,.evo-colorind-ff:after,.evo-colorind-ie:after,.evo-colorind:after,.evo-pop-ie:after,.evo-pop:after{content:\".\";display:block;height:0;clear:both;visibility:hidden;font-size:0}.evo-color{width:94px;padding:1px 3px 0 4px}.evo-color div{border:solid 1px grey;border-right:solid 1px silver;border-bottom:solid 1px silver;padding:3px;margin-bottom:5px;width:10px;height:10px;float:left}.evo-color span{font-size:15px;margin:1px 0 4px 3px;float:left}.evo-sep{height:10px;font-size:0}.evo-more{padding:4px 5px 4px;font-size:smaller}.evo-cHist{padding:3px}.evo-cHist div{cursor:pointer;border:solid 1px silver;padding:3px;margin:5px;width:10px;height:10px;float:left}a.evo-hist{margin-left:6px}.evo-pointer{cursor:pointer}.pickercolor input{display:inline-block;width:20px;margin-left:10px;height:14px;padding:3px;margin:2px 12px;color:transparent!important}");
+})
+(function(factory) {
+  factory();
+});
