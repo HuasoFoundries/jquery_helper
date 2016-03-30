@@ -1134,6 +1134,7 @@ $__System.registerDynamic("a", ["9"], true, function($__require, exports, module
 
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("b", ["3", "c", "d", "e"], factory);
@@ -1935,6 +1936,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("f", ["3", "c", "e", "d", "b"], factory);
@@ -2231,6 +2233,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("10", ["3", "c", "d", "e"], factory);
@@ -3152,6 +3155,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("11", ["3", "c", "d", "e"], factory);
@@ -3369,6 +3373,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("12", ["3", "c", "d", "e"], factory);
@@ -4322,6 +4327,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("13", ["3", "c", "e", "14", "15"], factory);
@@ -4787,6 +4793,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("14", ["3"], factory);
@@ -5213,6 +5220,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("15", ["3", "c", "e", "14"], factory);
@@ -5651,6 +5659,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("16", ["3", "c", "e"], factory);
@@ -5751,6 +5760,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("17", ["3", "c", "d", "e"], factory);
@@ -6344,6 +6354,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("18", ["3", "c", "e"], factory);
@@ -12149,6 +12160,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("c", ["3"], factory);
@@ -12405,7 +12417,7 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   var toString = class2type.toString;
   var hasOwn = class2type.hasOwnProperty;
   var support = {};
-  var version = "2.2.1",
+  var version = "2.2.2",
       jQuery = function(selector, context) {
         return new jQuery.fn.init(selector, context);
       },
@@ -12527,13 +12539,15 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
       return !jQuery.isArray(obj) && (realStringObj - parseFloat(realStringObj) + 1) >= 0;
     },
     isPlainObject: function(obj) {
+      var key;
       if (jQuery.type(obj) !== "object" || obj.nodeType || jQuery.isWindow(obj)) {
         return false;
       }
-      if (obj.constructor && !hasOwn.call(obj.constructor.prototype, "isPrototypeOf")) {
+      if (obj.constructor && !hasOwn.call(obj, "constructor") && !hasOwn.call(obj.constructor.prototype || {}, "isPrototypeOf")) {
         return false;
       }
-      return true;
+      for (key in obj) {}
+      return key === undefined || hasOwn.call(obj, key);
     },
     isEmptyObject: function(obj) {
       var name;
@@ -16908,13 +16922,24 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
     }
   });
   if (!support.optSelected) {
-    jQuery.propHooks.selected = {get: function(elem) {
+    jQuery.propHooks.selected = {
+      get: function(elem) {
         var parent = elem.parentNode;
         if (parent && parent.parentNode) {
           parent.parentNode.selectedIndex;
         }
         return null;
-      }};
+      },
+      set: function(elem) {
+        var parent = elem.parentNode;
+        if (parent) {
+          parent.selectedIndex;
+          if (parent.parentNode) {
+            parent.parentNode.selectedIndex;
+          }
+        }
+      }
+    };
   }
   jQuery.each(["tabIndex", "readOnly", "maxLength", "cellSpacing", "cellPadding", "rowSpan", "colSpan", "useMap", "frameBorder", "contentEditable"], function() {
     jQuery.propFix[this.toLowerCase()] = this;
@@ -17047,7 +17072,8 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
       return false;
     }
   });
-  var rreturn = /\r/g;
+  var rreturn = /\r/g,
+      rspaces = /[\x20\t\r\n\f]+/g;
   jQuery.fn.extend({val: function(value) {
       var hooks,
           ret,
@@ -17092,7 +17118,8 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
     }});
   jQuery.extend({valHooks: {
       option: {get: function(elem) {
-          return jQuery.trim(elem.value);
+          var val = jQuery.find.attr(elem, "value");
+          return val != null ? val : jQuery.trim(jQuery.text(elem)).replace(rspaces, " ");
         }},
       select: {
         get: function(elem) {
@@ -18120,11 +18147,6 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
       return "script";
     }
   });
-  support.createHTMLDocument = (function() {
-    var body = document.implementation.createHTMLDocument("").body;
-    body.innerHTML = "<form></form><form></form>";
-    return body.childNodes.length === 2;
-  })();
   jQuery.parseHTML = function(data, context, keepScripts) {
     if (!data || typeof data !== "string") {
       return null;
@@ -18133,7 +18155,7 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
       keepScripts = context;
       context = false;
     }
-    context = context || (support.createHTMLDocument ? document.implementation.createHTMLDocument("") : document);
+    context = context || document;
     var parsed = rsingleTag.exec(data),
         scripts = !keepScripts && [];
     if (parsed) {
@@ -18407,6 +18429,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("e", ["3"], factory);
@@ -18812,6 +18835,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("d", ["3", "e"], factory);
@@ -19444,8 +19468,8 @@ define("1", ["3", "4", "6", "8", "a", "c", "e", "d", "14", "b", "f", "10", "11",
 
 _removeDefine();
 })();
-$__System.register('github:systemjs/plugin-css@0.1.20.js!src/plugins/iconpicker.css', [], false, function() {});
-$__System.register('github:systemjs/plugin-css@0.1.20.js!src/css/colorpicker.css', [], false, function() {});
+$__System.register('github:huasofoundries/plugin-css@0.1.21.js!src/plugins/iconpicker.css', [], false, function() {});
+$__System.register('github:huasofoundries/plugin-css@0.1.21.js!src/css/colorpicker.css', [], false, function() {});
 (function(c){if (typeof document == 'undefined') return; var d=document,a='appendChild',i='styleSheet',s=d.createElement('style');s.type='text/css';d.getElementsByTagName('head')[0][a](s);s[i]?s[i].cssText=c:s[a](d.createTextNode(c));})
 (".iconpicker_character{font-family:\"Material Icons\";font-style:normal;font-weight:400;speak:none;cursor:pointer;display:inline-block}.iconNew,.newCharacter{width:24px;height:27px}i.fontello_character{min-width:10px;text-align:center}.insidepopover td{padding:1px}.insidepopover button{padding:1px 3px}.insidepopover button{background-color:#F0F0F0}.insidepopover .selected{background-color:#CCC}.popover{width:auto!important;z-index:1100!important;height:auto!important}.popover-title{font-weight:700!important}#controles .popover-content{padding:2px 4px}#controles .popover{height:100px;width:210px!important}#controles .popover button{margin:-1px;font-family:\"Material Icons\";font-style:normal;font-weight:400;speak:none;cursor:pointer;display:inline-block}.iconpicker.popover{margin-top:110px}.iconpicker.popover.right .arrow{top:20px}.dataseticon{vertical-align:middle}.grad_ex{width:260px;height:20px;margin:-5px -5px 25px 0;float:right}.gradientPicker-preview{width:100%;height:100%;border:1px solid rgba(0,0,0,.2)}.gradientPicker-ctrlPt{width:8px;height:8px;border:2px solid gray;position:absolute;display:inline-block}.gradientPicker-ctrlPts{position:relative;height:10px;width:100%}.gradientPicker-ptConfig{position:absolute;width:35px;height:40px;z-index:1;margin-top:2px;background-color:#fff;border-radius:5px;border:1px solid rgba(0,0,0,.2);padding:0 3px;-webkit-box-shadow:0 5px 10px rgba(0,0,0,.2);-moz-box-shadow:0 5px 10px rgba(0,0,0,.2);box-shadow:0 5px 10px rgba(0,0,0,.2)}.gradientPicker-close{position:absolute;top:-4px;right:-4px;width:16px;height:16px;background-image:url(img/gradientpicker/circle_remove.png)}.gradientPicker-ptConfig .color-chooser{float:left}.colorpicker{width:356px;height:176px;overflow:hidden;position:absolute;background:url(img/gradientpicker/colorpicker_background.png);font-family:Arial,Helvetica,sans-serif;display:none;z-index:500}.color-chooser{width:30px;height:30px;margin-top:5px;background:url(img/gradientpicker/select.png) center}.color-chooser>div{width:30px;height:30px;background:url(img/gradientpicker/select.png) center}.colorpicker_color{width:150px;height:150px;left:14px;top:13px;position:absolute;background:red;overflow:hidden;cursor:crosshair}.colorpicker_color div{position:absolute;top:0;left:0;width:150px;height:150px;background:url(img/gradientpicker/colorpicker_overlay.png)}.colorpicker_color div div{position:absolute;top:0;left:0;width:11px;height:11px;overflow:hidden;background:url(img/gradientpicker/colorpicker_select.gif);margin:-5px 0 0 -5px}.colorpicker_hue{position:absolute;top:13px;left:171px;width:35px;height:150px;cursor:n-resize}.colorpicker_hue div{position:absolute;width:35px;height:9px;overflow:hidden;background:url(img/gradientpicker/colorpicker_indic.gif) left top;margin:-4px 0 0 0;left:0}.colorpicker_new_color{position:absolute;width:60px;height:30px;left:213px;top:13px;background:red}.colorpicker_current_color{position:absolute;width:60px;height:30px;left:283px;top:13px;background:red}.colorpicker input{background-color:transparent!important;border:1px solid transparent!important;position:absolute!important;font-size:10px!important;font-family:Arial,Helvetica,sans-serif!important;color:#898989!important;top:4px!important;right:11px!important;text-align:right!important;margin:0!important;padding:0!important;height:11px!important;line-height:11px!important}.colorpicker_hex{position:absolute;width:72px;height:22px;background:url(img/gradientpicker/colorpicker_hex.png) top;left:212px;top:142px}.colorpicker_hex input{right:6px}.colorpicker_field{height:22px;width:62px;background-position:top;position:absolute}.colorpicker_field>input{width:42px}.colorpicker_hex>input{width:42px}.colorpicker_field span{position:absolute;width:12px;height:22px;overflow:hidden;top:0;right:0;cursor:n-resize}.colorpicker_rgb_r{background-image:url(img/gradientpicker/colorpicker_rgb_r.png);top:52px;left:212px}.colorpicker_rgb_g{background-image:url(img/gradientpicker/colorpicker_rgb_g.png);top:82px;left:212px}.colorpicker_rgb_b{background-image:url(img/gradientpicker/colorpicker_rgb_b.png);top:112px;left:212px}.colorpicker_hsb_h{background-image:url(img/gradientpicker/colorpicker_hsb_h.png);top:52px;left:282px}.colorpicker_hsb_s{background-image:url(img/gradientpicker/colorpicker_hsb_s.png);top:82px;left:282px}.colorpicker_hsb_b{background-image:url(img/gradientpicker/colorpicker_hsb_b.png);top:112px;left:282px}.colorpicker_submit{position:absolute;width:22px;height:22px;background:url(img/gradientpicker/colorpicker_submit.png) top;left:322px;top:142px;overflow:hidden}.colorpicker_focus{background-position:center}.colorpicker_hex.colorpicker_focus{background-position:bottom}.colorpicker_submit.colorpicker_focus{background-position:bottom}.colorpicker_slider{background-position:bottom}.grad_ex input.invisible{display:none;position:absolute}#jquery-colour-picker{background:#fafafa;background-image:-webkit-gradient(linear,left top,left bottom,from(#fff),to(#eee));width:180px;padding:10px 5px 5px 10px;border:1px solid #666;-moz-border-radius:2px;-webkit-border-radius:2px;border-radius:2px;-moz-box-shadow:5px 5px 5px rgba(0,0,0,.3);-webkit-box-shadow:5px 5px 5px rgba(0,0,0,.3);box-shadow:5px 5px 5px rgba(0,0,0,.3);z-index:1199}#jquery-colour-picker h2{margin:0 0 5px 0;font-size:14px}#jquery-colour-picker ul{margin:0;padding:0;list-style-type:none;zoom:1}#jquery-colour-picker ul:after{content:\".\";display:block;height:0;visibility:hidden;clear:both}#jquery-colour-picker ul li{float:left;margin:0 5px 5px 0}#jquery-colour-picker ul li a{display:block;width:13px;height:13px;text-decoration:none;text-indent:-100000px;outline:0;border:1px solid #aaa}#jquery-colour-picker ul li a:hover{border-color:#000}.evo-pop{z-index:10000;width:204px;padding:3px 3px 0}.evo-pop-ie{z-index:10000;width:212px;padding:3px}.evo-palette,.evo-palette-ie{border-collapse:separate;border-spacing:4px 0}.evo-palette td{font-size:1px;border:solid 1px silver;padding:7px;cursor:pointer}.evo-palette tr.top td{border-bottom:0}.evo-palette tr.in td{border-top:0;border-bottom:0}.evo-palette tr.bottom td{border-top:0}.evo-palette th,.evo-palette-ie th{border:0;padding:5px 3px;text-align:left;font-weight:400;background:0 0!important}.evo-palette div.sep{height:3px}.evo-palette-ie td{font-size:1px;border:solid 1px silver;padding:7px;cursor:pointer}.evo-palette2,.evo-palette2-ie{margin:auto;border-collapse:collapse}.evo-palette2 td,.evo-palette2-ie td{font-size:1px;cursor:pointer}.evo-palette2 td{padding:6px 7px}.evo-palette2-ie td{padding:5px}.evo-palcenter{padding:5px;text-align:center}.colorpickerafter.evo-colorind,.colorpickerafter.evo-colorind-ff,.colorpickerafter.evo-colorind-ie{border:solid 1px #c3c3c3;width:12px!important;height:12px!important;float:left}.context_menu_item .colorpickerafter.evo-colorind,.context_menu_item .colorpickerafter.evo-colorind-ff,.context_menu_item .colorpickerafter.evo-colorind-ie{margin-right:5px}.cr.gradient .gradientpicker.evo-colorind,.cr.gradient .gradientpicker.evo-colorind-ie{border-right:solid 1px #c3c3c3;border-bottom:solid 1px #c3c3c3;width:99%!important;margin:1px 1% 1px 0;height:13px!important;float:left}.evo-colorind{position:relative;top:2px}.evo-colorind-ie{position:relative;left:-16px;top:2px}.evo-colorbox-ie{font-size:8px;padding:3px 9px!important}.evo-colortxt-ie{position:relative;top:-6px}.evo-cHist:after,.evo-color span:after,.evo-colorind-ff:after,.evo-colorind-ie:after,.evo-colorind:after,.evo-pop-ie:after,.evo-pop:after{content:\".\";display:block;height:0;clear:both;visibility:hidden;font-size:0}.evo-color{width:94px;padding:1px 3px 0 4px}.evo-color div{border:solid 1px grey;border-right:solid 1px silver;border-bottom:solid 1px silver;padding:3px;margin-bottom:5px;width:10px;height:10px;float:left}.evo-color span{font-size:15px;margin:1px 0 4px 3px;float:left}.evo-sep{height:10px;font-size:0}.evo-more{padding:4px 5px 4px;font-size:smaller}.evo-cHist{padding:3px}.evo-cHist div{cursor:pointer;border:solid 1px silver;padding:3px;margin:5px;width:10px;height:10px;float:left}a.evo-hist{margin-left:6px}.evo-pointer{cursor:pointer}.pickercolor input{display:inline-block;width:20px;margin-left:10px;height:14px;padding:3px;margin:2px 12px;color:transparent!important}");
 })
