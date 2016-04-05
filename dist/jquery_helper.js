@@ -86,101 +86,94 @@ define("4", ["2"], function(main) {
 
 _removeDefine();
 })();
-$__System.registerDynamic("5", ["3"], true, function($__require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  "format cjs";
-  (function(root, factory) {
-    if (typeof define === "function" && define.amd) {
-      define(['jquery'], factory);
-    } else if (typeof module !== 'undefined' && typeof exports === "object") {
-      module.exports = factory($__require('3'));
-    } else {
-      root.jQuery = factory(root.jQuery);
+(function() {
+var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+(function(root, factory) {
+  if (typeof define === "function" && define.amd) {
+    define("5", ["3"], factory);
+  } else if (typeof module !== 'undefined' && typeof exports === "object") {
+    module.exports = factory(require('jquery'));
+  } else {
+    root.jQuery = factory(root.jQuery);
+  }
+}(this, function($) {
+  'use strict';
+  $.fn.waitforChild = function(onFound, querySelector, once) {
+    if (typeof arguments[0] === 'object') {
+      once = arguments[0].once || false;
+      querySelector = arguments[0].querySelector || null;
+      onFound = arguments[0].onFound;
     }
-  }(this, function($) {
-    'use strict';
-    $.fn.waitforChild = function(onFound, querySelector, once) {
-      if (typeof arguments[0] === 'object') {
-        once = arguments[0].once || false;
-        querySelector = arguments[0].querySelector || null;
-        onFound = arguments[0].onFound;
-      }
-      if (!onFound) {
-        onFound = function() {};
-      }
-      var $this = this;
-      if (!querySelector && $this.children().length) {
-        if (once) {
-          onFound($this.children().first());
-        } else {
-          $this.children().each(function(key, element) {
-            onFound($(element));
-          });
-        }
-      } else if ($this.find(querySelector).length !== 0) {
-        if (once) {
-          onFound($this.find(querySelector).first());
-        } else {
-          $this.find(querySelector).each(function(key, element) {
-            onFound($(element));
-          });
-        }
+    if (!onFound) {
+      onFound = function() {};
+    }
+    var $this = this;
+    if (!querySelector && $this.children().length) {
+      if (once) {
+        onFound($this.children().first());
       } else {
-        if ($this.length === 0) {
-          console.warn("Can't attach an observer to a null node", $this);
-        } else {
-          var observer = new MutationObserver(function(mutations) {
-            var _this = this;
-            mutations.forEach(function(mutation) {
-              if (mutation.addedNodes) {
-                if (!querySelector) {
-                  onFound($(mutation.addedNodes[0]));
-                  if (once) {
-                    _this.disconnect();
-                  }
-                } else {
-                  for (var i = 0; i < mutation.addedNodes.length; ++i) {
-                    var addedNode = mutation.addedNodes[i];
-                    if ($(addedNode).is(querySelector)) {
-                      onFound($(addedNode));
-                      if (once) {
-                        _this.disconnect();
-                        break;
-                      }
+        $this.children().each(function(key, element) {
+          onFound($(element));
+        });
+      }
+    } else if ($this.find(querySelector).length !== 0) {
+      if (once) {
+        onFound($this.find(querySelector).first());
+      } else {
+        $this.find(querySelector).each(function(key, element) {
+          onFound($(element));
+        });
+      }
+    } else {
+      if ($this.length === 0) {
+        console.warn("Can't attach an observer to a null node", $this);
+      } else {
+        var observer = new MutationObserver(function(mutations) {
+          var _this = this;
+          mutations.forEach(function(mutation) {
+            if (mutation.addedNodes) {
+              if (!querySelector) {
+                onFound($(mutation.addedNodes[0]));
+                if (once) {
+                  _this.disconnect();
+                }
+              } else {
+                for (var i = 0; i < mutation.addedNodes.length; ++i) {
+                  var addedNode = mutation.addedNodes[i];
+                  if ($(addedNode).is(querySelector)) {
+                    onFound($(addedNode));
+                    if (once) {
+                      _this.disconnect();
+                      break;
                     }
                   }
                 }
               }
-            });
+            }
           });
-          observer.observe($this[0], {
-            childList: true,
-            subtree: true,
-            attributes: false,
-            characterData: false
-          });
-        }
+        });
+        observer.observe($this[0], {
+          childList: true,
+          subtree: true,
+          attributes: false,
+          characterData: false
+        });
       }
-      return $this;
-    };
-  }));
-  global.define = __define;
-  return module.exports;
+    }
+    return $this;
+  };
+}));
+
+_removeDefine();
+})();
+(function() {
+var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+define("6", ["5"], function(main) {
+  return main;
 });
 
-$__System.registerDynamic("6", ["5"], true, function($__require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = $__require('5');
-  global.define = __define;
-  return module.exports;
-});
-
+_removeDefine();
+})();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
 (function(factory) {
@@ -12395,6 +12388,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(global, factory) {
   if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = global.document ? factory(global, true) : function(w) {

@@ -4,7 +4,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
-    define("github:carhartl/jquery-cookie@1.4.1/jquery.cookie.js", ["npm:jquery@2.2.2.js"], factory);
+    define("github:carhartl/jquery-cookie@1.4.1/jquery.cookie.js", ["github:jquery/jquery@2.2.2.js"], factory);
   } else if (typeof exports === 'object') {
     factory(require('jquery'));
   } else {
@@ -81,106 +81,99 @@ define("github:carhartl/jquery-cookie@1.4.1.js", ["github:carhartl/jquery-cookie
 
 _removeDefine();
 })();
-System.registerDynamic("npm:jquery.waitforChild@1.0.1/jquery.waitforChild.js", ["npm:jquery@2.2.2.js"], true, function($__require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  "format cjs";
-  (function(root, factory) {
-    if (typeof define === "function" && define.amd) {
-      define(['jquery'], factory);
-    } else if (typeof module !== 'undefined' && typeof exports === "object") {
-      module.exports = factory($__require('npm:jquery@2.2.2.js'));
-    } else {
-      root.jQuery = factory(root.jQuery);
+(function() {
+var _removeDefine = System.get("@@amd-helpers").createDefine();
+(function(root, factory) {
+  if (typeof define === "function" && define.amd) {
+    define("github:huasofoundries/jquery.waitforChild@1.0.1/jquery.waitforChild.js", ["github:jquery/jquery@2.2.2.js"], factory);
+  } else if (typeof module !== 'undefined' && typeof exports === "object") {
+    module.exports = factory(require('jquery'));
+  } else {
+    root.jQuery = factory(root.jQuery);
+  }
+}(this, function($) {
+  'use strict';
+  $.fn.waitforChild = function(onFound, querySelector, once) {
+    if (typeof arguments[0] === 'object') {
+      once = arguments[0].once || false;
+      querySelector = arguments[0].querySelector || null;
+      onFound = arguments[0].onFound;
     }
-  }(this, function($) {
-    'use strict';
-    $.fn.waitforChild = function(onFound, querySelector, once) {
-      if (typeof arguments[0] === 'object') {
-        once = arguments[0].once || false;
-        querySelector = arguments[0].querySelector || null;
-        onFound = arguments[0].onFound;
-      }
-      if (!onFound) {
-        onFound = function() {};
-      }
-      var $this = this;
-      if (!querySelector && $this.children().length) {
-        if (once) {
-          onFound($this.children().first());
-        } else {
-          $this.children().each(function(key, element) {
-            onFound($(element));
-          });
-        }
-      } else if ($this.find(querySelector).length !== 0) {
-        if (once) {
-          onFound($this.find(querySelector).first());
-        } else {
-          $this.find(querySelector).each(function(key, element) {
-            onFound($(element));
-          });
-        }
+    if (!onFound) {
+      onFound = function() {};
+    }
+    var $this = this;
+    if (!querySelector && $this.children().length) {
+      if (once) {
+        onFound($this.children().first());
       } else {
-        if ($this.length === 0) {
-          console.warn("Can't attach an observer to a null node", $this);
-        } else {
-          var observer = new MutationObserver(function(mutations) {
-            var _this = this;
-            mutations.forEach(function(mutation) {
-              if (mutation.addedNodes) {
-                if (!querySelector) {
-                  onFound($(mutation.addedNodes[0]));
-                  if (once) {
-                    _this.disconnect();
-                  }
-                } else {
-                  for (var i = 0; i < mutation.addedNodes.length; ++i) {
-                    var addedNode = mutation.addedNodes[i];
-                    if ($(addedNode).is(querySelector)) {
-                      onFound($(addedNode));
-                      if (once) {
-                        _this.disconnect();
-                        break;
-                      }
+        $this.children().each(function(key, element) {
+          onFound($(element));
+        });
+      }
+    } else if ($this.find(querySelector).length !== 0) {
+      if (once) {
+        onFound($this.find(querySelector).first());
+      } else {
+        $this.find(querySelector).each(function(key, element) {
+          onFound($(element));
+        });
+      }
+    } else {
+      if ($this.length === 0) {
+        console.warn("Can't attach an observer to a null node", $this);
+      } else {
+        var observer = new MutationObserver(function(mutations) {
+          var _this = this;
+          mutations.forEach(function(mutation) {
+            if (mutation.addedNodes) {
+              if (!querySelector) {
+                onFound($(mutation.addedNodes[0]));
+                if (once) {
+                  _this.disconnect();
+                }
+              } else {
+                for (var i = 0; i < mutation.addedNodes.length; ++i) {
+                  var addedNode = mutation.addedNodes[i];
+                  if ($(addedNode).is(querySelector)) {
+                    onFound($(addedNode));
+                    if (once) {
+                      _this.disconnect();
+                      break;
                     }
                   }
                 }
               }
-            });
+            }
           });
-          observer.observe($this[0], {
-            childList: true,
-            subtree: true,
-            attributes: false,
-            characterData: false
-          });
-        }
+        });
+        observer.observe($this[0], {
+          childList: true,
+          subtree: true,
+          attributes: false,
+          characterData: false
+        });
       }
-      return $this;
-    };
-  }));
-  global.define = __define;
-  return module.exports;
+    }
+    return $this;
+  };
+}));
+
+_removeDefine();
+})();
+(function() {
+var _removeDefine = System.get("@@amd-helpers").createDefine();
+define("github:huasofoundries/jquery.waitforChild@1.0.1.js", ["github:huasofoundries/jquery.waitforChild@1.0.1/jquery.waitforChild.js"], function(main) {
+  return main;
 });
 
-System.registerDynamic("npm:jquery.waitforChild@1.0.1.js", ["npm:jquery.waitforChild@1.0.1/jquery.waitforChild.js"], true, function($__require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = $__require('npm:jquery.waitforChild@1.0.1/jquery.waitforChild.js');
-  global.define = __define;
-  return module.exports;
-});
-
+_removeDefine();
+})();
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
-    define("github:marioizquierdo/jquery.serializeJSON@2.7.2/jquery.serializejson.js", ["npm:jquery@2.2.2.js"], factory);
+    define("github:marioizquierdo/jquery.serializeJSON@2.7.2/jquery.serializejson.js", ["github:jquery/jquery@2.2.2.js"], factory);
   } else if (typeof exports === 'object') {
     var jQuery = require('jquery');
     module.exports = factory(jQuery);
@@ -1132,7 +1125,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/draggable.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/draggable.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -1934,7 +1927,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/droppable.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/draggable.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/droppable.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/draggable.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -2231,7 +2224,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/resizable.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/resizable.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -3153,7 +3146,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/selectable.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/selectable.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -3371,7 +3364,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/sortable.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/sortable.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -4325,7 +4318,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/autocomplete.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/position.js", "github:components/jqueryui@1.11.4/ui/menu.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/autocomplete.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/position.js", "github:components/jqueryui@1.11.4/ui/menu.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -4791,7 +4784,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/position.js", ["npm:jquery@2.2.2.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/position.js", ["github:jquery/jquery@2.2.2.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -5218,7 +5211,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/menu.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/position.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/menu.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/position.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -5657,7 +5650,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/progressbar.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/progressbar.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -5758,7 +5751,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/slider.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/slider.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -6352,7 +6345,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/tabs.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/tabs.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -6976,7 +6969,7 @@ _removeDefine();
 var _removeDefine = System.get("@@amd-helpers").createDefine();
 (function(root, factory) {
   if (typeof define === "function" && define.amd) {
-    define("src/plugins/jquery-impromptu.js", ["npm:jquery@2.2.2.js"], factory);
+    define("src/plugins/jquery-impromptu.js", ["github:jquery/jquery@2.2.2.js"], factory);
   } else if (typeof module !== 'undefined' && typeof exports === "object") {
     module.exports = factory(require('jquery'));
   } else {
@@ -7394,7 +7387,7 @@ _removeDefine();
 var _removeDefine = System.get("@@amd-helpers").createDefine();
 (function(root, factory) {
   if (typeof define === "function" && define.amd) {
-    define("src/plugins/jquery.ajax.progress.js", ["npm:jquery@2.2.2.js"], factory);
+    define("src/plugins/jquery.ajax.progress.js", ["github:jquery/jquery@2.2.2.js"], factory);
   } else if (typeof module !== 'undefined' && typeof exports === "object") {
     module.exports = factory(require('jquery'));
   } else {
@@ -7429,7 +7422,7 @@ _removeDefine();
 var _removeDefine = System.get("@@amd-helpers").createDefine();
 (function(root, factory) {
   if (typeof define === "function" && define.amd) {
-    define("src/plugins/jquery.hotkeys.js", ["npm:jquery@2.2.2.js"], factory);
+    define("src/plugins/jquery.hotkeys.js", ["github:jquery/jquery@2.2.2.js"], factory);
   } else if (typeof module !== 'undefined' && typeof exports === "object") {
     module.exports = factory(require('jquery'));
   } else {
@@ -11884,7 +11877,7 @@ System.register("github:huasofoundries/plugin-css@0.1.21.js!src/plugins/iconpick
 
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
-define("src/plugins/jquery.iconpicker.js", ["npm:jquery@2.2.2.js", "github:lodash/lodash@3.10.1.js", "github:huasofoundries/plugin-css@0.1.21.js!src/plugins/iconpicker.css"], function(jQuery, _) {
+define("src/plugins/jquery.iconpicker.js", ["github:jquery/jquery@2.2.2.js", "github:lodash/lodash@3.10.1.js", "github:huasofoundries/plugin-css@0.1.21.js!src/plugins/iconpicker.css"], function(jQuery, _) {
   _.templateSettings = {
     interpolate: /\{\{(.+?)\}\}/g,
     evaluate: /\{\{(.+?)\}\}/g,
@@ -12158,7 +12151,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/core.js", ["npm:jquery@2.2.2.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/core.js", ["github:jquery/jquery@2.2.2.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -12390,6 +12383,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
+"format amd";
 (function(global, factory) {
   if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = global.document ? factory(global, true) : function(w) {
@@ -18391,7 +18385,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
   });
   jQuery.fn.andSelf = jQuery.fn.addBack;
   if (typeof define === "function" && define.amd) {
-    define("npm:jquery@2.2.2/dist/jquery.js", [], function() {
+    define("github:jquery/jquery@2.2.2/jquery.js", [], function() {
       return jQuery;
     });
   }
@@ -18416,7 +18410,7 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
-define("npm:jquery@2.2.2.js", ["npm:jquery@2.2.2/dist/jquery.js"], function(main) {
+define("github:jquery/jquery@2.2.2.js", ["github:jquery/jquery@2.2.2/jquery.js"], function(main) {
   return main;
 });
 
@@ -18427,7 +18421,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/widget.js", ["npm:jquery@2.2.2.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/widget.js", ["github:jquery/jquery@2.2.2.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -18833,7 +18827,7 @@ var _removeDefine = System.get("@@amd-helpers").createDefine();
 "format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/mouse.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/mouse.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -18962,7 +18956,7 @@ _removeDefine();
 var _removeDefine = System.get("@@amd-helpers").createDefine();
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("src/plugins/jquery.ui.rotatable.js", ["npm:jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js"], factory);
+    define("src/plugins/jquery.ui.rotatable.js", ["github:jquery/jquery@2.2.2.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -19114,7 +19108,7 @@ System.register("github:huasofoundries/plugin-css@0.1.21.js!src/css/colorpicker.
 
 (function() {
 var _removeDefine = System.get("@@amd-helpers").createDefine();
-define("src/jquery_helper.js", ["npm:jquery@2.2.2.js", "github:carhartl/jquery-cookie@1.4.1.js", "npm:jquery.waitforChild@1.0.1.js", "github:marioizquierdo/jquery.serializeJSON@2.7.2.js", "github:evanplaice/jquery-csv@0.8.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/position.js", "github:components/jqueryui@1.11.4/ui/draggable.js", "github:components/jqueryui@1.11.4/ui/droppable.js", "github:components/jqueryui@1.11.4/ui/resizable.js", "github:components/jqueryui@1.11.4/ui/selectable.js", "github:components/jqueryui@1.11.4/ui/sortable.js", "github:components/jqueryui@1.11.4/ui/autocomplete.js", "github:components/jqueryui@1.11.4/ui/menu.js", "github:components/jqueryui@1.11.4/ui/progressbar.js", "github:components/jqueryui@1.11.4/ui/slider.js", "github:components/jqueryui@1.11.4/ui/tabs.js", "src/plugins/jquery-impromptu.js", "src/plugins/jquery.ajax.progress.js", "src/plugins/jquery.hotkeys.js", "src/plugins/jquery.iconpicker.js", "src/plugins/jquery.ui.rotatable.js", "github:huasofoundries/plugin-css@0.1.21.js!src/css/colorpicker.css"], function(jQuery) {
+define("src/jquery_helper.js", ["github:jquery/jquery@2.2.2.js", "github:carhartl/jquery-cookie@1.4.1.js", "github:huasofoundries/jquery.waitforChild@1.0.1.js", "github:marioizquierdo/jquery.serializeJSON@2.7.2.js", "github:evanplaice/jquery-csv@0.8.1.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/position.js", "github:components/jqueryui@1.11.4/ui/draggable.js", "github:components/jqueryui@1.11.4/ui/droppable.js", "github:components/jqueryui@1.11.4/ui/resizable.js", "github:components/jqueryui@1.11.4/ui/selectable.js", "github:components/jqueryui@1.11.4/ui/sortable.js", "github:components/jqueryui@1.11.4/ui/autocomplete.js", "github:components/jqueryui@1.11.4/ui/menu.js", "github:components/jqueryui@1.11.4/ui/progressbar.js", "github:components/jqueryui@1.11.4/ui/slider.js", "github:components/jqueryui@1.11.4/ui/tabs.js", "src/plugins/jquery-impromptu.js", "src/plugins/jquery.ajax.progress.js", "src/plugins/jquery.hotkeys.js", "src/plugins/jquery.iconpicker.js", "src/plugins/jquery.ui.rotatable.js", "github:huasofoundries/plugin-css@0.1.21.js!src/css/colorpicker.css"], function(jQuery) {
   'use strict';
   jQuery.error = function(message) {
     console.warn('jQuery.error', message);
