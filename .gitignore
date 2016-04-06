@@ -34,3 +34,4 @@ node_modules
 
 jspm_packages
 fabfile*
+*sublime*
