@@ -24,6 +24,20 @@ If you change anything in `src/jquery_helper.js` remember to update the build li
 make build
 ```
 
+
+### Testing
+
+I haven't made proper unit tests (althought these would be more like integration tests, 
+right?) but you can check your build is working as expected by running:
+
+```
+grunt connect:local
+```
+
+And then pointing your browser to http://localhost:8086/
+
+
+
 ### Credits
 
 I'm afraid I had to add a couple of dependencies to version control, 
