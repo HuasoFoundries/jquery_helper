@@ -1,6 +1,6 @@
 {
   "name": "ig_jquery_helper",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "registry": "github",
   "main": "dist/jquery_helper.js",
   "devDependencies": {
@@ -12,8 +12,7 @@
     "format": "amd",
     "dependencies": {
       "jquery": "jquery/jquery@^2.2.2",
-      "jquery-impromptu": "trentrichardson/jQuery-Impromptu@^6.2.2",
-      "trentrichardson/jQuery-Impromptu": "^6.2.2"
+      "jquery-impromptu": "trentrichardson/jQuery-Impromptu@^6.2.2"
     },
     "devDependencies": {
       "jquery-csv": "evanplaice/jquery-csv@^0.8.1",
