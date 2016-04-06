@@ -1,6 +1,6 @@
 {
   "name": "ig_jquery_helper",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "registry": "github",
   "main": "dist/jquery_helper.js",
   "devDependencies": {
@@ -12,7 +12,7 @@
     "format": "amd",
     "devDependencies": {
       "jquery": "jquery/jquery@^2.2.2",
-      "jquery-csv": "evanplaice/jquery-csv@^0.9.0",
+      "jquery-csv": "evanplaice/jquery-csv@^0.9.1",
       "jquery-impromptu": "trentrichardson/jQuery-Impromptu@^6.2.2",
       "jquery-serializejson": "marioizquierdo/jquery.serializeJSON@~2.7",
       "jquery-ui": "components/jqueryui@^1.11.4",
