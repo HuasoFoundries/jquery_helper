@@ -1,7 +1,5 @@
 {
-    "parser":"babel-eslint",
     "extends": "eslint:recommended",
-    "plugins":["riot"],
     "env": {
         "browser": true,
         "node": true,

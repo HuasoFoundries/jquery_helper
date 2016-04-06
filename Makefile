@@ -9,12 +9,11 @@ version:
 	@echo $(VERSION)
 	
 build:
-	jspm bundle src/jquery_helper dist/jquery_helper_jspm.js --skip-source-maps 
-	jspm bundle-sfx src/jquery_helper dist/jquery_helper.js --format amd --skip-source-maps 
-	jspm bundle-sfx src/jquery_helper dist/jquery_helper.min.js --format amd --skip-source-maps -m
+	jspm bundle-sfx src/jquery_helper dist/jquery_helper.js --format umd --skip-source-maps 
 
 
 install:
+	npm install
 	jspm install
 
 update_version:

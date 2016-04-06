@@ -18,14 +18,12 @@ define([
 	'jquery-ui/ui/progressbar',
 	'jquery-ui/ui/slider',
 	'jquery-ui/ui/tabs',
+	'jquery-impromptu',
 
-
-	'./plugins/jquery-impromptu',
 	'./plugins/jquery.ajax.progress',
 	'./plugins/jquery.hotkeys',
-	'./plugins/jquery.iconpicker',
-	'./plugins/jquery.ui.rotatable',
-	'css!./css/colorpicker.css'
+	'./plugins/jquery.ui.rotatable'
+
 
 ], function (jQuery) {
 
