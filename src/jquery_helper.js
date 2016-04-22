@@ -472,9 +472,8 @@ jQuery.widget("evol.colorpicker", {
 
 
 
-export {
-	jQuery
-};
+
+export default jQuery;
 
 
 

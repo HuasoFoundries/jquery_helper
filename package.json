@@ -1,6 +1,6 @@
 {
   "name": "jquery_helper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "registry": "github",
   "main": "jquery_helper.js",
   "description": "This helper bundles jQuery library plus all the jQuery and jQuery-UI plugins our app uses  in a single monolithic file.",
