@@ -1,22 +1,10 @@
 /*!
  * jQuery UI Rotatable
  */
-(function (factory) {
-	if (typeof define === "function" && define.amd) {
-
-		// AMD. Register as an anonymous module.
-		define([
-			'jquery',
-			'jquery-ui/ui/core',
-			'jquery-ui/ui/widget',
-			'jquery-ui/ui/mouse'
-		], factory);
-	} else {
-
-		// Browser globals
-		factory(jQuery);
-	}
-}(function ($) {
+import {$} from 'jquery';
+			import 'jquery-ui/ui/core';
+			import 'jquery-ui/ui/widget';
+			import 'jquery-ui/ui/mouse';
 
 
 	$.widget("ui.rotatable", $.ui.mouse, {
@@ -194,6 +182,5 @@
 
 	});
 
-	return $.ui.rotatable;
+export {$ as rotatable};
 
-}));
