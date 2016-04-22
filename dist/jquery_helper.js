@@ -1127,7 +1127,6 @@ $__System.registerDynamic("a", ["9"], true, function($__require, exports, module
 
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("b", ["3", "c", "d", "e"], factory);
@@ -1929,7 +1928,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("f", ["3", "c", "e", "d", "b"], factory);
@@ -2226,7 +2224,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("10", ["3", "c", "d", "e"], factory);
@@ -3148,7 +3145,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("11", ["3", "c", "d", "e"], factory);
@@ -3366,7 +3362,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("12", ["3", "c", "d", "e"], factory);
@@ -4320,7 +4315,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("13", ["3", "c", "e", "14", "15"], factory);
@@ -4786,7 +4780,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("14", ["3"], factory);
@@ -5213,7 +5206,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("15", ["3", "c", "e", "14"], factory);
@@ -5652,7 +5644,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("16", ["3", "c", "e"], factory);
@@ -5753,7 +5744,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("17", ["3", "c", "d", "e"], factory);
@@ -6347,7 +6337,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("18", ["3", "c", "e"], factory);
@@ -7739,7 +7728,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("c", ["3"], factory);
@@ -7974,7 +7962,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(global, factory) {
   if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = global.document ? factory(global, true) : function(w) {
@@ -7997,7 +7984,7 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   var toString = class2type.toString;
   var hasOwn = class2type.hasOwnProperty;
   var support = {};
-  var version = "2.2.2",
+  var version = "2.2.3",
       jQuery = function(selector, context) {
         return new jQuery.fn.init(selector, context);
       },
@@ -13778,7 +13765,7 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
         self.html(selector ? jQuery("<div>").append(jQuery.parseHTML(responseText)).find(selector) : responseText);
       }).always(callback && function(jqXHR, status) {
         self.each(function() {
-          callback.apply(self, response || [jqXHR.responseText, status, jqXHR]);
+          callback.apply(this, response || [jqXHR.responseText, status, jqXHR]);
         });
       });
     }
@@ -14009,7 +13996,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("e", ["3"], factory);
@@ -14415,7 +14401,6 @@ _removeDefine();
 })();
 (function() {
 var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
 (function(factory) {
   if (typeof define === "function" && define.amd) {
     define("d", ["3", "e"], factory);

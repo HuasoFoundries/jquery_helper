@@ -10,26 +10,18 @@
   },
   "jspm": {
     "format": "amd",
+    "dependencies": {
+      "jquery": "npm:jquery@^2.2.3",
+      "jquery-ui": "components/jqueryui@^1.11.4"
+    },
     "devDependencies": {
-      "jquery": "jquery/jquery@^2.2.2",
       "jquery-csv": "evanplaice/jquery-csv@^0.9.1",
       "jquery-impromptu": "trentrichardson/jQuery-Impromptu@^6.2.2",
       "jquery-serializejson": "marioizquierdo/jquery.serializeJSON@~2.7",
-      "jquery-ui": "components/jqueryui@^1.11.4",
       "jquery.cookie": "carhartl/jquery-cookie@^1.4.1",
       "jquery.waitforChild": "huasofoundries/jquery.waitforChild@^1"
     },
     "overrides": {
-      "github:components/jqueryui@1.11.4": {
-        "map": {
-          "jquery": "jquery"
-        }
-      },
-      "github:jquery/jquery@2.2.2": {
-        "directories": {
-          "lib": "dist"
-        }
-      },
       "github:trentrichardson/jQuery-Impromptu@6.2.2": {
         "main": "dist/jquery-impromptu.js"
       }
