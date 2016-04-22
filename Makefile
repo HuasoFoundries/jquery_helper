@@ -9,7 +9,7 @@ version:
 	@echo $(VERSION)
 	
 build:
-	jspm bundle-sfx src/jquery_helper dist/jquery_helper.js --format umd --skip-source-maps 
+	jspm build src/jquery_helper.js dist/jquery_helper.js --format umd --skip-source-maps 
 
 
 install:

@@ -20,9 +20,9 @@ define([
 	'jquery-ui/ui/tabs',
 	'jquery-impromptu',
 
-	'./plugins/jquery.ajax.progress',
-	'./plugins/jquery.hotkeys',
-	'./plugins/jquery.ui.rotatable'
+	'src/plugins/jquery.ajax.progress.js',
+	'src/plugins/jquery.hotkeys.js',
+	'src/plugins/jquery.ui.rotatable.js'
 
 
 ], function (jQuery) {
