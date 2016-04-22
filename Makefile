@@ -9,7 +9,7 @@ version:
 	@echo $(VERSION)
 	
 build:
-	jspm build src/jquery_helper.js dist/jquery_helper.js --format umd --skip-source-maps 
+	jspm build src/jquery_helper.js dist/jquery_helper.js --skip-source-maps --global-name jquery
 
 
 install:

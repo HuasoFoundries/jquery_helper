@@ -1,6 +1,6 @@
 {
   "name": "jquery_helper",
-  "version": "0.9.1",
+  "version": "1.0.0-beta.1",
   "registry": "github",
   "main": "jquery_helper.js",
   "description": "This helper bundles jQuery library plus all the jQuery and jQuery-UI plugins our app uses  in a single monolithic file.",
@@ -11,6 +11,10 @@
     "jspm": "^0.17.0-beta.13",
     "grunt": "^1",
     "grunt-contrib-connect": "^0.11.2"
+  },
+  "devDependencies": {
+    "eslint": "^1.10.3",
+    "babel-eslint": "^6.0.3"
   },
   "scripts": {
     "test": "make test"
@@ -33,34 +37,41 @@
   },
   "homepage": "https://github.com/HuasoFoundries/jquery_helper#readme",
   "jspm": {
-    "format": "amd",
+    "format": "esm",
+    "registry": "github",
     "directories": {
       "example": "example",
       "lib": "dist"
     },
-    
+
     "devDependencies": {
       "jquery": "npm:jquery@^2.2.3",
       "jquery-ui": "components/jqueryui@^1.11.4",
       "jquery-csv": "evanplaice/jquery-csv@~0.8",
-      "jquery-impromptu": "trentrichardson/jQuery-Impromptu@^6.2.2",
       "jquery-serializejson": "marioizquierdo/jquery.serializeJSON@~2.7",
       "jquery.cookie": "carhartl/jquery-cookie@^1.4.1",
       "jquery.waitforChild": "huasofoundries/jquery.waitforChild@^1"
     },
     "overrides": {
+      "github:carhartl/jquery-cookie@1.4.1": {
+        "format": "esm"
+      },
       "github:components/jqueryui@1.11.4": {
         "main": "jquery-ui.js",
+        "format": "esm",
         "registry": "jspm",
         "dependencies": {
           "jquery": "*"
-        },
-        "map": {
-          "jquery": "jquery"
         }
       },
-      "github:trentrichardson/jQuery-Impromptu@6.2.2": {
-        "main": "dist/jquery-impromptu.js"
+      "github:evanplaice/jquery-csv@0.8.1": {
+        "format": "esm"
+      },
+      "github:huasofoundries/jquery.waitforChild@1.0.1": {
+        "format": "esm"
+      },
+      "github:marioizquierdo/jquery.serializeJSON@2.7.2": {
+        "format": "esm"
       },
       "npm:jquery@2.2.3": {
         "format": "amd"

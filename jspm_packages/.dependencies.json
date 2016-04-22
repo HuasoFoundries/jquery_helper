@@ -1,0 +1,10 @@
+{
+  "github:components/jqueryui@1.11.4": {
+    "jquery": "npm:jquery"
+  },
+  "npm:jquery@2.2.3": {},
+  "github:huasofoundries/jquery.waitforChild@1.0.1": {},
+  "github:evanplaice/jquery-csv@0.8.1": {},
+  "github:marioizquierdo/jquery.serializeJSON@2.7.2": {},
+  "github:carhartl/jquery-cookie@1.4.1": {}
+}
