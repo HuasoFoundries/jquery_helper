@@ -10,6 +10,7 @@ version:
 	
 build:
 	jspm build src dist/jquery_helper.js --minify
+	jspm build src dist/jquery.esm.js --format esm --skip-source-maps
 
 
 install:
