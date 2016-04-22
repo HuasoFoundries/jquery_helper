@@ -9,7 +9,7 @@ version:
 	@echo $(VERSION)
 	
 build:
-	jspm build src/jquery_helper.js dist/jquery_helper.js --skip-source-maps --global-name jquery
+	jspm build src dist/jquery_helper.js --minify
 
 
 install:

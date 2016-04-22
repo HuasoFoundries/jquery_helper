@@ -43,7 +43,7 @@
       "example": "example",
       "lib": "dist"
     },
-
+    "dependencies": {},
     "devDependencies": {
       "jquery": "npm:jquery@^2.2.3",
       "jquery-ui": "components/jqueryui@^1.11.4",
@@ -58,7 +58,7 @@
       },
       "github:components/jqueryui@1.11.4": {
         "main": "jquery-ui.js",
-        "format": "esm",
+        
         "registry": "jspm",
         "dependencies": {
           "jquery": "*"

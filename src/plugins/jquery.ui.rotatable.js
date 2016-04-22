@@ -1,13 +1,12 @@
 /*!
  * jQuery UI Rotatable
  */
-import {
-	$
-} from 'jquery';
+import jQuery from 'jquery';
 import 'jquery-ui/ui/core';
 import 'jquery-ui/ui/widget';
 import 'jquery-ui/ui/mouse';
 
+const $=jQuery;
 
 $.widget("ui.rotatable", $.ui.mouse, {
 

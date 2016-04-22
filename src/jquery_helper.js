@@ -21,6 +21,7 @@ import 'src/plugins/jquery.ajax.progress.js';
 import 'src/plugins/jquery.hotkeys.js';
 import 'src/plugins/jquery.ui.rotatable.js';
 
+this.$ = this.jQuery = jQuery;
 
 jQuery.error = function (message) {
 	console.warn('jQuery.error', message);
@@ -474,3 +475,6 @@ jQuery.widget("evol.colorpicker", {
 export {
 	jQuery
 };
+
+
+
