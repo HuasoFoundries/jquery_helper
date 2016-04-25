@@ -6,6 +6,1088 @@
 (function() {
 var define = $__System.amdDefine;
 (function(factory) {
+  if (typeof define === 'function' && define.amd) {
+    define("github:carhartl/jquery-cookie@1.4.1/jquery.cookie.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
+  } else if (typeof exports === 'object') {
+    factory(require('jquery'));
+  } else {
+    factory(jQuery);
+  }
+}(function($) {
+  var pluses = /\+/g;
+  function encode(s) {
+    return config.raw ? s : encodeURIComponent(s);
+  }
+  function decode(s) {
+    return config.raw ? s : decodeURIComponent(s);
+  }
+  function stringifyCookieValue(value) {
+    return encode(config.json ? JSON.stringify(value) : String(value));
+  }
+  function parseCookieValue(s) {
+    if (s.indexOf('"') === 0) {
+      s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+    }
+    try {
+      s = decodeURIComponent(s.replace(pluses, ' '));
+      return config.json ? JSON.parse(s) : s;
+    } catch (e) {}
+  }
+  function read(s, converter) {
+    var value = config.raw ? s : parseCookieValue(s);
+    return $.isFunction(converter) ? converter(value) : value;
+  }
+  var config = $.cookie = function(key, value, options) {
+    if (value !== undefined && !$.isFunction(value)) {
+      options = $.extend({}, config.defaults, options);
+      if (typeof options.expires === 'number') {
+        var days = options.expires,
+            t = options.expires = new Date();
+        t.setTime(+t + days * 864e+5);
+      }
+      return (document.cookie = [encode(key), '=', stringifyCookieValue(value), options.expires ? '; expires=' + options.expires.toUTCString() : '', options.path ? '; path=' + options.path : '', options.domain ? '; domain=' + options.domain : '', options.secure ? '; secure' : ''].join(''));
+    }
+    var result = key ? undefined : {};
+    var cookies = document.cookie ? document.cookie.split('; ') : [];
+    for (var i = 0,
+        l = cookies.length; i < l; i++) {
+      var parts = cookies[i].split('=');
+      var name = decode(parts.shift());
+      var cookie = parts.join('=');
+      if (key && key === name) {
+        result = read(cookie, value);
+        break;
+      }
+      if (!key && (cookie = read(cookie)) !== undefined) {
+        result[name] = cookie;
+      }
+    }
+    return result;
+  };
+  config.defaults = {};
+  $.removeCookie = function(key, options) {
+    if ($.cookie(key) === undefined) {
+      return false;
+    }
+    $.cookie(key, '', $.extend({}, options, {expires: -1}));
+    return !$.cookie(key);
+  };
+}));
+
+})();
+(function() {
+var define = $__System.amdDefine;
+(function(root, factory) {
+  if (typeof define === "function" && define.amd) {
+    define("github:huasofoundries/jquery.waitforChild@1.0.1/jquery.waitforChild.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
+  } else if (typeof module !== 'undefined' && typeof exports === "object") {
+    module.exports = factory(require('jquery'));
+  } else {
+    root.jQuery = factory(root.jQuery);
+  }
+}(this, function($) {
+  'use strict';
+  $.fn.waitforChild = function(onFound, querySelector, once) {
+    if (typeof arguments[0] === 'object') {
+      once = arguments[0].once || false;
+      querySelector = arguments[0].querySelector || null;
+      onFound = arguments[0].onFound;
+    }
+    if (!onFound) {
+      onFound = function() {};
+    }
+    var $this = this;
+    if (!querySelector && $this.children().length) {
+      if (once) {
+        onFound($this.children().first());
+      } else {
+        $this.children().each(function(key, element) {
+          onFound($(element));
+        });
+      }
+    } else if ($this.find(querySelector).length !== 0) {
+      if (once) {
+        onFound($this.find(querySelector).first());
+      } else {
+        $this.find(querySelector).each(function(key, element) {
+          onFound($(element));
+        });
+      }
+    } else {
+      if ($this.length === 0) {
+        console.warn("Can't attach an observer to a null node", $this);
+      } else {
+        var observer = new MutationObserver(function(mutations) {
+          var _this = this;
+          mutations.forEach(function(mutation) {
+            if (mutation.addedNodes) {
+              if (!querySelector) {
+                onFound($(mutation.addedNodes[0]));
+                if (once) {
+                  _this.disconnect();
+                }
+              } else {
+                for (var i = 0; i < mutation.addedNodes.length; ++i) {
+                  var addedNode = mutation.addedNodes[i];
+                  if ($(addedNode).is(querySelector)) {
+                    onFound($(addedNode));
+                    if (once) {
+                      _this.disconnect();
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          });
+        });
+        observer.observe($this[0], {
+          childList: true,
+          subtree: true,
+          attributes: false,
+          characterData: false
+        });
+      }
+    }
+    return $this;
+  };
+}));
+
+})();
+(function() {
+var define = $__System.amdDefine;
+(function(factory) {
+  if (typeof define === 'function' && define.amd) {
+    define("github:marioizquierdo/jquery.serializeJSON@2.7.2/jquery.serializejson.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
+  } else if (typeof exports === 'object') {
+    var jQuery = require('jquery');
+    module.exports = factory(jQuery);
+  } else {
+    factory(window.jQuery || window.Zepto || window.$);
+  }
+}(function($) {
+  "use strict";
+  $.fn.serializeJSON = function(options) {
+    var f,
+        $form,
+        opts,
+        formAsArray,
+        serializedObject,
+        name,
+        value,
+        _obj,
+        nameWithNoType,
+        type,
+        keys;
+    f = $.serializeJSON;
+    $form = this;
+    opts = f.setupOpts(options);
+    formAsArray = $form.serializeArray();
+    f.readCheckboxUncheckedValues(formAsArray, opts, $form);
+    serializedObject = {};
+    $.each(formAsArray, function(i, obj) {
+      name = obj.name;
+      value = obj.value;
+      _obj = f.extractTypeAndNameWithNoType(name);
+      nameWithNoType = _obj.nameWithNoType;
+      type = _obj.type;
+      if (!type)
+        type = f.tryToFindTypeFromDataAttr(name, $form);
+      f.validateType(name, type, opts);
+      if (type !== 'skip') {
+        keys = f.splitInputNameIntoKeysArray(nameWithNoType);
+        value = f.parseValue(value, name, type, opts);
+        f.deepSet(serializedObject, keys, value, opts);
+      }
+    });
+    return serializedObject;
+  };
+  $.serializeJSON = {
+    defaultOptions: {
+      checkboxUncheckedValue: undefined,
+      parseNumbers: false,
+      parseBooleans: false,
+      parseNulls: false,
+      parseAll: false,
+      parseWithFunction: null,
+      customTypes: {},
+      defaultTypes: {
+        "string": function(str) {
+          return String(str);
+        },
+        "number": function(str) {
+          return Number(str);
+        },
+        "boolean": function(str) {
+          var falses = ["false", "null", "undefined", "", "0"];
+          return falses.indexOf(str) === -1;
+        },
+        "null": function(str) {
+          var falses = ["false", "null", "undefined", "", "0"];
+          return falses.indexOf(str) === -1 ? str : null;
+        },
+        "array": function(str) {
+          return JSON.parse(str);
+        },
+        "object": function(str) {
+          return JSON.parse(str);
+        },
+        "auto": function(str) {
+          return $.serializeJSON.parseValue(str, null, null, {
+            parseNumbers: true,
+            parseBooleans: true,
+            parseNulls: true
+          });
+        },
+        "skip": null
+      },
+      useIntKeysAsArrayIndex: false
+    },
+    setupOpts: function(options) {
+      var opt,
+          validOpts,
+          defaultOptions,
+          optWithDefault,
+          parseAll,
+          f;
+      f = $.serializeJSON;
+      if (options == null) {
+        options = {};
+      }
+      defaultOptions = f.defaultOptions || {};
+      validOpts = ['checkboxUncheckedValue', 'parseNumbers', 'parseBooleans', 'parseNulls', 'parseAll', 'parseWithFunction', 'customTypes', 'defaultTypes', 'useIntKeysAsArrayIndex'];
+      for (opt in options) {
+        if (validOpts.indexOf(opt) === -1) {
+          throw new Error("serializeJSON ERROR: invalid option '" + opt + "'. Please use one of " + validOpts.join(', '));
+        }
+      }
+      optWithDefault = function(key) {
+        return (options[key] !== false) && (options[key] !== '') && (options[key] || defaultOptions[key]);
+      };
+      parseAll = optWithDefault('parseAll');
+      return {
+        checkboxUncheckedValue: optWithDefault('checkboxUncheckedValue'),
+        parseNumbers: parseAll || optWithDefault('parseNumbers'),
+        parseBooleans: parseAll || optWithDefault('parseBooleans'),
+        parseNulls: parseAll || optWithDefault('parseNulls'),
+        parseWithFunction: optWithDefault('parseWithFunction'),
+        typeFunctions: $.extend({}, optWithDefault('defaultTypes'), optWithDefault('customTypes')),
+        useIntKeysAsArrayIndex: optWithDefault('useIntKeysAsArrayIndex')
+      };
+    },
+    parseValue: function(valStr, inputName, type, opts) {
+      var f,
+          parsedVal;
+      f = $.serializeJSON;
+      parsedVal = valStr;
+      if (opts.typeFunctions && type && opts.typeFunctions[type]) {
+        parsedVal = opts.typeFunctions[type](valStr);
+      } else if (opts.parseNumbers && f.isNumeric(valStr)) {
+        parsedVal = Number(valStr);
+      } else if (opts.parseBooleans && (valStr === "true" || valStr === "false")) {
+        parsedVal = (valStr === "true");
+      } else if (opts.parseNulls && valStr == "null") {
+        parsedVal = null;
+      }
+      if (opts.parseWithFunction && !type) {
+        parsedVal = opts.parseWithFunction(parsedVal, inputName);
+      }
+      return parsedVal;
+    },
+    isObject: function(obj) {
+      return obj === Object(obj);
+    },
+    isUndefined: function(obj) {
+      return obj === void 0;
+    },
+    isValidArrayIndex: function(val) {
+      return /^[0-9]+$/.test(String(val));
+    },
+    isNumeric: function(obj) {
+      return obj - parseFloat(obj) >= 0;
+    },
+    optionKeys: function(obj) {
+      if (Object.keys) {
+        return Object.keys(obj);
+      } else {
+        var key,
+            keys = [];
+        for (key in obj) {
+          keys.push(key);
+        }
+        return keys;
+      }
+    },
+    readCheckboxUncheckedValues: function(formAsArray, opts, $form) {
+      var selector,
+          $uncheckedCheckboxes,
+          $el,
+          dataUncheckedValue,
+          f;
+      if (opts == null) {
+        opts = {};
+      }
+      f = $.serializeJSON;
+      selector = 'input[type=checkbox][name]:not(:checked):not([disabled])';
+      $uncheckedCheckboxes = $form.find(selector).add($form.filter(selector));
+      $uncheckedCheckboxes.each(function(i, el) {
+        $el = $(el);
+        dataUncheckedValue = $el.attr('data-unchecked-value');
+        if (dataUncheckedValue) {
+          formAsArray.push({
+            name: el.name,
+            value: dataUncheckedValue
+          });
+        } else {
+          if (!f.isUndefined(opts.checkboxUncheckedValue)) {
+            formAsArray.push({
+              name: el.name,
+              value: opts.checkboxUncheckedValue
+            });
+          }
+        }
+      });
+    },
+    extractTypeAndNameWithNoType: function(name) {
+      var match;
+      if (match = name.match(/(.*):([^:]+)$/)) {
+        return {
+          nameWithNoType: match[1],
+          type: match[2]
+        };
+      } else {
+        return {
+          nameWithNoType: name,
+          type: null
+        };
+      }
+    },
+    tryToFindTypeFromDataAttr: function(name, $form) {
+      var escapedName,
+          selector,
+          $input,
+          typeFromDataAttr;
+      escapedName = name.replace(/(:|\.|\[|\]|\s)/g, '\\$1');
+      selector = '[name="' + escapedName + '"]';
+      $input = $form.find(selector).add($form.filter(selector));
+      typeFromDataAttr = $input.attr('data-value-type');
+      return typeFromDataAttr || null;
+    },
+    validateType: function(name, type, opts) {
+      var validTypes,
+          f;
+      f = $.serializeJSON;
+      validTypes = f.optionKeys(opts ? opts.typeFunctions : f.defaultOptions.defaultTypes);
+      if (!type || validTypes.indexOf(type) !== -1) {
+        return true;
+      } else {
+        throw new Error("serializeJSON ERROR: Invalid type " + type + " found in input name '" + name + "', please use one of " + validTypes.join(', '));
+      }
+    },
+    splitInputNameIntoKeysArray: function(nameWithNoType) {
+      var keys,
+          f;
+      f = $.serializeJSON;
+      keys = nameWithNoType.split('[');
+      keys = $.map(keys, function(key) {
+        return key.replace(/\]/g, '');
+      });
+      if (keys[0] === '') {
+        keys.shift();
+      }
+      return keys;
+    },
+    deepSet: function(o, keys, value, opts) {
+      var key,
+          nextKey,
+          tail,
+          lastIdx,
+          lastVal,
+          f;
+      if (opts == null) {
+        opts = {};
+      }
+      f = $.serializeJSON;
+      if (f.isUndefined(o)) {
+        throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");
+      }
+      if (!keys || keys.length === 0) {
+        throw new Error("ArgumentError: param 'keys' expected to be an array with least one element");
+      }
+      key = keys[0];
+      if (keys.length === 1) {
+        if (key === '') {
+          o.push(value);
+        } else {
+          o[key] = value;
+        }
+      } else {
+        nextKey = keys[1];
+        if (key === '') {
+          lastIdx = o.length - 1;
+          lastVal = o[lastIdx];
+          if (f.isObject(lastVal) && (f.isUndefined(lastVal[nextKey]) || keys.length > 2)) {
+            key = lastIdx;
+          } else {
+            key = lastIdx + 1;
+          }
+        }
+        if (nextKey === '') {
+          if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
+            o[key] = [];
+          }
+        } else {
+          if (opts.useIntKeysAsArrayIndex && f.isValidArrayIndex(nextKey)) {
+            if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
+              o[key] = [];
+            }
+          } else {
+            if (f.isUndefined(o[key]) || !f.isObject(o[key])) {
+              o[key] = {};
+            }
+          }
+        }
+        tail = keys.slice(1);
+        f.deepSet(o[key], tail, value, opts);
+      }
+    }
+  };
+}));
+
+})();
+$__System.registerDynamic("github:evanplaice/jquery-csv@0.8.1/src/jquery.csv.js", [], true, function($__require, exports, module) {
+  ;
+  var define,
+      global = this,
+      GLOBAL = this;
+  RegExp.escape = function(s) {
+    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  };
+  (function(undefined) {
+    'use strict';
+    var $;
+    if (typeof jQuery !== 'undefined' && jQuery) {
+      $ = jQuery;
+    } else {
+      $ = {};
+    }
+    $.csv = {
+      defaults: {
+        separator: ',',
+        delimiter: '"',
+        headers: true
+      },
+      hooks: {castToScalar: function(value, state) {
+          var hasDot = /\./;
+          if (isNaN(value)) {
+            return value;
+          } else {
+            if (hasDot.test(value)) {
+              return parseFloat(value);
+            } else {
+              var integer = parseInt(value);
+              if (isNaN(integer)) {
+                return null;
+              } else {
+                return integer;
+              }
+            }
+          }
+        }},
+      parsers: {
+        parse: function(csv, options) {
+          var separator = options.separator;
+          var delimiter = options.delimiter;
+          if (!options.state.rowNum) {
+            options.state.rowNum = 1;
+          }
+          if (!options.state.colNum) {
+            options.state.colNum = 1;
+          }
+          var data = [];
+          var entry = [];
+          var state = 0;
+          var value = '';
+          var exit = false;
+          function endOfEntry() {
+            state = 0;
+            value = '';
+            if (options.start && options.state.rowNum < options.start) {
+              entry = [];
+              options.state.rowNum++;
+              options.state.colNum = 1;
+              return;
+            }
+            if (options.onParseEntry === undefined) {
+              data.push(entry);
+            } else {
+              var hookVal = options.onParseEntry(entry, options.state);
+              if (hookVal !== false) {
+                data.push(hookVal);
+              }
+            }
+            entry = [];
+            if (options.end && options.state.rowNum >= options.end) {
+              exit = true;
+            }
+            options.state.rowNum++;
+            options.state.colNum = 1;
+          }
+          function endOfValue() {
+            if (options.onParseValue === undefined) {
+              entry.push(value);
+            } else {
+              var hook = options.onParseValue(value, options.state);
+              if (hook !== false) {
+                entry.push(hook);
+              }
+            }
+            value = '';
+            state = 0;
+            options.state.colNum++;
+          }
+          var escSeparator = RegExp.escape(separator);
+          var escDelimiter = RegExp.escape(delimiter);
+          var match = /(D|S|\r\n|\n|\r|[^DS\r\n]+)/;
+          var matchSrc = match.source;
+          matchSrc = matchSrc.replace(/S/g, escSeparator);
+          matchSrc = matchSrc.replace(/D/g, escDelimiter);
+          match = RegExp(matchSrc, 'gm');
+          csv.replace(match, function(m0) {
+            if (exit) {
+              return;
+            }
+            switch (state) {
+              case 0:
+                if (m0 === separator) {
+                  value += '';
+                  endOfValue();
+                  break;
+                }
+                if (m0 === delimiter) {
+                  state = 1;
+                  break;
+                }
+                if (/^(\r\n|\n|\r)$/.test(m0)) {
+                  endOfValue();
+                  endOfEntry();
+                  break;
+                }
+                value += m0;
+                state = 3;
+                break;
+              case 1:
+                if (m0 === delimiter) {
+                  state = 2;
+                  break;
+                }
+                value += m0;
+                state = 1;
+                break;
+              case 2:
+                if (m0 === delimiter) {
+                  value += m0;
+                  state = 1;
+                  break;
+                }
+                if (m0 === separator) {
+                  endOfValue();
+                  break;
+                }
+                if (/^(\r\n|\n|\r)$/.test(m0)) {
+                  endOfValue();
+                  endOfEntry();
+                  break;
+                }
+                throw new Error('CSVDataError: Illegal State [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
+              case 3:
+                if (m0 === separator) {
+                  endOfValue();
+                  break;
+                }
+                if (/^(\r\n|\n|\r)$/.test(m0)) {
+                  endOfValue();
+                  endOfEntry();
+                  break;
+                }
+                if (m0 === delimiter) {
+                  throw new Error('CSVDataError: Illegal Quote [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
+                }
+                throw new Error('CSVDataError: Illegal Data [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
+              default:
+                throw new Error('CSVDataError: Unknown State [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
+            }
+          });
+          if (entry.length !== 0) {
+            endOfValue();
+            endOfEntry();
+          }
+          return data;
+        },
+        splitLines: function(csv, options) {
+          var separator = options.separator;
+          var delimiter = options.delimiter;
+          if (!options.state.rowNum) {
+            options.state.rowNum = 1;
+          }
+          var entries = [];
+          var state = 0;
+          var entry = '';
+          var exit = false;
+          function endOfLine() {
+            state = 0;
+            if (options.start && options.state.rowNum < options.start) {
+              entry = '';
+              options.state.rowNum++;
+              return;
+            }
+            if (options.onParseEntry === undefined) {
+              entries.push(entry);
+            } else {
+              var hookVal = options.onParseEntry(entry, options.state);
+              if (hookVal !== false) {
+                entries.push(hookVal);
+              }
+            }
+            entry = '';
+            if (options.end && options.state.rowNum >= options.end) {
+              exit = true;
+            }
+            options.state.rowNum++;
+          }
+          var escSeparator = RegExp.escape(separator);
+          var escDelimiter = RegExp.escape(delimiter);
+          var match = /(D|S|\n|\r|[^DS\r\n]+)/;
+          var matchSrc = match.source;
+          matchSrc = matchSrc.replace(/S/g, escSeparator);
+          matchSrc = matchSrc.replace(/D/g, escDelimiter);
+          match = RegExp(matchSrc, 'gm');
+          csv.replace(match, function(m0) {
+            if (exit) {
+              return;
+            }
+            switch (state) {
+              case 0:
+                if (m0 === separator) {
+                  entry += m0;
+                  state = 0;
+                  break;
+                }
+                if (m0 === delimiter) {
+                  entry += m0;
+                  state = 1;
+                  break;
+                }
+                if (m0 === '\n') {
+                  endOfLine();
+                  break;
+                }
+                if (/^\r$/.test(m0)) {
+                  break;
+                }
+                entry += m0;
+                state = 3;
+                break;
+              case 1:
+                if (m0 === delimiter) {
+                  entry += m0;
+                  state = 2;
+                  break;
+                }
+                entry += m0;
+                state = 1;
+                break;
+              case 2:
+                var prevChar = entry.substr(entry.length - 1);
+                if (m0 === delimiter && prevChar === delimiter) {
+                  entry += m0;
+                  state = 1;
+                  break;
+                }
+                if (m0 === separator) {
+                  entry += m0;
+                  state = 0;
+                  break;
+                }
+                if (m0 === '\n') {
+                  endOfLine();
+                  break;
+                }
+                if (m0 === '\r') {
+                  break;
+                }
+                throw new Error('CSVDataError: Illegal state [Row:' + options.state.rowNum + ']');
+              case 3:
+                if (m0 === separator) {
+                  entry += m0;
+                  state = 0;
+                  break;
+                }
+                if (m0 === '\n') {
+                  endOfLine();
+                  break;
+                }
+                if (m0 === '\r') {
+                  break;
+                }
+                if (m0 === delimiter) {
+                  throw new Error('CSVDataError: Illegal quote [Row:' + options.state.rowNum + ']');
+                }
+                throw new Error('CSVDataError: Illegal state [Row:' + options.state.rowNum + ']');
+              default:
+                throw new Error('CSVDataError: Unknown state [Row:' + options.state.rowNum + ']');
+            }
+          });
+          if (entry !== '') {
+            endOfLine();
+          }
+          return entries;
+        },
+        parseEntry: function(csv, options) {
+          var separator = options.separator;
+          var delimiter = options.delimiter;
+          if (!options.state.rowNum) {
+            options.state.rowNum = 1;
+          }
+          if (!options.state.colNum) {
+            options.state.colNum = 1;
+          }
+          var entry = [];
+          var state = 0;
+          var value = '';
+          function endOfValue() {
+            if (options.onParseValue === undefined) {
+              entry.push(value);
+            } else {
+              var hook = options.onParseValue(value, options.state);
+              if (hook !== false) {
+                entry.push(hook);
+              }
+            }
+            value = '';
+            state = 0;
+            options.state.colNum++;
+          }
+          if (!options.match) {
+            var escSeparator = RegExp.escape(separator);
+            var escDelimiter = RegExp.escape(delimiter);
+            var match = /(D|S|\n|\r|[^DS\r\n]+)/;
+            var matchSrc = match.source;
+            matchSrc = matchSrc.replace(/S/g, escSeparator);
+            matchSrc = matchSrc.replace(/D/g, escDelimiter);
+            options.match = RegExp(matchSrc, 'gm');
+          }
+          csv.replace(options.match, function(m0) {
+            switch (state) {
+              case 0:
+                if (m0 === separator) {
+                  value += '';
+                  endOfValue();
+                  break;
+                }
+                if (m0 === delimiter) {
+                  state = 1;
+                  break;
+                }
+                if (m0 === '\n' || m0 === '\r') {
+                  break;
+                }
+                value += m0;
+                state = 3;
+                break;
+              case 1:
+                if (m0 === delimiter) {
+                  state = 2;
+                  break;
+                }
+                value += m0;
+                state = 1;
+                break;
+              case 2:
+                if (m0 === delimiter) {
+                  value += m0;
+                  state = 1;
+                  break;
+                }
+                if (m0 === separator) {
+                  endOfValue();
+                  break;
+                }
+                if (m0 === '\n' || m0 === '\r') {
+                  break;
+                }
+                throw new Error('CSVDataError: Illegal State [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
+              case 3:
+                if (m0 === separator) {
+                  endOfValue();
+                  break;
+                }
+                if (m0 === '\n' || m0 === '\r') {
+                  break;
+                }
+                if (m0 === delimiter) {
+                  throw new Error('CSVDataError: Illegal Quote [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
+                }
+                throw new Error('CSVDataError: Illegal Data [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
+              default:
+                throw new Error('CSVDataError: Unknown State [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
+            }
+          });
+          endOfValue();
+          return entry;
+        }
+      },
+      helpers: {collectPropertyNames: function(objects) {
+          var o,
+              propName,
+              props = [];
+          for (o in objects) {
+            for (propName in objects[o]) {
+              if ((objects[o].hasOwnProperty(propName)) && (props.indexOf(propName) < 0) && (typeof objects[o][propName] !== 'function')) {
+                props.push(propName);
+              }
+            }
+          }
+          return props;
+        }},
+      toArray: function(csv, options, callback) {
+        var options = (options !== undefined ? options : {});
+        var config = {};
+        config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
+        config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
+        config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
+        var state = (options.state !== undefined ? options.state : {});
+        var options = {
+          delimiter: config.delimiter,
+          separator: config.separator,
+          onParseEntry: options.onParseEntry,
+          onParseValue: options.onParseValue,
+          state: state
+        };
+        var entry = $.csv.parsers.parseEntry(csv, options);
+        if (!config.callback) {
+          return entry;
+        } else {
+          config.callback('', entry);
+        }
+      },
+      toArrays: function(csv, options, callback) {
+        var options = (options !== undefined ? options : {});
+        var config = {};
+        config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
+        config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
+        config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
+        var data = [];
+        var options = {
+          delimiter: config.delimiter,
+          separator: config.separator,
+          onPreParse: options.onPreParse,
+          onParseEntry: options.onParseEntry,
+          onParseValue: options.onParseValue,
+          onPostParse: options.onPostParse,
+          start: options.start,
+          end: options.end,
+          state: {
+            rowNum: 1,
+            colNum: 1
+          }
+        };
+        if (options.onPreParse !== undefined) {
+          options.onPreParse(csv, options.state);
+        }
+        data = $.csv.parsers.parse(csv, options);
+        if (options.onPostParse !== undefined) {
+          options.onPostParse(data, options.state);
+        }
+        if (!config.callback) {
+          return data;
+        } else {
+          config.callback('', data);
+        }
+      },
+      toObjects: function(csv, options, callback) {
+        var options = (options !== undefined ? options : {});
+        var config = {};
+        config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
+        config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
+        config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
+        config.headers = 'headers' in options ? options.headers : $.csv.defaults.headers;
+        options.start = 'start' in options ? options.start : 1;
+        if (config.headers) {
+          options.start++;
+        }
+        if (options.end && config.headers) {
+          options.end++;
+        }
+        var lines = [];
+        var data = [];
+        var options = {
+          delimiter: config.delimiter,
+          separator: config.separator,
+          onPreParse: options.onPreParse,
+          onParseEntry: options.onParseEntry,
+          onParseValue: options.onParseValue,
+          onPostParse: options.onPostParse,
+          start: options.start,
+          end: options.end,
+          state: {
+            rowNum: 1,
+            colNum: 1
+          },
+          match: false,
+          transform: options.transform
+        };
+        var headerOptions = {
+          delimiter: config.delimiter,
+          separator: config.separator,
+          start: 1,
+          end: 1,
+          state: {
+            rowNum: 1,
+            colNum: 1
+          }
+        };
+        if (options.onPreParse !== undefined) {
+          options.onPreParse(csv, options.state);
+        }
+        var headerLine = $.csv.parsers.splitLines(csv, headerOptions);
+        var headers = $.csv.toArray(headerLine[0], options);
+        var lines = $.csv.parsers.splitLines(csv, options);
+        options.state.colNum = 1;
+        if (headers) {
+          options.state.rowNum = 2;
+        } else {
+          options.state.rowNum = 1;
+        }
+        for (var i = 0,
+            len = lines.length; i < len; i++) {
+          var entry = $.csv.toArray(lines[i], options);
+          var object = {};
+          for (var j = 0; j < headers.length; j++) {
+            object[headers[j]] = entry[j];
+          }
+          if (options.transform !== undefined) {
+            data.push(options.transform.call(undefined, object));
+          } else {
+            data.push(object);
+          }
+          options.state.rowNum++;
+        }
+        if (options.onPostParse !== undefined) {
+          options.onPostParse(data, options.state);
+        }
+        if (!config.callback) {
+          return data;
+        } else {
+          config.callback('', data);
+        }
+      },
+      fromArrays: function(arrays, options, callback) {
+        var options = (options !== undefined ? options : {});
+        var config = {};
+        config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
+        config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
+        config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
+        var output = '',
+            line,
+            lineValues,
+            i,
+            j;
+        for (i = 0; i < arrays.length; i++) {
+          line = arrays[i];
+          lineValues = [];
+          for (j = 0; j < line.length; j++) {
+            var strValue = (line[j] === undefined || line[j] === null) ? '' : line[j].toString();
+            if (strValue.indexOf(config.delimiter) > -1) {
+              strValue = strValue.replace(config.delimiter, config.delimiter + config.delimiter);
+            }
+            var escMatcher = '\n|\r|S|D';
+            escMatcher = escMatcher.replace('S', config.separator);
+            escMatcher = escMatcher.replace('D', config.delimiter);
+            if (strValue.search(escMatcher) > -1) {
+              strValue = config.delimiter + strValue + config.delimiter;
+            }
+            lineValues.push(strValue);
+          }
+          output += lineValues.join(config.separator) + '\r\n';
+        }
+        if (!config.callback) {
+          return output;
+        } else {
+          config.callback('', output);
+        }
+      },
+      fromObjects: function(objects, options, callback) {
+        var options = (options !== undefined ? options : {});
+        var config = {};
+        config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
+        config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
+        config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
+        config.headers = 'headers' in options ? options.headers : $.csv.defaults.headers;
+        config.sortOrder = 'sortOrder' in options ? options.sortOrder : 'declare';
+        config.manualOrder = 'manualOrder' in options ? options.manualOrder : [];
+        config.transform = options.transform;
+        if (typeof config.manualOrder === 'string') {
+          config.manualOrder = $.csv.toArray(config.manualOrder, config);
+        }
+        if (config.transform !== undefined) {
+          var origObjects = objects;
+          objects = [];
+          var i;
+          for (i = 0; i < origObjects.length; i++) {
+            objects.push(config.transform.call(undefined, origObjects[i]));
+          }
+        }
+        var props = $.csv.helpers.collectPropertyNames(objects);
+        if (config.sortOrder === 'alpha') {
+          props.sort();
+        }
+        if (config.manualOrder.length > 0) {
+          var propsManual = [].concat(config.manualOrder);
+          var p;
+          for (p = 0; p < props.length; p++) {
+            if (propsManual.indexOf(props[p]) < 0) {
+              propsManual.push(props[p]);
+            }
+          }
+          props = propsManual;
+        }
+        var o,
+            p,
+            line,
+            output = [],
+            propName;
+        if (config.headers) {
+          output.push(props);
+        }
+        for (o = 0; o < objects.length; o++) {
+          line = [];
+          for (p = 0; p < props.length; p++) {
+            propName = props[p];
+            if (propName in objects[o] && typeof objects[o][propName] !== 'function') {
+              line.push(objects[o][propName]);
+            } else {
+              line.push('');
+            }
+          }
+          output.push(line);
+        }
+        return $.csv.fromArrays(output, options, config.callback);
+      }
+    };
+    $.csvEntry2Array = $.csv.toArray;
+    $.csv2Array = $.csv.toArrays;
+    $.csv2Dictionary = $.csv.toObjects;
+    if (typeof module !== 'undefined' && module.exports) {
+      module.exports = $.csv;
+    }
+  }).call(this);
+  return module.exports;
+});
+
+(function() {
+var define = $__System.amdDefine;
+(function(factory) {
   if (typeof define === "function" && define.amd) {
     define("github:components/jqueryui@1.11.4/ui/draggable.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
@@ -4615,134 +5697,6 @@ var define = $__System.amdDefine;
 var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/mouse.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
-  } else {
-    factory(jQuery);
-  }
-}(function($) {
-  var mouseHandled = false;
-  $(document).mouseup(function() {
-    mouseHandled = false;
-  });
-  return $.widget("ui.mouse", {
-    version: "1.11.4",
-    options: {
-      cancel: "input,textarea,button,select,option",
-      distance: 1,
-      delay: 0
-    },
-    _mouseInit: function() {
-      var that = this;
-      this.element.bind("mousedown." + this.widgetName, function(event) {
-        return that._mouseDown(event);
-      }).bind("click." + this.widgetName, function(event) {
-        if (true === $.data(event.target, that.widgetName + ".preventClickEvent")) {
-          $.removeData(event.target, that.widgetName + ".preventClickEvent");
-          event.stopImmediatePropagation();
-          return false;
-        }
-      });
-      this.started = false;
-    },
-    _mouseDestroy: function() {
-      this.element.unbind("." + this.widgetName);
-      if (this._mouseMoveDelegate) {
-        this.document.unbind("mousemove." + this.widgetName, this._mouseMoveDelegate).unbind("mouseup." + this.widgetName, this._mouseUpDelegate);
-      }
-    },
-    _mouseDown: function(event) {
-      if (mouseHandled) {
-        return;
-      }
-      this._mouseMoved = false;
-      (this._mouseStarted && this._mouseUp(event));
-      this._mouseDownEvent = event;
-      var that = this,
-          btnIsLeft = (event.which === 1),
-          elIsCancel = (typeof this.options.cancel === "string" && event.target.nodeName ? $(event.target).closest(this.options.cancel).length : false);
-      if (!btnIsLeft || elIsCancel || !this._mouseCapture(event)) {
-        return true;
-      }
-      this.mouseDelayMet = !this.options.delay;
-      if (!this.mouseDelayMet) {
-        this._mouseDelayTimer = setTimeout(function() {
-          that.mouseDelayMet = true;
-        }, this.options.delay);
-      }
-      if (this._mouseDistanceMet(event) && this._mouseDelayMet(event)) {
-        this._mouseStarted = (this._mouseStart(event) !== false);
-        if (!this._mouseStarted) {
-          event.preventDefault();
-          return true;
-        }
-      }
-      if (true === $.data(event.target, this.widgetName + ".preventClickEvent")) {
-        $.removeData(event.target, this.widgetName + ".preventClickEvent");
-      }
-      this._mouseMoveDelegate = function(event) {
-        return that._mouseMove(event);
-      };
-      this._mouseUpDelegate = function(event) {
-        return that._mouseUp(event);
-      };
-      this.document.bind("mousemove." + this.widgetName, this._mouseMoveDelegate).bind("mouseup." + this.widgetName, this._mouseUpDelegate);
-      event.preventDefault();
-      mouseHandled = true;
-      return true;
-    },
-    _mouseMove: function(event) {
-      if (this._mouseMoved) {
-        if ($.ui.ie && (!document.documentMode || document.documentMode < 9) && !event.button) {
-          return this._mouseUp(event);
-        } else if (!event.which) {
-          return this._mouseUp(event);
-        }
-      }
-      if (event.which || event.button) {
-        this._mouseMoved = true;
-      }
-      if (this._mouseStarted) {
-        this._mouseDrag(event);
-        return event.preventDefault();
-      }
-      if (this._mouseDistanceMet(event) && this._mouseDelayMet(event)) {
-        this._mouseStarted = (this._mouseStart(this._mouseDownEvent, event) !== false);
-        (this._mouseStarted ? this._mouseDrag(event) : this._mouseUp(event));
-      }
-      return !this._mouseStarted;
-    },
-    _mouseUp: function(event) {
-      this.document.unbind("mousemove." + this.widgetName, this._mouseMoveDelegate).unbind("mouseup." + this.widgetName, this._mouseUpDelegate);
-      if (this._mouseStarted) {
-        this._mouseStarted = false;
-        if (event.target === this._mouseDownEvent.target) {
-          $.data(event.target, this.widgetName + ".preventClickEvent", true);
-        }
-        this._mouseStop(event);
-      }
-      mouseHandled = false;
-      return false;
-    },
-    _mouseDistanceMet: function(event) {
-      return (Math.max(Math.abs(this._mouseDownEvent.pageX - event.pageX), Math.abs(this._mouseDownEvent.pageY - event.pageY)) >= this.options.distance);
-    },
-    _mouseDelayMet: function() {
-      return this.mouseDelayMet;
-    },
-    _mouseStart: function() {},
-    _mouseDrag: function() {},
-    _mouseStop: function() {},
-    _mouseCapture: function() {
-      return true;
-    }
-  });
-}));
-
-})();
-(function() {
-var define = $__System.amdDefine;
-(function(factory) {
-  if (typeof define === "function" && define.amd) {
     define("github:components/jqueryui@1.11.4/ui/slider.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
@@ -5327,6 +6281,802 @@ var define = $__System.amdDefine;
         }
       }
     }
+  });
+}));
+
+})();
+(function() {
+var define = $__System.amdDefine;
+(function(factory) {
+  if (typeof define === "function" && define.amd) {
+    define("github:components/jqueryui@1.11.4/ui/tabs.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+  } else {
+    factory(jQuery);
+  }
+}(function($) {
+  return $.widget("ui.tabs", {
+    version: "1.11.4",
+    delay: 300,
+    options: {
+      active: null,
+      collapsible: false,
+      event: "click",
+      heightStyle: "content",
+      hide: null,
+      show: null,
+      activate: null,
+      beforeActivate: null,
+      beforeLoad: null,
+      load: null
+    },
+    _isLocal: (function() {
+      var rhash = /#.*$/;
+      return function(anchor) {
+        var anchorUrl,
+            locationUrl;
+        anchor = anchor.cloneNode(false);
+        anchorUrl = anchor.href.replace(rhash, "");
+        locationUrl = location.href.replace(rhash, "");
+        try {
+          anchorUrl = decodeURIComponent(anchorUrl);
+        } catch (error) {}
+        try {
+          locationUrl = decodeURIComponent(locationUrl);
+        } catch (error) {}
+        return anchor.hash.length > 1 && anchorUrl === locationUrl;
+      };
+    })(),
+    _create: function() {
+      var that = this,
+          options = this.options;
+      this.running = false;
+      this.element.addClass("ui-tabs ui-widget ui-widget-content ui-corner-all").toggleClass("ui-tabs-collapsible", options.collapsible);
+      this._processTabs();
+      options.active = this._initialActive();
+      if ($.isArray(options.disabled)) {
+        options.disabled = $.unique(options.disabled.concat($.map(this.tabs.filter(".ui-state-disabled"), function(li) {
+          return that.tabs.index(li);
+        }))).sort();
+      }
+      if (this.options.active !== false && this.anchors.length) {
+        this.active = this._findActive(options.active);
+      } else {
+        this.active = $();
+      }
+      this._refresh();
+      if (this.active.length) {
+        this.load(options.active);
+      }
+    },
+    _initialActive: function() {
+      var active = this.options.active,
+          collapsible = this.options.collapsible,
+          locationHash = location.hash.substring(1);
+      if (active === null) {
+        if (locationHash) {
+          this.tabs.each(function(i, tab) {
+            if ($(tab).attr("aria-controls") === locationHash) {
+              active = i;
+              return false;
+            }
+          });
+        }
+        if (active === null) {
+          active = this.tabs.index(this.tabs.filter(".ui-tabs-active"));
+        }
+        if (active === null || active === -1) {
+          active = this.tabs.length ? 0 : false;
+        }
+      }
+      if (active !== false) {
+        active = this.tabs.index(this.tabs.eq(active));
+        if (active === -1) {
+          active = collapsible ? false : 0;
+        }
+      }
+      if (!collapsible && active === false && this.anchors.length) {
+        active = 0;
+      }
+      return active;
+    },
+    _getCreateEventData: function() {
+      return {
+        tab: this.active,
+        panel: !this.active.length ? $() : this._getPanelForTab(this.active)
+      };
+    },
+    _tabKeydown: function(event) {
+      var focusedTab = $(this.document[0].activeElement).closest("li"),
+          selectedIndex = this.tabs.index(focusedTab),
+          goingForward = true;
+      if (this._handlePageNav(event)) {
+        return;
+      }
+      switch (event.keyCode) {
+        case $.ui.keyCode.RIGHT:
+        case $.ui.keyCode.DOWN:
+          selectedIndex++;
+          break;
+        case $.ui.keyCode.UP:
+        case $.ui.keyCode.LEFT:
+          goingForward = false;
+          selectedIndex--;
+          break;
+        case $.ui.keyCode.END:
+          selectedIndex = this.anchors.length - 1;
+          break;
+        case $.ui.keyCode.HOME:
+          selectedIndex = 0;
+          break;
+        case $.ui.keyCode.SPACE:
+          event.preventDefault();
+          clearTimeout(this.activating);
+          this._activate(selectedIndex);
+          return;
+        case $.ui.keyCode.ENTER:
+          event.preventDefault();
+          clearTimeout(this.activating);
+          this._activate(selectedIndex === this.options.active ? false : selectedIndex);
+          return;
+        default:
+          return;
+      }
+      event.preventDefault();
+      clearTimeout(this.activating);
+      selectedIndex = this._focusNextTab(selectedIndex, goingForward);
+      if (!event.ctrlKey && !event.metaKey) {
+        focusedTab.attr("aria-selected", "false");
+        this.tabs.eq(selectedIndex).attr("aria-selected", "true");
+        this.activating = this._delay(function() {
+          this.option("active", selectedIndex);
+        }, this.delay);
+      }
+    },
+    _panelKeydown: function(event) {
+      if (this._handlePageNav(event)) {
+        return;
+      }
+      if (event.ctrlKey && event.keyCode === $.ui.keyCode.UP) {
+        event.preventDefault();
+        this.active.focus();
+      }
+    },
+    _handlePageNav: function(event) {
+      if (event.altKey && event.keyCode === $.ui.keyCode.PAGE_UP) {
+        this._activate(this._focusNextTab(this.options.active - 1, false));
+        return true;
+      }
+      if (event.altKey && event.keyCode === $.ui.keyCode.PAGE_DOWN) {
+        this._activate(this._focusNextTab(this.options.active + 1, true));
+        return true;
+      }
+    },
+    _findNextTab: function(index, goingForward) {
+      var lastTabIndex = this.tabs.length - 1;
+      function constrain() {
+        if (index > lastTabIndex) {
+          index = 0;
+        }
+        if (index < 0) {
+          index = lastTabIndex;
+        }
+        return index;
+      }
+      while ($.inArray(constrain(), this.options.disabled) !== -1) {
+        index = goingForward ? index + 1 : index - 1;
+      }
+      return index;
+    },
+    _focusNextTab: function(index, goingForward) {
+      index = this._findNextTab(index, goingForward);
+      this.tabs.eq(index).focus();
+      return index;
+    },
+    _setOption: function(key, value) {
+      if (key === "active") {
+        this._activate(value);
+        return;
+      }
+      if (key === "disabled") {
+        this._setupDisabled(value);
+        return;
+      }
+      this._super(key, value);
+      if (key === "collapsible") {
+        this.element.toggleClass("ui-tabs-collapsible", value);
+        if (!value && this.options.active === false) {
+          this._activate(0);
+        }
+      }
+      if (key === "event") {
+        this._setupEvents(value);
+      }
+      if (key === "heightStyle") {
+        this._setupHeightStyle(value);
+      }
+    },
+    _sanitizeSelector: function(hash) {
+      return hash ? hash.replace(/[!"$%&'()*+,.\/:;<=>?@\[\]\^`{|}~]/g, "\\$&") : "";
+    },
+    refresh: function() {
+      var options = this.options,
+          lis = this.tablist.children(":has(a[href])");
+      options.disabled = $.map(lis.filter(".ui-state-disabled"), function(tab) {
+        return lis.index(tab);
+      });
+      this._processTabs();
+      if (options.active === false || !this.anchors.length) {
+        options.active = false;
+        this.active = $();
+      } else if (this.active.length && !$.contains(this.tablist[0], this.active[0])) {
+        if (this.tabs.length === options.disabled.length) {
+          options.active = false;
+          this.active = $();
+        } else {
+          this._activate(this._findNextTab(Math.max(0, options.active - 1), false));
+        }
+      } else {
+        options.active = this.tabs.index(this.active);
+      }
+      this._refresh();
+    },
+    _refresh: function() {
+      this._setupDisabled(this.options.disabled);
+      this._setupEvents(this.options.event);
+      this._setupHeightStyle(this.options.heightStyle);
+      this.tabs.not(this.active).attr({
+        "aria-selected": "false",
+        "aria-expanded": "false",
+        tabIndex: -1
+      });
+      this.panels.not(this._getPanelForTab(this.active)).hide().attr({"aria-hidden": "true"});
+      if (!this.active.length) {
+        this.tabs.eq(0).attr("tabIndex", 0);
+      } else {
+        this.active.addClass("ui-tabs-active ui-state-active").attr({
+          "aria-selected": "true",
+          "aria-expanded": "true",
+          tabIndex: 0
+        });
+        this._getPanelForTab(this.active).show().attr({"aria-hidden": "false"});
+      }
+    },
+    _processTabs: function() {
+      var that = this,
+          prevTabs = this.tabs,
+          prevAnchors = this.anchors,
+          prevPanels = this.panels;
+      this.tablist = this._getList().addClass("ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all").attr("role", "tablist").delegate("> li", "mousedown" + this.eventNamespace, function(event) {
+        if ($(this).is(".ui-state-disabled")) {
+          event.preventDefault();
+        }
+      }).delegate(".ui-tabs-anchor", "focus" + this.eventNamespace, function() {
+        if ($(this).closest("li").is(".ui-state-disabled")) {
+          this.blur();
+        }
+      });
+      this.tabs = this.tablist.find("> li:has(a[href])").addClass("ui-state-default ui-corner-top").attr({
+        role: "tab",
+        tabIndex: -1
+      });
+      this.anchors = this.tabs.map(function() {
+        return $("a", this)[0];
+      }).addClass("ui-tabs-anchor").attr({
+        role: "presentation",
+        tabIndex: -1
+      });
+      this.panels = $();
+      this.anchors.each(function(i, anchor) {
+        var selector,
+            panel,
+            panelId,
+            anchorId = $(anchor).uniqueId().attr("id"),
+            tab = $(anchor).closest("li"),
+            originalAriaControls = tab.attr("aria-controls");
+        if (that._isLocal(anchor)) {
+          selector = anchor.hash;
+          panelId = selector.substring(1);
+          panel = that.element.find(that._sanitizeSelector(selector));
+        } else {
+          panelId = tab.attr("aria-controls") || $({}).uniqueId()[0].id;
+          selector = "#" + panelId;
+          panel = that.element.find(selector);
+          if (!panel.length) {
+            panel = that._createPanel(panelId);
+            panel.insertAfter(that.panels[i - 1] || that.tablist);
+          }
+          panel.attr("aria-live", "polite");
+        }
+        if (panel.length) {
+          that.panels = that.panels.add(panel);
+        }
+        if (originalAriaControls) {
+          tab.data("ui-tabs-aria-controls", originalAriaControls);
+        }
+        tab.attr({
+          "aria-controls": panelId,
+          "aria-labelledby": anchorId
+        });
+        panel.attr("aria-labelledby", anchorId);
+      });
+      this.panels.addClass("ui-tabs-panel ui-widget-content ui-corner-bottom").attr("role", "tabpanel");
+      if (prevTabs) {
+        this._off(prevTabs.not(this.tabs));
+        this._off(prevAnchors.not(this.anchors));
+        this._off(prevPanels.not(this.panels));
+      }
+    },
+    _getList: function() {
+      return this.tablist || this.element.find("ol,ul").eq(0);
+    },
+    _createPanel: function(id) {
+      return $("<div>").attr("id", id).addClass("ui-tabs-panel ui-widget-content ui-corner-bottom").data("ui-tabs-destroy", true);
+    },
+    _setupDisabled: function(disabled) {
+      if ($.isArray(disabled)) {
+        if (!disabled.length) {
+          disabled = false;
+        } else if (disabled.length === this.anchors.length) {
+          disabled = true;
+        }
+      }
+      for (var i = 0,
+          li; (li = this.tabs[i]); i++) {
+        if (disabled === true || $.inArray(i, disabled) !== -1) {
+          $(li).addClass("ui-state-disabled").attr("aria-disabled", "true");
+        } else {
+          $(li).removeClass("ui-state-disabled").removeAttr("aria-disabled");
+        }
+      }
+      this.options.disabled = disabled;
+    },
+    _setupEvents: function(event) {
+      var events = {};
+      if (event) {
+        $.each(event.split(" "), function(index, eventName) {
+          events[eventName] = "_eventHandler";
+        });
+      }
+      this._off(this.anchors.add(this.tabs).add(this.panels));
+      this._on(true, this.anchors, {click: function(event) {
+          event.preventDefault();
+        }});
+      this._on(this.anchors, events);
+      this._on(this.tabs, {keydown: "_tabKeydown"});
+      this._on(this.panels, {keydown: "_panelKeydown"});
+      this._focusable(this.tabs);
+      this._hoverable(this.tabs);
+    },
+    _setupHeightStyle: function(heightStyle) {
+      var maxHeight,
+          parent = this.element.parent();
+      if (heightStyle === "fill") {
+        maxHeight = parent.height();
+        maxHeight -= this.element.outerHeight() - this.element.height();
+        this.element.siblings(":visible").each(function() {
+          var elem = $(this),
+              position = elem.css("position");
+          if (position === "absolute" || position === "fixed") {
+            return;
+          }
+          maxHeight -= elem.outerHeight(true);
+        });
+        this.element.children().not(this.panels).each(function() {
+          maxHeight -= $(this).outerHeight(true);
+        });
+        this.panels.each(function() {
+          $(this).height(Math.max(0, maxHeight - $(this).innerHeight() + $(this).height()));
+        }).css("overflow", "auto");
+      } else if (heightStyle === "auto") {
+        maxHeight = 0;
+        this.panels.each(function() {
+          maxHeight = Math.max(maxHeight, $(this).height("").height());
+        }).height(maxHeight);
+      }
+    },
+    _eventHandler: function(event) {
+      var options = this.options,
+          active = this.active,
+          anchor = $(event.currentTarget),
+          tab = anchor.closest("li"),
+          clickedIsActive = tab[0] === active[0],
+          collapsing = clickedIsActive && options.collapsible,
+          toShow = collapsing ? $() : this._getPanelForTab(tab),
+          toHide = !active.length ? $() : this._getPanelForTab(active),
+          eventData = {
+            oldTab: active,
+            oldPanel: toHide,
+            newTab: collapsing ? $() : tab,
+            newPanel: toShow
+          };
+      event.preventDefault();
+      if (tab.hasClass("ui-state-disabled") || tab.hasClass("ui-tabs-loading") || this.running || (clickedIsActive && !options.collapsible) || (this._trigger("beforeActivate", event, eventData) === false)) {
+        return;
+      }
+      options.active = collapsing ? false : this.tabs.index(tab);
+      this.active = clickedIsActive ? $() : tab;
+      if (this.xhr) {
+        this.xhr.abort();
+      }
+      if (!toHide.length && !toShow.length) {
+        $.error("jQuery UI Tabs: Mismatching fragment identifier.");
+      }
+      if (toShow.length) {
+        this.load(this.tabs.index(tab), event);
+      }
+      this._toggle(event, eventData);
+    },
+    _toggle: function(event, eventData) {
+      var that = this,
+          toShow = eventData.newPanel,
+          toHide = eventData.oldPanel;
+      this.running = true;
+      function complete() {
+        that.running = false;
+        that._trigger("activate", event, eventData);
+      }
+      function show() {
+        eventData.newTab.closest("li").addClass("ui-tabs-active ui-state-active");
+        if (toShow.length && that.options.show) {
+          that._show(toShow, that.options.show, complete);
+        } else {
+          toShow.show();
+          complete();
+        }
+      }
+      if (toHide.length && this.options.hide) {
+        this._hide(toHide, this.options.hide, function() {
+          eventData.oldTab.closest("li").removeClass("ui-tabs-active ui-state-active");
+          show();
+        });
+      } else {
+        eventData.oldTab.closest("li").removeClass("ui-tabs-active ui-state-active");
+        toHide.hide();
+        show();
+      }
+      toHide.attr("aria-hidden", "true");
+      eventData.oldTab.attr({
+        "aria-selected": "false",
+        "aria-expanded": "false"
+      });
+      if (toShow.length && toHide.length) {
+        eventData.oldTab.attr("tabIndex", -1);
+      } else if (toShow.length) {
+        this.tabs.filter(function() {
+          return $(this).attr("tabIndex") === 0;
+        }).attr("tabIndex", -1);
+      }
+      toShow.attr("aria-hidden", "false");
+      eventData.newTab.attr({
+        "aria-selected": "true",
+        "aria-expanded": "true",
+        tabIndex: 0
+      });
+    },
+    _activate: function(index) {
+      var anchor,
+          active = this._findActive(index);
+      if (active[0] === this.active[0]) {
+        return;
+      }
+      if (!active.length) {
+        active = this.active;
+      }
+      anchor = active.find(".ui-tabs-anchor")[0];
+      this._eventHandler({
+        target: anchor,
+        currentTarget: anchor,
+        preventDefault: $.noop
+      });
+    },
+    _findActive: function(index) {
+      return index === false ? $() : this.tabs.eq(index);
+    },
+    _getIndex: function(index) {
+      if (typeof index === "string") {
+        index = this.anchors.index(this.anchors.filter("[href$='" + index + "']"));
+      }
+      return index;
+    },
+    _destroy: function() {
+      if (this.xhr) {
+        this.xhr.abort();
+      }
+      this.element.removeClass("ui-tabs ui-widget ui-widget-content ui-corner-all ui-tabs-collapsible");
+      this.tablist.removeClass("ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all").removeAttr("role");
+      this.anchors.removeClass("ui-tabs-anchor").removeAttr("role").removeAttr("tabIndex").removeUniqueId();
+      this.tablist.unbind(this.eventNamespace);
+      this.tabs.add(this.panels).each(function() {
+        if ($.data(this, "ui-tabs-destroy")) {
+          $(this).remove();
+        } else {
+          $(this).removeClass("ui-state-default ui-state-active ui-state-disabled " + "ui-corner-top ui-corner-bottom ui-widget-content ui-tabs-active ui-tabs-panel").removeAttr("tabIndex").removeAttr("aria-live").removeAttr("aria-busy").removeAttr("aria-selected").removeAttr("aria-labelledby").removeAttr("aria-hidden").removeAttr("aria-expanded").removeAttr("role");
+        }
+      });
+      this.tabs.each(function() {
+        var li = $(this),
+            prev = li.data("ui-tabs-aria-controls");
+        if (prev) {
+          li.attr("aria-controls", prev).removeData("ui-tabs-aria-controls");
+        } else {
+          li.removeAttr("aria-controls");
+        }
+      });
+      this.panels.show();
+      if (this.options.heightStyle !== "content") {
+        this.panels.css("height", "");
+      }
+    },
+    enable: function(index) {
+      var disabled = this.options.disabled;
+      if (disabled === false) {
+        return;
+      }
+      if (index === undefined) {
+        disabled = false;
+      } else {
+        index = this._getIndex(index);
+        if ($.isArray(disabled)) {
+          disabled = $.map(disabled, function(num) {
+            return num !== index ? num : null;
+          });
+        } else {
+          disabled = $.map(this.tabs, function(li, num) {
+            return num !== index ? num : null;
+          });
+        }
+      }
+      this._setupDisabled(disabled);
+    },
+    disable: function(index) {
+      var disabled = this.options.disabled;
+      if (disabled === true) {
+        return;
+      }
+      if (index === undefined) {
+        disabled = true;
+      } else {
+        index = this._getIndex(index);
+        if ($.inArray(index, disabled) !== -1) {
+          return;
+        }
+        if ($.isArray(disabled)) {
+          disabled = $.merge([index], disabled).sort();
+        } else {
+          disabled = [index];
+        }
+      }
+      this._setupDisabled(disabled);
+    },
+    load: function(index, event) {
+      index = this._getIndex(index);
+      var that = this,
+          tab = this.tabs.eq(index),
+          anchor = tab.find(".ui-tabs-anchor"),
+          panel = this._getPanelForTab(tab),
+          eventData = {
+            tab: tab,
+            panel: panel
+          },
+          complete = function(jqXHR, status) {
+            if (status === "abort") {
+              that.panels.stop(false, true);
+            }
+            tab.removeClass("ui-tabs-loading");
+            panel.removeAttr("aria-busy");
+            if (jqXHR === that.xhr) {
+              delete that.xhr;
+            }
+          };
+      if (this._isLocal(anchor[0])) {
+        return;
+      }
+      this.xhr = $.ajax(this._ajaxSettings(anchor, event, eventData));
+      if (this.xhr && this.xhr.statusText !== "canceled") {
+        tab.addClass("ui-tabs-loading");
+        panel.attr("aria-busy", "true");
+        this.xhr.done(function(response, status, jqXHR) {
+          setTimeout(function() {
+            panel.html(response);
+            that._trigger("load", event, eventData);
+            complete(jqXHR, status);
+          }, 1);
+        }).fail(function(jqXHR, status) {
+          setTimeout(function() {
+            complete(jqXHR, status);
+          }, 1);
+        });
+      }
+    },
+    _ajaxSettings: function(anchor, event, eventData) {
+      var that = this;
+      return {
+        url: anchor.attr("href"),
+        beforeSend: function(jqXHR, settings) {
+          return that._trigger("beforeLoad", event, $.extend({
+            jqXHR: jqXHR,
+            ajaxSettings: settings
+          }, eventData));
+        }
+      };
+    },
+    _getPanelForTab: function(tab) {
+      var id = $(tab).attr("aria-controls");
+      return this.element.find(this._sanitizeSelector("#" + id));
+    }
+  });
+}));
+
+})();
+(function() {
+var define = $__System.amdDefine;
+(function(root, factory) {
+  if (typeof define === "function" && define.amd) {
+    define("src/plugins/jquery.ajax.progress.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
+  } else if (typeof module !== 'undefined' && typeof exports === "object") {
+    module.exports = factory(require('jquery'));
+  } else {
+    root.jQuery = factory(root.jQuery);
+  }
+}(this, function(jQuery) {
+  (function addXhrProgressEvent($) {
+    var originalXhr = $.ajaxSettings.xhr;
+    $.ajaxSetup({
+      progress: function(e) {},
+      xhr: function() {
+        var req = originalXhr(),
+            _this = this;
+        if (req) {
+          if (typeof req.addEventListener === "function") {
+            req.addEventListener("progress", function(evt) {
+              if (_this.progress) {
+                _this.progress(evt);
+              }
+            }, false);
+          }
+        }
+        return req;
+      }
+    });
+  })(jQuery);
+}));
+
+})();
+(function() {
+var define = $__System.amdDefine;
+(function(root, factory) {
+  if (typeof define === "function" && define.amd) {
+    define("src/plugins/jquery.hotkeys.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
+  } else if (typeof module !== 'undefined' && typeof exports === "object") {
+    module.exports = factory(require('jquery'));
+  } else {
+    root.jQuery = factory(root.jQuery);
+  }
+}(this, function(jQuery) {
+  jQuery.hotkeys = {
+    version: "0.8",
+    specialKeys: {
+      8: "backspace",
+      9: "tab",
+      13: "return",
+      16: "shift",
+      17: "ctrl",
+      18: "alt",
+      19: "pause",
+      20: "capslock",
+      27: "esc",
+      32: "space",
+      33: "pageup",
+      34: "pagedown",
+      35: "end",
+      36: "home",
+      37: "left",
+      38: "up",
+      39: "right",
+      40: "down",
+      45: "insert",
+      46: "del",
+      96: "0",
+      97: "1",
+      98: "2",
+      99: "3",
+      100: "4",
+      101: "5",
+      102: "6",
+      103: "7",
+      104: "8",
+      105: "9",
+      106: "*",
+      107: "+",
+      109: "-",
+      110: ".",
+      111: "/",
+      112: "f1",
+      113: "f2",
+      114: "f3",
+      115: "f4",
+      116: "f5",
+      117: "f6",
+      118: "f7",
+      119: "f8",
+      120: "f9",
+      121: "f10",
+      122: "f11",
+      123: "f12",
+      144: "numlock",
+      145: "scroll",
+      191: "/",
+      224: "meta"
+    },
+    shiftNums: {
+      "`": "~",
+      "1": "!",
+      "2": "@",
+      "3": "#",
+      "4": "$",
+      "5": "%",
+      "6": "^",
+      "7": "&",
+      "8": "*",
+      "9": "(",
+      "0": ")",
+      "-": "_",
+      "=": "+",
+      ";": ": ",
+      "'": "\"",
+      ",": "<",
+      ".": ">",
+      "/": "?",
+      "\\": "|"
+    }
+  };
+  function keyHandler(handleObj) {
+    if (typeof handleObj.data !== "string") {
+      return;
+    }
+    var origHandler = handleObj.handler,
+        keys = handleObj.data.toLowerCase().split(" "),
+        textAcceptingInputTypes = ["text", "password", "number", "email", "url", "range", "date", "month", "week", "time", "datetime", "datetime-local", "search", "color"];
+    handleObj.handler = function(event) {
+      if (this !== event.target && (/textarea|select/i.test(event.target.nodeName) || jQuery.inArray(event.target.type, textAcceptingInputTypes) > -1)) {
+        return;
+      }
+      var special = event.type !== "keypress" && jQuery.hotkeys.specialKeys[event.which],
+          character = String.fromCharCode(event.which).toLowerCase(),
+          key,
+          modif = "",
+          possible = {};
+      if (event.altKey && special !== "alt") {
+        modif += "alt+";
+      }
+      if (event.ctrlKey && special !== "ctrl") {
+        modif += "ctrl+";
+      }
+      if (event.metaKey && !event.ctrlKey && special !== "meta") {
+        modif += "meta+";
+      }
+      if (event.shiftKey && special !== "shift") {
+        modif += "shift+";
+      }
+      if (special) {
+        possible[modif + special] = true;
+      } else {
+        possible[modif + character] = true;
+        possible[modif + jQuery.hotkeys.shiftNums[character]] = true;
+        if (modif === "shift+") {
+          possible[jQuery.hotkeys.shiftNums[character]] = true;
+        }
+      }
+      for (var i = 0,
+          l = keys.length; i < l; i++) {
+        if (possible[keys[i]]) {
+          return origHandler.apply(this, arguments);
+        }
+      }
+    };
+  }
+  jQuery.each(["keydown", "keyup", "keypress"], function() {
+    jQuery.event.special[this] = {add: keyHandler};
   });
 }));
 
@@ -11999,2032 +13749,327 @@ var define = $__System.amdDefine;
 var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("github:components/jqueryui@1.11.4/ui/tabs.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
+    define("github:components/jqueryui@1.11.4/ui/mouse.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
 }(function($) {
-  return $.widget("ui.tabs", {
+  var mouseHandled = false;
+  $(document).mouseup(function() {
+    mouseHandled = false;
+  });
+  return $.widget("ui.mouse", {
     version: "1.11.4",
-    delay: 300,
     options: {
-      active: null,
-      collapsible: false,
-      event: "click",
-      heightStyle: "content",
-      hide: null,
-      show: null,
-      activate: null,
-      beforeActivate: null,
-      beforeLoad: null,
-      load: null
+      cancel: "input,textarea,button,select,option",
+      distance: 1,
+      delay: 0
     },
-    _isLocal: (function() {
-      var rhash = /#.*$/;
-      return function(anchor) {
-        var anchorUrl,
-            locationUrl;
-        anchor = anchor.cloneNode(false);
-        anchorUrl = anchor.href.replace(rhash, "");
-        locationUrl = location.href.replace(rhash, "");
-        try {
-          anchorUrl = decodeURIComponent(anchorUrl);
-        } catch (error) {}
-        try {
-          locationUrl = decodeURIComponent(locationUrl);
-        } catch (error) {}
-        return anchor.hash.length > 1 && anchorUrl === locationUrl;
-      };
-    })(),
-    _create: function() {
-      var that = this,
-          options = this.options;
-      this.running = false;
-      this.element.addClass("ui-tabs ui-widget ui-widget-content ui-corner-all").toggleClass("ui-tabs-collapsible", options.collapsible);
-      this._processTabs();
-      options.active = this._initialActive();
-      if ($.isArray(options.disabled)) {
-        options.disabled = $.unique(options.disabled.concat($.map(this.tabs.filter(".ui-state-disabled"), function(li) {
-          return that.tabs.index(li);
-        }))).sort();
-      }
-      if (this.options.active !== false && this.anchors.length) {
-        this.active = this._findActive(options.active);
-      } else {
-        this.active = $();
-      }
-      this._refresh();
-      if (this.active.length) {
-        this.load(options.active);
-      }
-    },
-    _initialActive: function() {
-      var active = this.options.active,
-          collapsible = this.options.collapsible,
-          locationHash = location.hash.substring(1);
-      if (active === null) {
-        if (locationHash) {
-          this.tabs.each(function(i, tab) {
-            if ($(tab).attr("aria-controls") === locationHash) {
-              active = i;
-              return false;
-            }
-          });
-        }
-        if (active === null) {
-          active = this.tabs.index(this.tabs.filter(".ui-tabs-active"));
-        }
-        if (active === null || active === -1) {
-          active = this.tabs.length ? 0 : false;
-        }
-      }
-      if (active !== false) {
-        active = this.tabs.index(this.tabs.eq(active));
-        if (active === -1) {
-          active = collapsible ? false : 0;
-        }
-      }
-      if (!collapsible && active === false && this.anchors.length) {
-        active = 0;
-      }
-      return active;
-    },
-    _getCreateEventData: function() {
-      return {
-        tab: this.active,
-        panel: !this.active.length ? $() : this._getPanelForTab(this.active)
-      };
-    },
-    _tabKeydown: function(event) {
-      var focusedTab = $(this.document[0].activeElement).closest("li"),
-          selectedIndex = this.tabs.index(focusedTab),
-          goingForward = true;
-      if (this._handlePageNav(event)) {
-        return;
-      }
-      switch (event.keyCode) {
-        case $.ui.keyCode.RIGHT:
-        case $.ui.keyCode.DOWN:
-          selectedIndex++;
-          break;
-        case $.ui.keyCode.UP:
-        case $.ui.keyCode.LEFT:
-          goingForward = false;
-          selectedIndex--;
-          break;
-        case $.ui.keyCode.END:
-          selectedIndex = this.anchors.length - 1;
-          break;
-        case $.ui.keyCode.HOME:
-          selectedIndex = 0;
-          break;
-        case $.ui.keyCode.SPACE:
-          event.preventDefault();
-          clearTimeout(this.activating);
-          this._activate(selectedIndex);
-          return;
-        case $.ui.keyCode.ENTER:
-          event.preventDefault();
-          clearTimeout(this.activating);
-          this._activate(selectedIndex === this.options.active ? false : selectedIndex);
-          return;
-        default:
-          return;
-      }
-      event.preventDefault();
-      clearTimeout(this.activating);
-      selectedIndex = this._focusNextTab(selectedIndex, goingForward);
-      if (!event.ctrlKey && !event.metaKey) {
-        focusedTab.attr("aria-selected", "false");
-        this.tabs.eq(selectedIndex).attr("aria-selected", "true");
-        this.activating = this._delay(function() {
-          this.option("active", selectedIndex);
-        }, this.delay);
-      }
-    },
-    _panelKeydown: function(event) {
-      if (this._handlePageNav(event)) {
-        return;
-      }
-      if (event.ctrlKey && event.keyCode === $.ui.keyCode.UP) {
-        event.preventDefault();
-        this.active.focus();
-      }
-    },
-    _handlePageNav: function(event) {
-      if (event.altKey && event.keyCode === $.ui.keyCode.PAGE_UP) {
-        this._activate(this._focusNextTab(this.options.active - 1, false));
-        return true;
-      }
-      if (event.altKey && event.keyCode === $.ui.keyCode.PAGE_DOWN) {
-        this._activate(this._focusNextTab(this.options.active + 1, true));
-        return true;
-      }
-    },
-    _findNextTab: function(index, goingForward) {
-      var lastTabIndex = this.tabs.length - 1;
-      function constrain() {
-        if (index > lastTabIndex) {
-          index = 0;
-        }
-        if (index < 0) {
-          index = lastTabIndex;
-        }
-        return index;
-      }
-      while ($.inArray(constrain(), this.options.disabled) !== -1) {
-        index = goingForward ? index + 1 : index - 1;
-      }
-      return index;
-    },
-    _focusNextTab: function(index, goingForward) {
-      index = this._findNextTab(index, goingForward);
-      this.tabs.eq(index).focus();
-      return index;
-    },
-    _setOption: function(key, value) {
-      if (key === "active") {
-        this._activate(value);
-        return;
-      }
-      if (key === "disabled") {
-        this._setupDisabled(value);
-        return;
-      }
-      this._super(key, value);
-      if (key === "collapsible") {
-        this.element.toggleClass("ui-tabs-collapsible", value);
-        if (!value && this.options.active === false) {
-          this._activate(0);
-        }
-      }
-      if (key === "event") {
-        this._setupEvents(value);
-      }
-      if (key === "heightStyle") {
-        this._setupHeightStyle(value);
-      }
-    },
-    _sanitizeSelector: function(hash) {
-      return hash ? hash.replace(/[!"$%&'()*+,.\/:;<=>?@\[\]\^`{|}~]/g, "\\$&") : "";
-    },
-    refresh: function() {
-      var options = this.options,
-          lis = this.tablist.children(":has(a[href])");
-      options.disabled = $.map(lis.filter(".ui-state-disabled"), function(tab) {
-        return lis.index(tab);
-      });
-      this._processTabs();
-      if (options.active === false || !this.anchors.length) {
-        options.active = false;
-        this.active = $();
-      } else if (this.active.length && !$.contains(this.tablist[0], this.active[0])) {
-        if (this.tabs.length === options.disabled.length) {
-          options.active = false;
-          this.active = $();
-        } else {
-          this._activate(this._findNextTab(Math.max(0, options.active - 1), false));
-        }
-      } else {
-        options.active = this.tabs.index(this.active);
-      }
-      this._refresh();
-    },
-    _refresh: function() {
-      this._setupDisabled(this.options.disabled);
-      this._setupEvents(this.options.event);
-      this._setupHeightStyle(this.options.heightStyle);
-      this.tabs.not(this.active).attr({
-        "aria-selected": "false",
-        "aria-expanded": "false",
-        tabIndex: -1
-      });
-      this.panels.not(this._getPanelForTab(this.active)).hide().attr({"aria-hidden": "true"});
-      if (!this.active.length) {
-        this.tabs.eq(0).attr("tabIndex", 0);
-      } else {
-        this.active.addClass("ui-tabs-active ui-state-active").attr({
-          "aria-selected": "true",
-          "aria-expanded": "true",
-          tabIndex: 0
-        });
-        this._getPanelForTab(this.active).show().attr({"aria-hidden": "false"});
-      }
-    },
-    _processTabs: function() {
-      var that = this,
-          prevTabs = this.tabs,
-          prevAnchors = this.anchors,
-          prevPanels = this.panels;
-      this.tablist = this._getList().addClass("ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all").attr("role", "tablist").delegate("> li", "mousedown" + this.eventNamespace, function(event) {
-        if ($(this).is(".ui-state-disabled")) {
-          event.preventDefault();
-        }
-      }).delegate(".ui-tabs-anchor", "focus" + this.eventNamespace, function() {
-        if ($(this).closest("li").is(".ui-state-disabled")) {
-          this.blur();
-        }
-      });
-      this.tabs = this.tablist.find("> li:has(a[href])").addClass("ui-state-default ui-corner-top").attr({
-        role: "tab",
-        tabIndex: -1
-      });
-      this.anchors = this.tabs.map(function() {
-        return $("a", this)[0];
-      }).addClass("ui-tabs-anchor").attr({
-        role: "presentation",
-        tabIndex: -1
-      });
-      this.panels = $();
-      this.anchors.each(function(i, anchor) {
-        var selector,
-            panel,
-            panelId,
-            anchorId = $(anchor).uniqueId().attr("id"),
-            tab = $(anchor).closest("li"),
-            originalAriaControls = tab.attr("aria-controls");
-        if (that._isLocal(anchor)) {
-          selector = anchor.hash;
-          panelId = selector.substring(1);
-          panel = that.element.find(that._sanitizeSelector(selector));
-        } else {
-          panelId = tab.attr("aria-controls") || $({}).uniqueId()[0].id;
-          selector = "#" + panelId;
-          panel = that.element.find(selector);
-          if (!panel.length) {
-            panel = that._createPanel(panelId);
-            panel.insertAfter(that.panels[i - 1] || that.tablist);
-          }
-          panel.attr("aria-live", "polite");
-        }
-        if (panel.length) {
-          that.panels = that.panels.add(panel);
-        }
-        if (originalAriaControls) {
-          tab.data("ui-tabs-aria-controls", originalAriaControls);
-        }
-        tab.attr({
-          "aria-controls": panelId,
-          "aria-labelledby": anchorId
-        });
-        panel.attr("aria-labelledby", anchorId);
-      });
-      this.panels.addClass("ui-tabs-panel ui-widget-content ui-corner-bottom").attr("role", "tabpanel");
-      if (prevTabs) {
-        this._off(prevTabs.not(this.tabs));
-        this._off(prevAnchors.not(this.anchors));
-        this._off(prevPanels.not(this.panels));
-      }
-    },
-    _getList: function() {
-      return this.tablist || this.element.find("ol,ul").eq(0);
-    },
-    _createPanel: function(id) {
-      return $("<div>").attr("id", id).addClass("ui-tabs-panel ui-widget-content ui-corner-bottom").data("ui-tabs-destroy", true);
-    },
-    _setupDisabled: function(disabled) {
-      if ($.isArray(disabled)) {
-        if (!disabled.length) {
-          disabled = false;
-        } else if (disabled.length === this.anchors.length) {
-          disabled = true;
-        }
-      }
-      for (var i = 0,
-          li; (li = this.tabs[i]); i++) {
-        if (disabled === true || $.inArray(i, disabled) !== -1) {
-          $(li).addClass("ui-state-disabled").attr("aria-disabled", "true");
-        } else {
-          $(li).removeClass("ui-state-disabled").removeAttr("aria-disabled");
-        }
-      }
-      this.options.disabled = disabled;
-    },
-    _setupEvents: function(event) {
-      var events = {};
-      if (event) {
-        $.each(event.split(" "), function(index, eventName) {
-          events[eventName] = "_eventHandler";
-        });
-      }
-      this._off(this.anchors.add(this.tabs).add(this.panels));
-      this._on(true, this.anchors, {click: function(event) {
-          event.preventDefault();
-        }});
-      this._on(this.anchors, events);
-      this._on(this.tabs, {keydown: "_tabKeydown"});
-      this._on(this.panels, {keydown: "_panelKeydown"});
-      this._focusable(this.tabs);
-      this._hoverable(this.tabs);
-    },
-    _setupHeightStyle: function(heightStyle) {
-      var maxHeight,
-          parent = this.element.parent();
-      if (heightStyle === "fill") {
-        maxHeight = parent.height();
-        maxHeight -= this.element.outerHeight() - this.element.height();
-        this.element.siblings(":visible").each(function() {
-          var elem = $(this),
-              position = elem.css("position");
-          if (position === "absolute" || position === "fixed") {
-            return;
-          }
-          maxHeight -= elem.outerHeight(true);
-        });
-        this.element.children().not(this.panels).each(function() {
-          maxHeight -= $(this).outerHeight(true);
-        });
-        this.panels.each(function() {
-          $(this).height(Math.max(0, maxHeight - $(this).innerHeight() + $(this).height()));
-        }).css("overflow", "auto");
-      } else if (heightStyle === "auto") {
-        maxHeight = 0;
-        this.panels.each(function() {
-          maxHeight = Math.max(maxHeight, $(this).height("").height());
-        }).height(maxHeight);
-      }
-    },
-    _eventHandler: function(event) {
-      var options = this.options,
-          active = this.active,
-          anchor = $(event.currentTarget),
-          tab = anchor.closest("li"),
-          clickedIsActive = tab[0] === active[0],
-          collapsing = clickedIsActive && options.collapsible,
-          toShow = collapsing ? $() : this._getPanelForTab(tab),
-          toHide = !active.length ? $() : this._getPanelForTab(active),
-          eventData = {
-            oldTab: active,
-            oldPanel: toHide,
-            newTab: collapsing ? $() : tab,
-            newPanel: toShow
-          };
-      event.preventDefault();
-      if (tab.hasClass("ui-state-disabled") || tab.hasClass("ui-tabs-loading") || this.running || (clickedIsActive && !options.collapsible) || (this._trigger("beforeActivate", event, eventData) === false)) {
-        return;
-      }
-      options.active = collapsing ? false : this.tabs.index(tab);
-      this.active = clickedIsActive ? $() : tab;
-      if (this.xhr) {
-        this.xhr.abort();
-      }
-      if (!toHide.length && !toShow.length) {
-        $.error("jQuery UI Tabs: Mismatching fragment identifier.");
-      }
-      if (toShow.length) {
-        this.load(this.tabs.index(tab), event);
-      }
-      this._toggle(event, eventData);
-    },
-    _toggle: function(event, eventData) {
-      var that = this,
-          toShow = eventData.newPanel,
-          toHide = eventData.oldPanel;
-      this.running = true;
-      function complete() {
-        that.running = false;
-        that._trigger("activate", event, eventData);
-      }
-      function show() {
-        eventData.newTab.closest("li").addClass("ui-tabs-active ui-state-active");
-        if (toShow.length && that.options.show) {
-          that._show(toShow, that.options.show, complete);
-        } else {
-          toShow.show();
-          complete();
-        }
-      }
-      if (toHide.length && this.options.hide) {
-        this._hide(toHide, this.options.hide, function() {
-          eventData.oldTab.closest("li").removeClass("ui-tabs-active ui-state-active");
-          show();
-        });
-      } else {
-        eventData.oldTab.closest("li").removeClass("ui-tabs-active ui-state-active");
-        toHide.hide();
-        show();
-      }
-      toHide.attr("aria-hidden", "true");
-      eventData.oldTab.attr({
-        "aria-selected": "false",
-        "aria-expanded": "false"
-      });
-      if (toShow.length && toHide.length) {
-        eventData.oldTab.attr("tabIndex", -1);
-      } else if (toShow.length) {
-        this.tabs.filter(function() {
-          return $(this).attr("tabIndex") === 0;
-        }).attr("tabIndex", -1);
-      }
-      toShow.attr("aria-hidden", "false");
-      eventData.newTab.attr({
-        "aria-selected": "true",
-        "aria-expanded": "true",
-        tabIndex: 0
-      });
-    },
-    _activate: function(index) {
-      var anchor,
-          active = this._findActive(index);
-      if (active[0] === this.active[0]) {
-        return;
-      }
-      if (!active.length) {
-        active = this.active;
-      }
-      anchor = active.find(".ui-tabs-anchor")[0];
-      this._eventHandler({
-        target: anchor,
-        currentTarget: anchor,
-        preventDefault: $.noop
-      });
-    },
-    _findActive: function(index) {
-      return index === false ? $() : this.tabs.eq(index);
-    },
-    _getIndex: function(index) {
-      if (typeof index === "string") {
-        index = this.anchors.index(this.anchors.filter("[href$='" + index + "']"));
-      }
-      return index;
-    },
-    _destroy: function() {
-      if (this.xhr) {
-        this.xhr.abort();
-      }
-      this.element.removeClass("ui-tabs ui-widget ui-widget-content ui-corner-all ui-tabs-collapsible");
-      this.tablist.removeClass("ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all").removeAttr("role");
-      this.anchors.removeClass("ui-tabs-anchor").removeAttr("role").removeAttr("tabIndex").removeUniqueId();
-      this.tablist.unbind(this.eventNamespace);
-      this.tabs.add(this.panels).each(function() {
-        if ($.data(this, "ui-tabs-destroy")) {
-          $(this).remove();
-        } else {
-          $(this).removeClass("ui-state-default ui-state-active ui-state-disabled " + "ui-corner-top ui-corner-bottom ui-widget-content ui-tabs-active ui-tabs-panel").removeAttr("tabIndex").removeAttr("aria-live").removeAttr("aria-busy").removeAttr("aria-selected").removeAttr("aria-labelledby").removeAttr("aria-hidden").removeAttr("aria-expanded").removeAttr("role");
-        }
-      });
-      this.tabs.each(function() {
-        var li = $(this),
-            prev = li.data("ui-tabs-aria-controls");
-        if (prev) {
-          li.attr("aria-controls", prev).removeData("ui-tabs-aria-controls");
-        } else {
-          li.removeAttr("aria-controls");
-        }
-      });
-      this.panels.show();
-      if (this.options.heightStyle !== "content") {
-        this.panels.css("height", "");
-      }
-    },
-    enable: function(index) {
-      var disabled = this.options.disabled;
-      if (disabled === false) {
-        return;
-      }
-      if (index === undefined) {
-        disabled = false;
-      } else {
-        index = this._getIndex(index);
-        if ($.isArray(disabled)) {
-          disabled = $.map(disabled, function(num) {
-            return num !== index ? num : null;
-          });
-        } else {
-          disabled = $.map(this.tabs, function(li, num) {
-            return num !== index ? num : null;
-          });
-        }
-      }
-      this._setupDisabled(disabled);
-    },
-    disable: function(index) {
-      var disabled = this.options.disabled;
-      if (disabled === true) {
-        return;
-      }
-      if (index === undefined) {
-        disabled = true;
-      } else {
-        index = this._getIndex(index);
-        if ($.inArray(index, disabled) !== -1) {
-          return;
-        }
-        if ($.isArray(disabled)) {
-          disabled = $.merge([index], disabled).sort();
-        } else {
-          disabled = [index];
-        }
-      }
-      this._setupDisabled(disabled);
-    },
-    load: function(index, event) {
-      index = this._getIndex(index);
-      var that = this,
-          tab = this.tabs.eq(index),
-          anchor = tab.find(".ui-tabs-anchor"),
-          panel = this._getPanelForTab(tab),
-          eventData = {
-            tab: tab,
-            panel: panel
-          },
-          complete = function(jqXHR, status) {
-            if (status === "abort") {
-              that.panels.stop(false, true);
-            }
-            tab.removeClass("ui-tabs-loading");
-            panel.removeAttr("aria-busy");
-            if (jqXHR === that.xhr) {
-              delete that.xhr;
-            }
-          };
-      if (this._isLocal(anchor[0])) {
-        return;
-      }
-      this.xhr = $.ajax(this._ajaxSettings(anchor, event, eventData));
-      if (this.xhr && this.xhr.statusText !== "canceled") {
-        tab.addClass("ui-tabs-loading");
-        panel.attr("aria-busy", "true");
-        this.xhr.done(function(response, status, jqXHR) {
-          setTimeout(function() {
-            panel.html(response);
-            that._trigger("load", event, eventData);
-            complete(jqXHR, status);
-          }, 1);
-        }).fail(function(jqXHR, status) {
-          setTimeout(function() {
-            complete(jqXHR, status);
-          }, 1);
-        });
-      }
-    },
-    _ajaxSettings: function(anchor, event, eventData) {
+    _mouseInit: function() {
       var that = this;
-      return {
-        url: anchor.attr("href"),
-        beforeSend: function(jqXHR, settings) {
-          return that._trigger("beforeLoad", event, $.extend({
-            jqXHR: jqXHR,
-            ajaxSettings: settings
-          }, eventData));
+      this.element.bind("mousedown." + this.widgetName, function(event) {
+        return that._mouseDown(event);
+      }).bind("click." + this.widgetName, function(event) {
+        if (true === $.data(event.target, that.widgetName + ".preventClickEvent")) {
+          $.removeData(event.target, that.widgetName + ".preventClickEvent");
+          event.stopImmediatePropagation();
+          return false;
         }
-      };
+      });
+      this.started = false;
     },
-    _getPanelForTab: function(tab) {
-      var id = $(tab).attr("aria-controls");
-      return this.element.find(this._sanitizeSelector("#" + id));
+    _mouseDestroy: function() {
+      this.element.unbind("." + this.widgetName);
+      if (this._mouseMoveDelegate) {
+        this.document.unbind("mousemove." + this.widgetName, this._mouseMoveDelegate).unbind("mouseup." + this.widgetName, this._mouseUpDelegate);
+      }
+    },
+    _mouseDown: function(event) {
+      if (mouseHandled) {
+        return;
+      }
+      this._mouseMoved = false;
+      (this._mouseStarted && this._mouseUp(event));
+      this._mouseDownEvent = event;
+      var that = this,
+          btnIsLeft = (event.which === 1),
+          elIsCancel = (typeof this.options.cancel === "string" && event.target.nodeName ? $(event.target).closest(this.options.cancel).length : false);
+      if (!btnIsLeft || elIsCancel || !this._mouseCapture(event)) {
+        return true;
+      }
+      this.mouseDelayMet = !this.options.delay;
+      if (!this.mouseDelayMet) {
+        this._mouseDelayTimer = setTimeout(function() {
+          that.mouseDelayMet = true;
+        }, this.options.delay);
+      }
+      if (this._mouseDistanceMet(event) && this._mouseDelayMet(event)) {
+        this._mouseStarted = (this._mouseStart(event) !== false);
+        if (!this._mouseStarted) {
+          event.preventDefault();
+          return true;
+        }
+      }
+      if (true === $.data(event.target, this.widgetName + ".preventClickEvent")) {
+        $.removeData(event.target, this.widgetName + ".preventClickEvent");
+      }
+      this._mouseMoveDelegate = function(event) {
+        return that._mouseMove(event);
+      };
+      this._mouseUpDelegate = function(event) {
+        return that._mouseUp(event);
+      };
+      this.document.bind("mousemove." + this.widgetName, this._mouseMoveDelegate).bind("mouseup." + this.widgetName, this._mouseUpDelegate);
+      event.preventDefault();
+      mouseHandled = true;
+      return true;
+    },
+    _mouseMove: function(event) {
+      if (this._mouseMoved) {
+        if ($.ui.ie && (!document.documentMode || document.documentMode < 9) && !event.button) {
+          return this._mouseUp(event);
+        } else if (!event.which) {
+          return this._mouseUp(event);
+        }
+      }
+      if (event.which || event.button) {
+        this._mouseMoved = true;
+      }
+      if (this._mouseStarted) {
+        this._mouseDrag(event);
+        return event.preventDefault();
+      }
+      if (this._mouseDistanceMet(event) && this._mouseDelayMet(event)) {
+        this._mouseStarted = (this._mouseStart(this._mouseDownEvent, event) !== false);
+        (this._mouseStarted ? this._mouseDrag(event) : this._mouseUp(event));
+      }
+      return !this._mouseStarted;
+    },
+    _mouseUp: function(event) {
+      this.document.unbind("mousemove." + this.widgetName, this._mouseMoveDelegate).unbind("mouseup." + this.widgetName, this._mouseUpDelegate);
+      if (this._mouseStarted) {
+        this._mouseStarted = false;
+        if (event.target === this._mouseDownEvent.target) {
+          $.data(event.target, this.widgetName + ".preventClickEvent", true);
+        }
+        this._mouseStop(event);
+      }
+      mouseHandled = false;
+      return false;
+    },
+    _mouseDistanceMet: function(event) {
+      return (Math.max(Math.abs(this._mouseDownEvent.pageX - event.pageX), Math.abs(this._mouseDownEvent.pageY - event.pageY)) >= this.options.distance);
+    },
+    _mouseDelayMet: function() {
+      return this.mouseDelayMet;
+    },
+    _mouseStart: function() {},
+    _mouseDrag: function() {},
+    _mouseStop: function() {},
+    _mouseCapture: function() {
+      return true;
     }
   });
 }));
 
 })();
-$__System.register("src/jquery_helper.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/position.js", "github:components/jqueryui@1.11.4/ui/draggable.js", "github:components/jqueryui@1.11.4/ui/droppable.js", "github:components/jqueryui@1.11.4/ui/resizable.js", "github:components/jqueryui@1.11.4/ui/selectable.js", "github:components/jqueryui@1.11.4/ui/sortable.js", "github:components/jqueryui@1.11.4/ui/autocomplete.js", "github:components/jqueryui@1.11.4/ui/menu.js", "github:components/jqueryui@1.11.4/ui/progressbar.js", "github:components/jqueryui@1.11.4/ui/slider.js", "github:components/jqueryui@1.11.4/ui/tabs.js"], function($__export) {
-  "use strict";
-  var jQuery$1,
-      originalXhr,
-      $,
-      _idx,
-      isIE,
-      _ie,
-      isMoz,
-      history,
-      int2Hex,
-      st2Hex,
-      toHex3;
-  function keyHandler(handleObj) {
-    if (typeof handleObj.data !== "string") {
-      return;
-    }
-    var origHandler = handleObj.handler,
-        keys = handleObj.data.toLowerCase().split(" "),
-        textAcceptingInputTypes = ["text", "password", "number", "email", "url", "range", "date", "month", "week", "time", "datetime", "datetime-local", "search", "color"];
-    handleObj.handler = function(event) {
-      if (this !== event.target && (/textarea|select/i.test(event.target.nodeName) || jQuery$1.inArray(event.target.type, textAcceptingInputTypes) > -1)) {
+(function() {
+var define = $__System.amdDefine;
+(function(factory) {
+  if (typeof define === "function" && define.amd) {
+    define("src/plugins/jquery.ui.rotatable.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js"], factory);
+  } else {
+    factory(jQuery);
+  }
+}(function($) {
+  $.widget("ui.rotatable", $.ui.mouse, {
+    options: {
+      handle: false,
+      angle: false,
+      start: null,
+      rotate: null,
+      stop: null
+    },
+    handle: function(handle) {
+      if (handle === undefined) {
+        return this.options.handle;
+      }
+      this.options.handle = handle;
+    },
+    angle: function(angle) {
+      if (angle === undefined) {
+        return this.options.angle;
+      }
+      this.options.angle = angle;
+      this.performRotation(this.options.angle);
+    },
+    _create: function() {
+      var handle;
+      if (!this.options.handle) {
+        handle = $(document.createElement('div'));
+        handle.addClass('ui-rotatable-handle');
+      } else {
+        handle = this.options.handle;
+      }
+      this.listeners = {
+        rotateElement: $.proxy(this.rotateElement, this),
+        startRotate: $.proxy(this.startRotate, this),
+        stopRotate: $.proxy(this.stopRotate, this)
+      };
+      handle.draggable({
+        helper: 'clone',
+        start: this.dragStart,
+        handle: handle
+      });
+      handle.bind('mousedown', this.listeners.startRotate);
+      handle.appendTo(this.element);
+      if (this.options.angle != false) {
+        this.elementCurrentAngle = this.options.angle;
+        this.performRotation(this.elementCurrentAngle);
+      } else {
+        this.elementCurrentAngle = 0;
+      }
+    },
+    _destroy: function() {
+      this.element.removeClass('ui-rotatable');
+      this.element.find('.ui-rotatable-handle').remove();
+    },
+    performRotation: function(angle) {
+      this.element.css('transform', 'rotate(' + angle + 'rad)');
+      this.element.css('-moz-transform', 'rotate(' + angle + 'rad)');
+      this.element.css('-webkit-transform', 'rotate(' + angle + 'rad)');
+      this.element.css('-o-transform', 'rotate(' + angle + 'rad)');
+    },
+    getElementOffset: function() {
+      this.performRotation(0);
+      var offset = this.element.offset();
+      this.performRotation(this.elementCurrentAngle);
+      return offset;
+    },
+    getElementCenter: function() {
+      var elementOffset = this.getElementOffset();
+      var elementCentreX = elementOffset.left + this.element.width() / 2;
+      var elementCentreY = elementOffset.top + this.element.height() / 2;
+      return Array(elementCentreX, elementCentreY);
+    },
+    dragStart: function(event) {
+      if (this.element) {
+        return false;
+      }
+    },
+    startRotate: function(event) {
+      var center = this.getElementCenter();
+      var startXFromCenter = event.pageX - center[0];
+      var startYFromCenter = event.pageY - center[1];
+      this.mouseStartAngle = Math.atan2(startYFromCenter, startXFromCenter);
+      this.elementStartAngle = this.elementCurrentAngle;
+      this.hasRotated = false;
+      this._propagate("start", event);
+      $(document).bind('mousemove', this.listeners.rotateElement);
+      $(document).bind('mouseup', this.listeners.stopRotate);
+      return false;
+    },
+    rotateElement: function(event) {
+      if (!this.element) {
+        return false;
+      }
+      var center = this.getElementCenter();
+      var xFromCenter = event.pageX - center[0];
+      var yFromCenter = event.pageY - center[1];
+      var mouseAngle = Math.atan2(yFromCenter, xFromCenter);
+      var rotateAngle = mouseAngle - this.mouseStartAngle + this.elementStartAngle;
+      this.performRotation(rotateAngle);
+      this.element.data('angle', rotateAngle);
+      var previousRotateAngle = this.elementCurrentAngle;
+      this.elementCurrentAngle = rotateAngle;
+      this._propagate("rotate", event);
+      if (previousRotateAngle != rotateAngle) {
+        this._trigger("rotate", event, this.ui());
+        this.hasRotated = true;
+      }
+      return false;
+    },
+    stopRotate: function(event) {
+      if (!this.element) {
         return;
       }
-      var special = event.type !== "keypress" && jQuery$1.hotkeys.specialKeys[event.which],
-          character = String.fromCharCode(event.which).toLowerCase(),
-          key,
-          modif = "",
-          possible = {};
-      if (event.altKey && special !== "alt") {
-        modif += "alt+";
+      $(document).unbind('mousemove', this.listeners.rotateElement);
+      $(document).unbind('mouseup', this.listeners.stopRotate);
+      this.elementStopAngle = this.elementCurrentAngle;
+      if (this.hasRotated) {
+        this._propagate("stop", event);
       }
-      if (event.ctrlKey && special !== "ctrl") {
-        modif += "ctrl+";
-      }
-      if (event.metaKey && !event.ctrlKey && special !== "meta") {
-        modif += "meta+";
-      }
-      if (event.shiftKey && special !== "shift") {
-        modif += "shift+";
-      }
-      if (special) {
-        possible[modif + special] = true;
-      } else {
-        possible[modif + character] = true;
-        possible[modif + jQuery$1.hotkeys.shiftNums[character]] = true;
-        if (modif === "shift+") {
-          possible[jQuery$1.hotkeys.shiftNums[character]] = true;
-        }
-      }
-      for (var i = 0,
-          l = keys.length; i < l; i++) {
-        if (possible[keys[i]]) {
-          return origHandler.apply(this, arguments);
-        }
-      }
-    };
-  }
-  return {
-    setters: [function($__m) {
-      jQuery$1 = $__m.default;
-    }, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}, function($__m) {}],
-    execute: function() {
-      (function(factory) {
-        if (typeof define === 'function' && define.amd) {
-          define(['jquery'], factory);
-        } else if (typeof exports === 'object') {
-          factory(require('jquery'));
-        } else {
-          factory(jQuery);
-        }
-      }(function($) {
-        var pluses = /\+/g;
-        function encode(s) {
-          return config.raw ? s : encodeURIComponent(s);
-        }
-        function decode(s) {
-          return config.raw ? s : decodeURIComponent(s);
-        }
-        function stringifyCookieValue(value) {
-          return encode(config.json ? JSON.stringify(value) : String(value));
-        }
-        function parseCookieValue(s) {
-          if (s.indexOf('"') === 0) {
-            s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
-          }
-          try {
-            s = decodeURIComponent(s.replace(pluses, ' '));
-            return config.json ? JSON.parse(s) : s;
-          } catch (e) {}
-        }
-        function read(s, converter) {
-          var value = config.raw ? s : parseCookieValue(s);
-          return $.isFunction(converter) ? converter(value) : value;
-        }
-        var config = $.cookie = function(key, value, options) {
-          if (value !== undefined && !$.isFunction(value)) {
-            options = $.extend({}, config.defaults, options);
-            if (typeof options.expires === 'number') {
-              var days = options.expires,
-                  t = options.expires = new Date();
-              t.setTime(+t + days * 864e+5);
-            }
-            return (document.cookie = [encode(key), '=', stringifyCookieValue(value), options.expires ? '; expires=' + options.expires.toUTCString() : '', options.path ? '; path=' + options.path : '', options.domain ? '; domain=' + options.domain : '', options.secure ? '; secure' : ''].join(''));
-          }
-          var result = key ? undefined : {};
-          var cookies = document.cookie ? document.cookie.split('; ') : [];
-          for (var i = 0,
-              l = cookies.length; i < l; i++) {
-            var parts = cookies[i].split('=');
-            var name = decode(parts.shift());
-            var cookie = parts.join('=');
-            if (key && key === name) {
-              result = read(cookie, value);
-              break;
-            }
-            if (!key && (cookie = read(cookie)) !== undefined) {
-              result[name] = cookie;
-            }
-          }
-          return result;
-        };
-        config.defaults = {};
-        $.removeCookie = function(key, options) {
-          if ($.cookie(key) === undefined) {
-            return false;
-          }
-          $.cookie(key, '', $.extend({}, options, {expires: -1}));
-          return !$.cookie(key);
-        };
-      }));
-      (function(root, factory) {
-        if (typeof define === "function" && define.amd) {
-          define(['jquery'], factory);
-        } else if (typeof module !== 'undefined' && typeof exports === "object") {
-          module.exports = factory(require('jquery'));
-        } else {
-          root.jQuery = factory(root.jQuery);
-        }
-      }(this, function($) {
-        'use strict';
-        $.fn.waitforChild = function(onFound, querySelector, once) {
-          if (typeof arguments[0] === 'object') {
-            once = arguments[0].once || false;
-            querySelector = arguments[0].querySelector || null;
-            onFound = arguments[0].onFound;
-          }
-          if (!onFound) {
-            onFound = function() {};
-          }
-          var $this = this;
-          if (!querySelector && $this.children().length) {
-            if (once) {
-              onFound($this.children().first());
-            } else {
-              $this.children().each(function(key, element) {
-                onFound($(element));
-              });
-            }
-          } else if ($this.find(querySelector).length !== 0) {
-            if (once) {
-              onFound($this.find(querySelector).first());
-            } else {
-              $this.find(querySelector).each(function(key, element) {
-                onFound($(element));
-              });
-            }
-          } else {
-            if ($this.length === 0) {
-              console.warn("Can't attach an observer to a null node", $this);
-            } else {
-              var observer = new MutationObserver(function(mutations) {
-                var _this = this;
-                mutations.forEach(function(mutation) {
-                  if (mutation.addedNodes) {
-                    if (!querySelector) {
-                      onFound($(mutation.addedNodes[0]));
-                      if (once) {
-                        _this.disconnect();
-                      }
-                    } else {
-                      for (var i = 0; i < mutation.addedNodes.length; ++i) {
-                        var addedNode = mutation.addedNodes[i];
-                        if ($(addedNode).is(querySelector)) {
-                          onFound($(addedNode));
-                          if (once) {
-                            _this.disconnect();
-                            break;
-                          }
-                        }
-                      }
-                    }
-                  }
-                });
-              });
-              observer.observe($this[0], {
-                childList: true,
-                subtree: true,
-                attributes: false,
-                characterData: false
-              });
-            }
-          }
-          return $this;
-        };
-      }));
-      (function(factory) {
-        if (typeof define === 'function' && define.amd) {
-          define(['jquery'], factory);
-        } else if (typeof exports === 'object') {
-          var jQuery = require('jquery');
-          module.exports = factory(jQuery);
-        } else {
-          factory(window.jQuery || window.Zepto || window.$);
-        }
-      }(function($) {
-        "use strict";
-        $.fn.serializeJSON = function(options) {
-          var f,
-              $form,
-              opts,
-              formAsArray,
-              serializedObject,
-              name,
-              value,
-              _obj,
-              nameWithNoType,
-              type,
-              keys;
-          f = $.serializeJSON;
-          $form = this;
-          opts = f.setupOpts(options);
-          formAsArray = $form.serializeArray();
-          f.readCheckboxUncheckedValues(formAsArray, opts, $form);
-          serializedObject = {};
-          $.each(formAsArray, function(i, obj) {
-            name = obj.name;
-            value = obj.value;
-            _obj = f.extractTypeAndNameWithNoType(name);
-            nameWithNoType = _obj.nameWithNoType;
-            type = _obj.type;
-            if (!type)
-              type = f.tryToFindTypeFromDataAttr(name, $form);
-            f.validateType(name, type, opts);
-            if (type !== 'skip') {
-              keys = f.splitInputNameIntoKeysArray(nameWithNoType);
-              value = f.parseValue(value, name, type, opts);
-              f.deepSet(serializedObject, keys, value, opts);
-            }
-          });
-          return serializedObject;
-        };
-        $.serializeJSON = {
-          defaultOptions: {
-            checkboxUncheckedValue: undefined,
-            parseNumbers: false,
-            parseBooleans: false,
-            parseNulls: false,
-            parseAll: false,
-            parseWithFunction: null,
-            customTypes: {},
-            defaultTypes: {
-              "string": function(str) {
-                return String(str);
-              },
-              "number": function(str) {
-                return Number(str);
-              },
-              "boolean": function(str) {
-                var falses = ["false", "null", "undefined", "", "0"];
-                return falses.indexOf(str) === -1;
-              },
-              "null": function(str) {
-                var falses = ["false", "null", "undefined", "", "0"];
-                return falses.indexOf(str) === -1 ? str : null;
-              },
-              "array": function(str) {
-                return JSON.parse(str);
-              },
-              "object": function(str) {
-                return JSON.parse(str);
-              },
-              "auto": function(str) {
-                return $.serializeJSON.parseValue(str, null, null, {
-                  parseNumbers: true,
-                  parseBooleans: true,
-                  parseNulls: true
-                });
-              },
-              "skip": null
-            },
-            useIntKeysAsArrayIndex: false
-          },
-          setupOpts: function(options) {
-            var opt,
-                validOpts,
-                defaultOptions,
-                optWithDefault,
-                parseAll,
-                f;
-            f = $.serializeJSON;
-            if (options == null) {
-              options = {};
-            }
-            defaultOptions = f.defaultOptions || {};
-            validOpts = ['checkboxUncheckedValue', 'parseNumbers', 'parseBooleans', 'parseNulls', 'parseAll', 'parseWithFunction', 'customTypes', 'defaultTypes', 'useIntKeysAsArrayIndex'];
-            for (opt in options) {
-              if (validOpts.indexOf(opt) === -1) {
-                throw new Error("serializeJSON ERROR: invalid option '" + opt + "'. Please use one of " + validOpts.join(', '));
-              }
-            }
-            optWithDefault = function(key) {
-              return (options[key] !== false) && (options[key] !== '') && (options[key] || defaultOptions[key]);
-            };
-            parseAll = optWithDefault('parseAll');
-            return {
-              checkboxUncheckedValue: optWithDefault('checkboxUncheckedValue'),
-              parseNumbers: parseAll || optWithDefault('parseNumbers'),
-              parseBooleans: parseAll || optWithDefault('parseBooleans'),
-              parseNulls: parseAll || optWithDefault('parseNulls'),
-              parseWithFunction: optWithDefault('parseWithFunction'),
-              typeFunctions: $.extend({}, optWithDefault('defaultTypes'), optWithDefault('customTypes')),
-              useIntKeysAsArrayIndex: optWithDefault('useIntKeysAsArrayIndex')
-            };
-          },
-          parseValue: function(valStr, inputName, type, opts) {
-            var f,
-                parsedVal;
-            f = $.serializeJSON;
-            parsedVal = valStr;
-            if (opts.typeFunctions && type && opts.typeFunctions[type]) {
-              parsedVal = opts.typeFunctions[type](valStr);
-            } else if (opts.parseNumbers && f.isNumeric(valStr)) {
-              parsedVal = Number(valStr);
-            } else if (opts.parseBooleans && (valStr === "true" || valStr === "false")) {
-              parsedVal = (valStr === "true");
-            } else if (opts.parseNulls && valStr == "null") {
-              parsedVal = null;
-            }
-            if (opts.parseWithFunction && !type) {
-              parsedVal = opts.parseWithFunction(parsedVal, inputName);
-            }
-            return parsedVal;
-          },
-          isObject: function(obj) {
-            return obj === Object(obj);
-          },
-          isUndefined: function(obj) {
-            return obj === void 0;
-          },
-          isValidArrayIndex: function(val) {
-            return /^[0-9]+$/.test(String(val));
-          },
-          isNumeric: function(obj) {
-            return obj - parseFloat(obj) >= 0;
-          },
-          optionKeys: function(obj) {
-            if (Object.keys) {
-              return Object.keys(obj);
-            } else {
-              var key,
-                  keys = [];
-              for (key in obj) {
-                keys.push(key);
-              }
-              return keys;
-            }
-          },
-          readCheckboxUncheckedValues: function(formAsArray, opts, $form) {
-            var selector,
-                $uncheckedCheckboxes,
-                $el,
-                dataUncheckedValue,
-                f;
-            if (opts == null) {
-              opts = {};
-            }
-            f = $.serializeJSON;
-            selector = 'input[type=checkbox][name]:not(:checked):not([disabled])';
-            $uncheckedCheckboxes = $form.find(selector).add($form.filter(selector));
-            $uncheckedCheckboxes.each(function(i, el) {
-              $el = $(el);
-              dataUncheckedValue = $el.attr('data-unchecked-value');
-              if (dataUncheckedValue) {
-                formAsArray.push({
-                  name: el.name,
-                  value: dataUncheckedValue
-                });
-              } else {
-                if (!f.isUndefined(opts.checkboxUncheckedValue)) {
-                  formAsArray.push({
-                    name: el.name,
-                    value: opts.checkboxUncheckedValue
-                  });
-                }
-              }
-            });
-          },
-          extractTypeAndNameWithNoType: function(name) {
-            var match;
-            if (match = name.match(/(.*):([^:]+)$/)) {
-              return {
-                nameWithNoType: match[1],
-                type: match[2]
-              };
-            } else {
-              return {
-                nameWithNoType: name,
-                type: null
-              };
-            }
-          },
-          tryToFindTypeFromDataAttr: function(name, $form) {
-            var escapedName,
-                selector,
-                $input,
-                typeFromDataAttr;
-            escapedName = name.replace(/(:|\.|\[|\]|\s)/g, '\\$1');
-            selector = '[name="' + escapedName + '"]';
-            $input = $form.find(selector).add($form.filter(selector));
-            typeFromDataAttr = $input.attr('data-value-type');
-            return typeFromDataAttr || null;
-          },
-          validateType: function(name, type, opts) {
-            var validTypes,
-                f;
-            f = $.serializeJSON;
-            validTypes = f.optionKeys(opts ? opts.typeFunctions : f.defaultOptions.defaultTypes);
-            if (!type || validTypes.indexOf(type) !== -1) {
-              return true;
-            } else {
-              throw new Error("serializeJSON ERROR: Invalid type " + type + " found in input name '" + name + "', please use one of " + validTypes.join(', '));
-            }
-          },
-          splitInputNameIntoKeysArray: function(nameWithNoType) {
-            var keys,
-                f;
-            f = $.serializeJSON;
-            keys = nameWithNoType.split('[');
-            keys = $.map(keys, function(key) {
-              return key.replace(/\]/g, '');
-            });
-            if (keys[0] === '') {
-              keys.shift();
-            }
-            return keys;
-          },
-          deepSet: function(o, keys, value, opts) {
-            var key,
-                nextKey,
-                tail,
-                lastIdx,
-                lastVal,
-                f;
-            if (opts == null) {
-              opts = {};
-            }
-            f = $.serializeJSON;
-            if (f.isUndefined(o)) {
-              throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");
-            }
-            if (!keys || keys.length === 0) {
-              throw new Error("ArgumentError: param 'keys' expected to be an array with least one element");
-            }
-            key = keys[0];
-            if (keys.length === 1) {
-              if (key === '') {
-                o.push(value);
-              } else {
-                o[key] = value;
-              }
-            } else {
-              nextKey = keys[1];
-              if (key === '') {
-                lastIdx = o.length - 1;
-                lastVal = o[lastIdx];
-                if (f.isObject(lastVal) && (f.isUndefined(lastVal[nextKey]) || keys.length > 2)) {
-                  key = lastIdx;
-                } else {
-                  key = lastIdx + 1;
-                }
-              }
-              if (nextKey === '') {
-                if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
-                  o[key] = [];
-                }
-              } else {
-                if (opts.useIntKeysAsArrayIndex && f.isValidArrayIndex(nextKey)) {
-                  if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
-                    o[key] = [];
-                  }
-                } else {
-                  if (f.isUndefined(o[key]) || !f.isObject(o[key])) {
-                    o[key] = {};
-                  }
-                }
-              }
-              tail = keys.slice(1);
-              f.deepSet(o[key], tail, value, opts);
-            }
-          }
-        };
-      }));
-      RegExp.escape = function(s) {
-        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-      };
-      (function(undefined) {
-        'use strict';
-        var $;
-        if (typeof jQuery !== 'undefined' && jQuery) {
-          $ = jQuery;
-        } else {
-          $ = {};
-        }
-        $.csv = {
-          defaults: {
-            separator: ',',
-            delimiter: '"',
-            headers: true
-          },
-          hooks: {castToScalar: function(value, state) {
-              var hasDot = /\./;
-              if (isNaN(value)) {
-                return value;
-              } else {
-                if (hasDot.test(value)) {
-                  return parseFloat(value);
-                } else {
-                  var integer = parseInt(value);
-                  if (isNaN(integer)) {
-                    return null;
-                  } else {
-                    return integer;
-                  }
-                }
-              }
-            }},
-          parsers: {
-            parse: function(csv, options) {
-              var separator = options.separator;
-              var delimiter = options.delimiter;
-              if (!options.state.rowNum) {
-                options.state.rowNum = 1;
-              }
-              if (!options.state.colNum) {
-                options.state.colNum = 1;
-              }
-              var data = [];
-              var entry = [];
-              var state = 0;
-              var value = '';
-              var exit = false;
-              function endOfEntry() {
-                state = 0;
-                value = '';
-                if (options.start && options.state.rowNum < options.start) {
-                  entry = [];
-                  options.state.rowNum++;
-                  options.state.colNum = 1;
-                  return;
-                }
-                if (options.onParseEntry === undefined) {
-                  data.push(entry);
-                } else {
-                  var hookVal = options.onParseEntry(entry, options.state);
-                  if (hookVal !== false) {
-                    data.push(hookVal);
-                  }
-                }
-                entry = [];
-                if (options.end && options.state.rowNum >= options.end) {
-                  exit = true;
-                }
-                options.state.rowNum++;
-                options.state.colNum = 1;
-              }
-              function endOfValue() {
-                if (options.onParseValue === undefined) {
-                  entry.push(value);
-                } else {
-                  var hook = options.onParseValue(value, options.state);
-                  if (hook !== false) {
-                    entry.push(hook);
-                  }
-                }
-                value = '';
-                state = 0;
-                options.state.colNum++;
-              }
-              var escSeparator = RegExp.escape(separator);
-              var escDelimiter = RegExp.escape(delimiter);
-              var match = /(D|S|\r\n|\n|\r|[^DS\r\n]+)/;
-              var matchSrc = match.source;
-              matchSrc = matchSrc.replace(/S/g, escSeparator);
-              matchSrc = matchSrc.replace(/D/g, escDelimiter);
-              match = RegExp(matchSrc, 'gm');
-              csv.replace(match, function(m0) {
-                if (exit) {
-                  return;
-                }
-                switch (state) {
-                  case 0:
-                    if (m0 === separator) {
-                      value += '';
-                      endOfValue();
-                      break;
-                    }
-                    if (m0 === delimiter) {
-                      state = 1;
-                      break;
-                    }
-                    if (/^(\r\n|\n|\r)$/.test(m0)) {
-                      endOfValue();
-                      endOfEntry();
-                      break;
-                    }
-                    value += m0;
-                    state = 3;
-                    break;
-                  case 1:
-                    if (m0 === delimiter) {
-                      state = 2;
-                      break;
-                    }
-                    value += m0;
-                    state = 1;
-                    break;
-                  case 2:
-                    if (m0 === delimiter) {
-                      value += m0;
-                      state = 1;
-                      break;
-                    }
-                    if (m0 === separator) {
-                      endOfValue();
-                      break;
-                    }
-                    if (/^(\r\n|\n|\r)$/.test(m0)) {
-                      endOfValue();
-                      endOfEntry();
-                      break;
-                    }
-                    throw new Error('CSVDataError: Illegal State [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
-                  case 3:
-                    if (m0 === separator) {
-                      endOfValue();
-                      break;
-                    }
-                    if (/^(\r\n|\n|\r)$/.test(m0)) {
-                      endOfValue();
-                      endOfEntry();
-                      break;
-                    }
-                    if (m0 === delimiter) {
-                      throw new Error('CSVDataError: Illegal Quote [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
-                    }
-                    throw new Error('CSVDataError: Illegal Data [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
-                  default:
-                    throw new Error('CSVDataError: Unknown State [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
-                }
-              });
-              if (entry.length !== 0) {
-                endOfValue();
-                endOfEntry();
-              }
-              return data;
-            },
-            splitLines: function(csv, options) {
-              var separator = options.separator;
-              var delimiter = options.delimiter;
-              if (!options.state.rowNum) {
-                options.state.rowNum = 1;
-              }
-              var entries = [];
-              var state = 0;
-              var entry = '';
-              var exit = false;
-              function endOfLine() {
-                state = 0;
-                if (options.start && options.state.rowNum < options.start) {
-                  entry = '';
-                  options.state.rowNum++;
-                  return;
-                }
-                if (options.onParseEntry === undefined) {
-                  entries.push(entry);
-                } else {
-                  var hookVal = options.onParseEntry(entry, options.state);
-                  if (hookVal !== false) {
-                    entries.push(hookVal);
-                  }
-                }
-                entry = '';
-                if (options.end && options.state.rowNum >= options.end) {
-                  exit = true;
-                }
-                options.state.rowNum++;
-              }
-              var escSeparator = RegExp.escape(separator);
-              var escDelimiter = RegExp.escape(delimiter);
-              var match = /(D|S|\n|\r|[^DS\r\n]+)/;
-              var matchSrc = match.source;
-              matchSrc = matchSrc.replace(/S/g, escSeparator);
-              matchSrc = matchSrc.replace(/D/g, escDelimiter);
-              match = RegExp(matchSrc, 'gm');
-              csv.replace(match, function(m0) {
-                if (exit) {
-                  return;
-                }
-                switch (state) {
-                  case 0:
-                    if (m0 === separator) {
-                      entry += m0;
-                      state = 0;
-                      break;
-                    }
-                    if (m0 === delimiter) {
-                      entry += m0;
-                      state = 1;
-                      break;
-                    }
-                    if (m0 === '\n') {
-                      endOfLine();
-                      break;
-                    }
-                    if (/^\r$/.test(m0)) {
-                      break;
-                    }
-                    entry += m0;
-                    state = 3;
-                    break;
-                  case 1:
-                    if (m0 === delimiter) {
-                      entry += m0;
-                      state = 2;
-                      break;
-                    }
-                    entry += m0;
-                    state = 1;
-                    break;
-                  case 2:
-                    var prevChar = entry.substr(entry.length - 1);
-                    if (m0 === delimiter && prevChar === delimiter) {
-                      entry += m0;
-                      state = 1;
-                      break;
-                    }
-                    if (m0 === separator) {
-                      entry += m0;
-                      state = 0;
-                      break;
-                    }
-                    if (m0 === '\n') {
-                      endOfLine();
-                      break;
-                    }
-                    if (m0 === '\r') {
-                      break;
-                    }
-                    throw new Error('CSVDataError: Illegal state [Row:' + options.state.rowNum + ']');
-                  case 3:
-                    if (m0 === separator) {
-                      entry += m0;
-                      state = 0;
-                      break;
-                    }
-                    if (m0 === '\n') {
-                      endOfLine();
-                      break;
-                    }
-                    if (m0 === '\r') {
-                      break;
-                    }
-                    if (m0 === delimiter) {
-                      throw new Error('CSVDataError: Illegal quote [Row:' + options.state.rowNum + ']');
-                    }
-                    throw new Error('CSVDataError: Illegal state [Row:' + options.state.rowNum + ']');
-                  default:
-                    throw new Error('CSVDataError: Unknown state [Row:' + options.state.rowNum + ']');
-                }
-              });
-              if (entry !== '') {
-                endOfLine();
-              }
-              return entries;
-            },
-            parseEntry: function(csv, options) {
-              var separator = options.separator;
-              var delimiter = options.delimiter;
-              if (!options.state.rowNum) {
-                options.state.rowNum = 1;
-              }
-              if (!options.state.colNum) {
-                options.state.colNum = 1;
-              }
-              var entry = [];
-              var state = 0;
-              var value = '';
-              function endOfValue() {
-                if (options.onParseValue === undefined) {
-                  entry.push(value);
-                } else {
-                  var hook = options.onParseValue(value, options.state);
-                  if (hook !== false) {
-                    entry.push(hook);
-                  }
-                }
-                value = '';
-                state = 0;
-                options.state.colNum++;
-              }
-              if (!options.match) {
-                var escSeparator = RegExp.escape(separator);
-                var escDelimiter = RegExp.escape(delimiter);
-                var match = /(D|S|\n|\r|[^DS\r\n]+)/;
-                var matchSrc = match.source;
-                matchSrc = matchSrc.replace(/S/g, escSeparator);
-                matchSrc = matchSrc.replace(/D/g, escDelimiter);
-                options.match = RegExp(matchSrc, 'gm');
-              }
-              csv.replace(options.match, function(m0) {
-                switch (state) {
-                  case 0:
-                    if (m0 === separator) {
-                      value += '';
-                      endOfValue();
-                      break;
-                    }
-                    if (m0 === delimiter) {
-                      state = 1;
-                      break;
-                    }
-                    if (m0 === '\n' || m0 === '\r') {
-                      break;
-                    }
-                    value += m0;
-                    state = 3;
-                    break;
-                  case 1:
-                    if (m0 === delimiter) {
-                      state = 2;
-                      break;
-                    }
-                    value += m0;
-                    state = 1;
-                    break;
-                  case 2:
-                    if (m0 === delimiter) {
-                      value += m0;
-                      state = 1;
-                      break;
-                    }
-                    if (m0 === separator) {
-                      endOfValue();
-                      break;
-                    }
-                    if (m0 === '\n' || m0 === '\r') {
-                      break;
-                    }
-                    throw new Error('CSVDataError: Illegal State [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
-                  case 3:
-                    if (m0 === separator) {
-                      endOfValue();
-                      break;
-                    }
-                    if (m0 === '\n' || m0 === '\r') {
-                      break;
-                    }
-                    if (m0 === delimiter) {
-                      throw new Error('CSVDataError: Illegal Quote [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
-                    }
-                    throw new Error('CSVDataError: Illegal Data [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
-                  default:
-                    throw new Error('CSVDataError: Unknown State [Row:' + options.state.rowNum + '][Col:' + options.state.colNum + ']');
-                }
-              });
-              endOfValue();
-              return entry;
-            }
-          },
-          helpers: {collectPropertyNames: function(objects) {
-              var o,
-                  propName,
-                  props = [];
-              for (o in objects) {
-                for (propName in objects[o]) {
-                  if ((objects[o].hasOwnProperty(propName)) && (props.indexOf(propName) < 0) && (typeof objects[o][propName] !== 'function')) {
-                    props.push(propName);
-                  }
-                }
-              }
-              return props;
-            }},
-          toArray: function(csv, options, callback) {
-            var options = (options !== undefined ? options : {});
-            var config = {};
-            config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
-            config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
-            config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
-            var state = (options.state !== undefined ? options.state : {});
-            var options = {
-              delimiter: config.delimiter,
-              separator: config.separator,
-              onParseEntry: options.onParseEntry,
-              onParseValue: options.onParseValue,
-              state: state
-            };
-            var entry = $.csv.parsers.parseEntry(csv, options);
-            if (!config.callback) {
-              return entry;
-            } else {
-              config.callback('', entry);
-            }
-          },
-          toArrays: function(csv, options, callback) {
-            var options = (options !== undefined ? options : {});
-            var config = {};
-            config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
-            config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
-            config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
-            var data = [];
-            var options = {
-              delimiter: config.delimiter,
-              separator: config.separator,
-              onPreParse: options.onPreParse,
-              onParseEntry: options.onParseEntry,
-              onParseValue: options.onParseValue,
-              onPostParse: options.onPostParse,
-              start: options.start,
-              end: options.end,
-              state: {
-                rowNum: 1,
-                colNum: 1
-              }
-            };
-            if (options.onPreParse !== undefined) {
-              options.onPreParse(csv, options.state);
-            }
-            data = $.csv.parsers.parse(csv, options);
-            if (options.onPostParse !== undefined) {
-              options.onPostParse(data, options.state);
-            }
-            if (!config.callback) {
-              return data;
-            } else {
-              config.callback('', data);
-            }
-          },
-          toObjects: function(csv, options, callback) {
-            var options = (options !== undefined ? options : {});
-            var config = {};
-            config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
-            config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
-            config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
-            config.headers = 'headers' in options ? options.headers : $.csv.defaults.headers;
-            options.start = 'start' in options ? options.start : 1;
-            if (config.headers) {
-              options.start++;
-            }
-            if (options.end && config.headers) {
-              options.end++;
-            }
-            var lines = [];
-            var data = [];
-            var options = {
-              delimiter: config.delimiter,
-              separator: config.separator,
-              onPreParse: options.onPreParse,
-              onParseEntry: options.onParseEntry,
-              onParseValue: options.onParseValue,
-              onPostParse: options.onPostParse,
-              start: options.start,
-              end: options.end,
-              state: {
-                rowNum: 1,
-                colNum: 1
-              },
-              match: false,
-              transform: options.transform
-            };
-            var headerOptions = {
-              delimiter: config.delimiter,
-              separator: config.separator,
-              start: 1,
-              end: 1,
-              state: {
-                rowNum: 1,
-                colNum: 1
-              }
-            };
-            if (options.onPreParse !== undefined) {
-              options.onPreParse(csv, options.state);
-            }
-            var headerLine = $.csv.parsers.splitLines(csv, headerOptions);
-            var headers = $.csv.toArray(headerLine[0], options);
-            var lines = $.csv.parsers.splitLines(csv, options);
-            options.state.colNum = 1;
-            if (headers) {
-              options.state.rowNum = 2;
-            } else {
-              options.state.rowNum = 1;
-            }
-            for (var i = 0,
-                len = lines.length; i < len; i++) {
-              var entry = $.csv.toArray(lines[i], options);
-              var object = {};
-              for (var j = 0; j < headers.length; j++) {
-                object[headers[j]] = entry[j];
-              }
-              if (options.transform !== undefined) {
-                data.push(options.transform.call(undefined, object));
-              } else {
-                data.push(object);
-              }
-              options.state.rowNum++;
-            }
-            if (options.onPostParse !== undefined) {
-              options.onPostParse(data, options.state);
-            }
-            if (!config.callback) {
-              return data;
-            } else {
-              config.callback('', data);
-            }
-          },
-          fromArrays: function(arrays, options, callback) {
-            var options = (options !== undefined ? options : {});
-            var config = {};
-            config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
-            config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
-            config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
-            var output = '',
-                line,
-                lineValues,
-                i,
-                j;
-            for (i = 0; i < arrays.length; i++) {
-              line = arrays[i];
-              lineValues = [];
-              for (j = 0; j < line.length; j++) {
-                var strValue = (line[j] === undefined || line[j] === null) ? '' : line[j].toString();
-                if (strValue.indexOf(config.delimiter) > -1) {
-                  strValue = strValue.replace(config.delimiter, config.delimiter + config.delimiter);
-                }
-                var escMatcher = '\n|\r|S|D';
-                escMatcher = escMatcher.replace('S', config.separator);
-                escMatcher = escMatcher.replace('D', config.delimiter);
-                if (strValue.search(escMatcher) > -1) {
-                  strValue = config.delimiter + strValue + config.delimiter;
-                }
-                lineValues.push(strValue);
-              }
-              output += lineValues.join(config.separator) + '\r\n';
-            }
-            if (!config.callback) {
-              return output;
-            } else {
-              config.callback('', output);
-            }
-          },
-          fromObjects: function(objects, options, callback) {
-            var options = (options !== undefined ? options : {});
-            var config = {};
-            config.callback = ((callback !== undefined && typeof(callback) === 'function') ? callback : false);
-            config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
-            config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
-            config.headers = 'headers' in options ? options.headers : $.csv.defaults.headers;
-            config.sortOrder = 'sortOrder' in options ? options.sortOrder : 'declare';
-            config.manualOrder = 'manualOrder' in options ? options.manualOrder : [];
-            config.transform = options.transform;
-            if (typeof config.manualOrder === 'string') {
-              config.manualOrder = $.csv.toArray(config.manualOrder, config);
-            }
-            if (config.transform !== undefined) {
-              var origObjects = objects;
-              objects = [];
-              var i;
-              for (i = 0; i < origObjects.length; i++) {
-                objects.push(config.transform.call(undefined, origObjects[i]));
-              }
-            }
-            var props = $.csv.helpers.collectPropertyNames(objects);
-            if (config.sortOrder === 'alpha') {
-              props.sort();
-            }
-            if (config.manualOrder.length > 0) {
-              var propsManual = [].concat(config.manualOrder);
-              var p;
-              for (p = 0; p < props.length; p++) {
-                if (propsManual.indexOf(props[p]) < 0) {
-                  propsManual.push(props[p]);
-                }
-              }
-              props = propsManual;
-            }
-            var o,
-                p,
-                line,
-                output = [],
-                propName;
-            if (config.headers) {
-              output.push(props);
-            }
-            for (o = 0; o < objects.length; o++) {
-              line = [];
-              for (p = 0; p < props.length; p++) {
-                propName = props[p];
-                if (propName in objects[o] && typeof objects[o][propName] !== 'function') {
-                  line.push(objects[o][propName]);
-                } else {
-                  line.push('');
-                }
-              }
-              output.push(line);
-            }
-            return $.csv.fromArrays(output, options, config.callback);
-          }
-        };
-        $.csvEntry2Array = $.csv.toArray;
-        $.csv2Array = $.csv.toArrays;
-        $.csv2Dictionary = $.csv.toObjects;
-        if (typeof module !== 'undefined' && module.exports) {
-          module.exports = $.csv;
-        }
-      }).call(this);
-      originalXhr = jQuery$1.ajaxSettings.xhr;
-      jQuery$1.ajaxSetup({
-        progress: function(e) {},
-        xhr: function() {
-          var req = originalXhr(),
-              _this = this;
-          if (req) {
-            if (typeof req.addEventListener === "function") {
-              req.addEventListener("progress", function(evt) {
-                if (_this.progress) {
-                  _this.progress(evt);
-                }
-              }, false);
-            }
-          }
-          return req;
-        }
-      });
-      jQuery$1.hotkeys = {
-        version: "0.8",
-        specialKeys: {
-          8: "backspace",
-          9: "tab",
-          13: "return",
-          16: "shift",
-          17: "ctrl",
-          18: "alt",
-          19: "pause",
-          20: "capslock",
-          27: "esc",
-          32: "space",
-          33: "pageup",
-          34: "pagedown",
-          35: "end",
-          36: "home",
-          37: "left",
-          38: "up",
-          39: "right",
-          40: "down",
-          45: "insert",
-          46: "del",
-          96: "0",
-          97: "1",
-          98: "2",
-          99: "3",
-          100: "4",
-          101: "5",
-          102: "6",
-          103: "7",
-          104: "8",
-          105: "9",
-          106: "*",
-          107: "+",
-          109: "-",
-          110: ".",
-          111: "/",
-          112: "f1",
-          113: "f2",
-          114: "f3",
-          115: "f4",
-          116: "f5",
-          117: "f6",
-          118: "f7",
-          119: "f8",
-          120: "f9",
-          121: "f10",
-          122: "f11",
-          123: "f12",
-          144: "numlock",
-          145: "scroll",
-          191: "/",
-          224: "meta"
-        },
-        shiftNums: {
-          "`": "~",
-          "1": "!",
-          "2": "@",
-          "3": "#",
-          "4": "$",
-          "5": "%",
-          "6": "^",
-          "7": "&",
-          "8": "*",
-          "9": "(",
-          "0": ")",
-          "-": "_",
-          "=": "+",
-          ";": ": ",
-          "'": "\"",
-          ",": "<",
-          ".": ">",
-          "/": "?",
-          "\\": "|"
+      setTimeout(function() {
+        this.element = false;
+      }, 10);
+      return false;
+    },
+    _propagate: function(n, event) {
+      $.ui.plugin.call(this, n, [event, this.ui()]);
+      (n !== "rotate" && this._trigger(n, event, this.ui()));
+    },
+    plugins: {},
+    ui: function() {
+      return {
+        element: this.element,
+        angle: {
+          start: this.elementStartAngle,
+          current: this.elementCurrentAngle,
+          stop: this.elementStopAngle
         }
       };
-      jQuery$1.each(["keydown", "keyup", "keypress"], function() {
-        jQuery$1.event.special[this] = {add: keyHandler};
-      });
-      $ = jQuery$1;
-      $.widget("ui.rotatable", $.ui.mouse, {
-        options: {
-          handle: false,
-          angle: false,
-          start: null,
-          rotate: null,
-          stop: null
-        },
-        handle: function(handle) {
-          if (handle === undefined) {
-            return this.options.handle;
-          }
-          this.options.handle = handle;
-        },
-        angle: function(angle) {
-          if (angle === undefined) {
-            return this.options.angle;
-          }
-          this.options.angle = angle;
-          this.performRotation(this.options.angle);
-        },
-        _create: function() {
-          var handle;
-          if (!this.options.handle) {
-            handle = $(document.createElement('div'));
-            handle.addClass('ui-rotatable-handle');
-          } else {
-            handle = this.options.handle;
-          }
-          this.listeners = {
-            rotateElement: $.proxy(this.rotateElement, this),
-            startRotate: $.proxy(this.startRotate, this),
-            stopRotate: $.proxy(this.stopRotate, this)
-          };
-          handle.draggable({
-            helper: 'clone',
-            start: this.dragStart,
-            handle: handle
-          });
-          handle.bind('mousedown', this.listeners.startRotate);
-          handle.appendTo(this.element);
-          if (this.options.angle !== false) {
-            this.elementCurrentAngle = this.options.angle;
-            this.performRotation(this.elementCurrentAngle);
-          } else {
-            this.elementCurrentAngle = 0;
-          }
-        },
-        _destroy: function() {
-          this.element.removeClass('ui-rotatable');
-          this.element.find('.ui-rotatable-handle').remove();
-        },
-        performRotation: function(angle) {
-          this.element.css('transform', 'rotate(' + angle + 'rad)');
-          this.element.css('-moz-transform', 'rotate(' + angle + 'rad)');
-          this.element.css('-webkit-transform', 'rotate(' + angle + 'rad)');
-          this.element.css('-o-transform', 'rotate(' + angle + 'rad)');
-        },
-        getElementOffset: function() {
-          this.performRotation(0);
-          var offset = this.element.offset();
-          this.performRotation(this.elementCurrentAngle);
-          return offset;
-        },
-        getElementCenter: function() {
-          var elementOffset = this.getElementOffset();
-          var elementCentreX = elementOffset.left + this.element.width() / 2;
-          var elementCentreY = elementOffset.top + this.element.height() / 2;
-          return [elementCentreX, elementCentreY];
-        },
-        dragStart: function(event) {
-          if (this.element) {
-            return false;
-          }
-        },
-        startRotate: function(event) {
-          var center = this.getElementCenter();
-          var startXFromCenter = event.pageX - center[0];
-          var startYFromCenter = event.pageY - center[1];
-          this.mouseStartAngle = Math.atan2(startYFromCenter, startXFromCenter);
-          this.elementStartAngle = this.elementCurrentAngle;
-          this.hasRotated = false;
-          this._propagate("start", event);
-          $(document).bind('mousemove', this.listeners.rotateElement);
-          $(document).bind('mouseup', this.listeners.stopRotate);
-          return false;
-        },
-        rotateElement: function(event) {
-          if (!this.element) {
-            return false;
-          }
-          var center = this.getElementCenter();
-          var xFromCenter = event.pageX - center[0];
-          var yFromCenter = event.pageY - center[1];
-          var mouseAngle = Math.atan2(yFromCenter, xFromCenter);
-          var rotateAngle = mouseAngle - this.mouseStartAngle + this.elementStartAngle;
-          this.performRotation(rotateAngle);
-          this.element.data('angle', rotateAngle);
-          var previousRotateAngle = this.elementCurrentAngle;
-          this.elementCurrentAngle = rotateAngle;
-          this._propagate("rotate", event);
-          if (previousRotateAngle !== rotateAngle) {
-            this._trigger("rotate", event, this.ui());
-            this.hasRotated = true;
-          }
-          return false;
-        },
-        stopRotate: function(event) {
-          if (!this.element) {
-            return;
-          }
-          $(document).unbind('mousemove', this.listeners.rotateElement);
-          $(document).unbind('mouseup', this.listeners.stopRotate);
-          this.elementStopAngle = this.elementCurrentAngle;
-          if (this.hasRotated) {
-            this._propagate("stop", event);
-          }
-          setTimeout(function() {
-            this.element = false;
-          }, 10);
-          return false;
-        },
-        _propagate: function(n, event) {
-          $.ui.plugin.call(this, n, [event, this.ui()]);
-          if (n !== "rotate") {
-            this._trigger(n, event, this.ui());
-          }
-        },
-        plugins: {},
-        ui: function() {
-          return {
-            element: this.element,
-            angle: {
-              start: this.elementStartAngle,
-              current: this.elementCurrentAngle,
-              stop: this.elementStopAngle
-            }
-          };
-        }
-      });
-      this.$ = this.jQuery = jQuery$1;
-      jQuery$1.error = function(message) {
-        console.warn('jQuery.error', message);
-        window.globalvars.trackJavaScriptError('jQuery', message, navigator.userAgent);
-      };
-      jQuery$1(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
-        console.debug('ajaxError', {
-          jqXHR: jqXHR,
-          thrownError: thrownError
-        });
-        if (jqXHR.responseJSON) {
-          window.globalvars.jsonErrorDump(jqXHR.responseJSON);
-        }
-        window.globalvars.trackJavaScriptError('jQuery Ajax', ajaxSettings.url, JSON.stringify({
-          result: event.result,
-          status: jqXHR.status,
-          statusText: jqXHR.statusText,
-          crossDomain: ajaxSettings.crossDomain,
-          dataType: ajaxSettings.dataType
-        }));
-      });
-      jQuery$1.getOrCreate = function(selector, html) {
-        var elemento = jQuery$1(selector);
-        if (elemento.length === 0) {
-          elemento = jQuery$1(html);
-        }
-        return elemento;
-      };
-      _idx = 0;
-      isIE = false;
-      _ie = isIE ? '-ie' : '';
-      isMoz = false;
-      history = [];
+    }
+  });
+  return $.ui.rotatable;
+}));
+
+})();
+(function() {
+var define = $__System.amdDefine;
+define("src/jquery_helper.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:carhartl/jquery-cookie@1.4.1/jquery.cookie.js", "github:huasofoundries/jquery.waitforChild@1.0.1/jquery.waitforChild.js", "github:marioizquierdo/jquery.serializeJSON@2.7.2/jquery.serializejson.js", "github:evanplaice/jquery-csv@0.8.1/src/jquery.csv.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/position.js", "github:components/jqueryui@1.11.4/ui/draggable.js", "github:components/jqueryui@1.11.4/ui/droppable.js", "github:components/jqueryui@1.11.4/ui/resizable.js", "github:components/jqueryui@1.11.4/ui/selectable.js", "github:components/jqueryui@1.11.4/ui/sortable.js", "github:components/jqueryui@1.11.4/ui/autocomplete.js", "github:components/jqueryui@1.11.4/ui/menu.js", "github:components/jqueryui@1.11.4/ui/progressbar.js", "github:components/jqueryui@1.11.4/ui/slider.js", "github:components/jqueryui@1.11.4/ui/tabs.js", "src/plugins/jquery.ajax.progress.js", "src/plugins/jquery.hotkeys.js", "src/plugins/jquery.ui.rotatable.js"], function(jQuery) {
+  'use strict';
+  jQuery.error = function(message) {
+    console.warn('jQuery.error', message);
+    globalvars.trackJavaScriptError('jQuery', message, navigator.userAgent);
+  };
+  jQuery(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
+    console.debug('ajaxError', {
+      jqXHR: jqXHR,
+      thrownError: thrownError
+    });
+    if (jqXHR.responseJSON) {
+      globalvars.jsonErrorDump(jqXHR.responseJSON);
+    }
+    globalvars.trackJavaScriptError('jQuery Ajax', ajaxSettings.url, JSON.stringify({
+      result: event.result,
+      status: jqXHR.status,
+      statusText: jqXHR.statusText,
+      crossDomain: ajaxSettings.crossDomain,
+      dataType: ajaxSettings.dataType
+    }));
+  });
+  jQuery.getOrCreate = function(selector, html) {
+    var elemento = jQuery(selector);
+    if (elemento.length === 0) {
+      elemento = jQuery(html);
+    }
+    return elemento;
+  };
+  var _idx = 0,
+      isIE = false,
+      _ie = isIE ? '-ie' : '',
+      isMoz = false,
+      history = [],
       int2Hex = function(i) {
         var h = i.toString(16);
         if (h.length === 1) {
           h = '0' + h;
         }
         return h;
-      };
+      },
       st2Hex = function(s) {
         return int2Hex(Number(s));
-      };
+      },
       toHex3 = function(c) {
         if (c && c.length > 10) {
           var p1 = 1 + c.indexOf('('),
@@ -14036,300 +14081,299 @@ $__System.register("src/jquery_helper.js", ["npm:jquery@2.2.3/dist/jquery.js", "
           return c;
         }
       };
-      jQuery$1.widget("evol.colorpicker", {
-        version: '2.1',
-        options: {
-          color: null,
-          showOn: 'both',
-          displayIndicator: true,
-          history: true,
-          strings: 'Pick A Color',
-          cols: 9,
-          rows: 4,
-          type: 'colorpicker',
-          gradientid: 0,
-          extraClassnames: '',
-          subThemeColors: ['f2f2f2', 'ddd9c3', 'c6d9f0', 'dbe5f1', 'f2dcdb', 'ebf1dd', 'e5e0ec', 'dbeef3', 'fdeada', 'd8d8d8', 'c4bd97', '8db3e2', 'b8cce4', 'e5b9b7', 'd7e3bc', 'ccc1d9', 'b7dde8', 'fbd5b5', 'bfbfbf', '938953', '548dd4', '95b3d7', 'd99694', 'c3d69b', 'b2a2c7', '92cddc', 'fac08f', 'a5a5a5', '494429', '17365d', '366092', '953734', '76923c', '5f497a', '31859b', 'e36c09', '7f7f7f', '1d1b10', '0f243e', '244061', '632423', '4f6128', '3f3151', '205867', '974806']
-        },
-        _create: function() {
-          this._paletteIdx = 1;
-          this._id = 'evo-cp' + _idx++;
-          this._enabled = true;
-          var self = this;
-          switch (this.element.get(0).tagName) {
-            case 'INPUT':
-              var color = this.options.color;
-              this._isPopup = true;
-              this._palette = null;
-              if (color !== null) {
-                this.element.val(color);
-              } else {
-                var v = this.element.val();
-                if (v !== '') {
-                  color = this.options.color = v;
-                }
-              }
-              this.element.addClass('colorPicker ' + this._id);
-              if (this.options.type === 'gradient') {
-                this.options.rows = this.options.subThemeColors.length;
-                var thisgradient = this.getGradient(this.options.gradientid);
-                this.element.wrap('<span class="gradientpickerwrap"></span>').after('<div class="gradientpicker ' + ((this.options.showOn === 'focus') ? '' : 'evo-pointer ') + 'evo-colorind' + (isMoz ? '-ff' : _ie) + '"  style="' + thisgradient + '"></div>');
-              } else {
-                this.element.wrap('<div class="colorpickerwrap" style="width:' + (this.element.width() + 32) + 'px;' + (isIE ? 'margin-bottom:-21px;' : '') + (isMoz ? 'padding:1px 0;' : '') + '"></div>').after('<div class="colorpickerafter ' + ((this.options.showOn === 'focus') ? '' : 'evo-pointer ') + 'evo-colorind' + (isMoz ? '-ff' : _ie) + '" ' + (color !== null ? 'style="background-color:' + color + '"' : '') + '></div>');
-              }
-              this.element.on('keyup onpaste', function(evt) {
-                var thisvalue = jQuery$1(this).val();
-                if (thisvalue !== self.options.color) {
-                  self._setValue(thisvalue, true);
-                }
-              });
-              var showOn = this.options.showOn;
-              if (showOn === 'both' || showOn === 'focus') {
-                this.element.on('focus', function() {
-                  self.showPalette();
-                });
-              }
-              if (showOn === 'both' || showOn === 'button') {
-                this.element.next().on('click', function(evt) {
-                  evt.stopPropagation();
-                  self.showPalette();
-                });
-              }
-              break;
-            default:
-              this._isPopup = false;
-              this._palette = this.element.html(this._paletteHTML()).attr('aria-haspopup', 'true');
-              this._bindColors();
-          }
-          if (color !== null && this.options.history) {
-            this._add2History(color);
-          }
-        },
-        _paletteHTML: function() {
-          var h = [],
-              pIdx = this._paletteIdx = Math.abs(this._paletteIdx),
-              opts = this.options,
-              labels = opts.strings.split(',');
-          h.push('<div  class="lecolorpicker evo-pop', _ie, this.options.extraClassnames, '"', this._isPopup ? ' style="position:absolute"' : '', '>');
-          h.push('<span>', this['_paletteHTML' + pIdx](), '</span>');
-          h.push('<div class="evo-more"><a href="javascript:void(0)">', labels[1 + pIdx], '</a>');
-          h.push('</div>');
-          h.push('</div>');
-          return h.join('');
-        },
-        _colorIndHTML: function(c, fl) {
-          var h = [];
-          h.push('<div class="evo-color" style="float:left"><div style="');
-          h.push(c ? 'background-color:' + c : 'display:none');
-          if (isIE) {
-            h.push('" class="evo-colorbox-ie"></div><span class=".evo-colortxt-ie" ');
+  jQuery.widget("evol.colorpicker", {
+    version: '2.1',
+    options: {
+      color: null,
+      showOn: 'both',
+      displayIndicator: true,
+      history: true,
+      strings: 'Pick A Color',
+      cols: 9,
+      rows: 4,
+      type: 'colorpicker',
+      gradientid: 0,
+      extraClassnames: '',
+      subThemeColors: ['f2f2f2', 'ddd9c3', 'c6d9f0', 'dbe5f1', 'f2dcdb', 'ebf1dd', 'e5e0ec', 'dbeef3', 'fdeada', 'd8d8d8', 'c4bd97', '8db3e2', 'b8cce4', 'e5b9b7', 'd7e3bc', 'ccc1d9', 'b7dde8', 'fbd5b5', 'bfbfbf', '938953', '548dd4', '95b3d7', 'd99694', 'c3d69b', 'b2a2c7', '92cddc', 'fac08f', 'a5a5a5', '494429', '17365d', '366092', '953734', '76923c', '5f497a', '31859b', 'e36c09', '7f7f7f', '1d1b10', '0f243e', '244061', '632423', '4f6128', '3f3151', '205867', '974806']
+    },
+    _create: function() {
+      this._paletteIdx = 1;
+      this._id = 'evo-cp' + _idx++;
+      this._enabled = true;
+      var self = this;
+      switch (this.element.get(0).tagName) {
+        case 'INPUT':
+          var color = this.options.color;
+          this._isPopup = true;
+          this._palette = null;
+          if (color !== null) {
+            this.element.val(color);
           } else {
-            h.push('"></div><span ');
-          }
-          h.push(c ? '>' + c + '</span>' : '/>');
-          h.push('</div>');
-          return h.join('');
-        },
-        _paletteHTML1: function() {
-          var h = [],
-              labels = this.options.strings.split(','),
-              oTD = '<td  class="colorpickersquare" style=" ',
-              cTD = isIE ? '"><div style="width:2px;"></div>' : '"><span>',
-              fTD = '</span></td>',
-              oTRTH = '<tr><th colspan="' + this.options.cols + '" class="ui-widget-content">';
-          h.push('<table class="evo-palette', _ie, '">', oTRTH, labels[0], '</th></tr>');
-          for (var r = 0; r < this.options.rows; r++) {
-            h.push('<tr class="in">');
-            if (this.options.type === 'colorpicker') {
-              for (var i = 0; i < this.options.cols; i++) {
-                h.push(oTD, 'background: #' + this.options.subThemeColors[r * this.options.cols + i] + ';" data-color="' + this.options.subThemeColors[r * this.options.cols + i], cTD, fTD);
-              }
-            } else if (this.options.type === 'gradient') {
-              h.push(oTD);
-              h.push(this.getGradient(r));
-              h.push(';width: 150px;border:1px solid #EEE" data-gradient="' + r, cTD, fTD);
-            }
-            h.push('</tr>');
-          }
-          h.push('</table>');
-          return h.join('');
-        },
-        getGradient: function(gradientid) {
-          var thisgradient = [];
-          thisgradient.push('background: linear-gradient(to right ');
-          var colorlength = this.options.subThemeColors[gradientid][1].length;
-          for (var i = 0; i < colorlength; i++) {
-            thisgradient.push(' , ', this.options.subThemeColors[gradientid][1][i], ' ', 10 * (10 * i / colorlength), '% ');
-          }
-          thisgradient.push(')');
-          thisgradient = thisgradient.join('');
-          return thisgradient;
-        },
-        showPalette: function() {
-          if (this._enabled) {
-            jQuery$1('.colorPicker').not('.' + this._id).colorpicker('hidePalette');
-            if (this._palette === null) {
-              this._palette = this.element.next().after(this._paletteHTML()).next().on('click', function(evt) {
-                evt.stopPropagation();
-              });
-              this._bindColors();
-              var that = this;
-              jQuery$1(document.body).on('click.' + this._id, function(evt) {
-                if (evt.target !== that.element.get(0)) {
-                  that.hidePalette();
-                }
-              });
+            var v = this.element.val();
+            if (v !== '') {
+              color = this.options.color = v;
             }
           }
-          return this;
-        },
-        hidePalette: function() {
-          if (this._isPopup && this._palette) {
-            jQuery$1(document.body).off('click.' + this._id);
-            var that = this;
-            this._palette.off('mouseover click', 'td').fadeOut(function() {
-              that._palette.remove();
-              that._palette = that._cTxt = null;
-            }).find('.evo-more a').off('click');
+          this.element.addClass('colorPicker ' + this._id);
+          if (this.options.type === 'gradient') {
+            this.options.rows = this.options.subThemeColors.length;
+            var thisgradient = this.getGradient(this.options.gradientid);
+            this.element.wrap('<span class="gradientpickerwrap"></span>').after('<div class="gradientpicker ' + ((this.options.showOn === 'focus') ? '' : 'evo-pointer ') + 'evo-colorind' + (isMoz ? '-ff' : _ie) + '"  style="' + thisgradient + '"></div>');
+          } else {
+            this.element.wrap('<div class="colorpickerwrap" style="width:' + (this.element.width() + 32) + 'px;' + (isIE ? 'margin-bottom:-21px;' : '') + (isMoz ? 'padding:1px 0;' : '') + '"></div>').after('<div class="colorpickerafter ' + ((this.options.showOn === 'focus') ? '' : 'evo-pointer ') + 'evo-colorind' + (isMoz ? '-ff' : _ie) + '" ' + (color !== null ? 'style="background-color:' + color + '"' : '') + '></div>');
           }
-          return this;
-        },
-        _bindColors: function() {
-          var es = this._palette.find('div.evo-color'),
-              sel = this.options.history ? 'td,.evo-cHist div' : 'td';
-          this._cTxt1 = es.eq(0).children().eq(0);
-          this._cTxt2 = es.eq(1).children().eq(0);
-          var that = this;
-          this._palette.on('click', sel, function(evt) {
-            if (that._enabled) {
-              if (that.options.type === 'colorpicker') {
-                var c = toHex3(jQuery$1(this).data('color'));
-                that._setValue(String(c));
-              } else if (that.options.type === 'gradient') {
-                var gradientid = jQuery$1(this).data('gradient');
-                that.options.gradientid = gradientid;
-                that._setValue(String(gradientid));
-                jQuery$1('.gradientpicker', that.element.parent()).attr('style', that.getGradient(gradientid));
-              }
+          this.element.on('keyup onpaste', function(evt) {
+            var thisvalue = jQuery(this).val();
+            if (thisvalue !== self.options.color) {
+              self._setValue(thisvalue, true);
             }
-          }).on('mouseover', sel, function(evt) {
-            if (that._enabled) {
-              var c = toHex3(jQuery$1(this).data('color'));
-              if (that.options.displayIndicator) {
-                that._setColorInd(c, 2);
-              }
-              that.element.trigger('mouseover.color', c);
-            }
-          }).find('.evo-more a').on('click', function() {
-            that._switchPalette(this);
           });
-        },
-        val: function(value) {
-          if (typeof value === 'undefined') {
-            return this.options.color;
-          } else {
-            this._setValue(value);
-            return this;
-          }
-        },
-        _setValue: function(c, noHide) {
-          c = c || '#999999';
-          c = String(c).replace(/ /g, '');
-          this.options.color = c;
-          if (this._isPopup) {
-            if (!noHide) {
-              this.hidePalette();
-            }
-            this.element.val(c).next().attr('style', 'background-color:' + c);
-          } else {
-            this._setColorInd(c, 1);
-          }
-          if (this.options.history && this._paletteIdx > 0) {
-            this._add2History(c);
-          }
-          this.element.trigger('change.color', c);
-        },
-        _setColorInd: function(c, idx) {
-          this['_cTxt' + idx].attr('style', 'background-color:' + c).next().html(c);
-        },
-        _setOption: function(key, value) {
-          if (key === 'color') {
-            this._setValue(value, true);
-          } else {
-            this.options[key] = value;
-          }
-        },
-        _add2History: function(c) {
-          var iMax = history.length;
-          for (var i = 0; i < iMax; i++) {
-            if (c === history[i]) {
-              return;
-            }
-          }
-          if (iMax > 27) {
-            history.shift();
-          }
-          history.push(c);
-        },
-        enable: function() {
-          var e = this.element;
-          if (this._isPopup) {
-            e.removeAttr('disabled');
-          } else {
-            e.css({
-              'opacity': '1',
-              'pointer-events': 'auto'
+          var showOn = this.options.showOn;
+          if (showOn === 'both' || showOn === 'focus') {
+            this.element.on('focus', function() {
+              self.showPalette();
             });
           }
-          if (this.options.showOn !== 'focus') {
-            this.element.next().addClass('evo-pointer');
-          }
-          e.removeAttr('aria-disabled');
-          this._enabled = true;
-          return this;
-        },
-        disable: function() {
-          var e = this.element;
-          if (this._isPopup) {
-            e.attr('disabled', 'disabled');
-          } else {
-            this.hidePalette();
-            e.css({
-              'opacity': '0.3',
-              'pointer-events': 'none'
+          if (showOn === 'both' || showOn === 'button') {
+            this.element.next().on('click', function(evt) {
+              evt.stopPropagation();
+              self.showPalette();
             });
           }
-          if (this.options.showOn !== 'focus') {
-            this.element.next().removeClass('evo-pointer');
+          break;
+        default:
+          this._isPopup = false;
+          this._palette = this.element.html(this._paletteHTML()).attr('aria-haspopup', 'true');
+          this._bindColors();
+      }
+      if (color !== null && this.options.history) {
+        this._add2History(color);
+      }
+    },
+    _paletteHTML: function() {
+      var h = [],
+          pIdx = this._paletteIdx = Math.abs(this._paletteIdx),
+          opts = this.options,
+          labels = opts.strings.split(',');
+      h.push('<div  class="lecolorpicker evo-pop', _ie, this.options.extraClassnames, '"', this._isPopup ? ' style="position:absolute"' : '', '>');
+      h.push('<span>', this['_paletteHTML' + pIdx](), '</span>');
+      h.push('<div class="evo-more"><a href="javascript:void(0)">', labels[1 + pIdx], '</a>');
+      h.push('</div>');
+      h.push('</div>');
+      return h.join('');
+    },
+    _colorIndHTML: function(c, fl) {
+      var h = [];
+      h.push('<div class="evo-color" style="float:left"><div style="');
+      h.push(c ? 'background-color:' + c : 'display:none');
+      if (isIE) {
+        h.push('" class="evo-colorbox-ie"></div><span class=".evo-colortxt-ie" ');
+      } else {
+        h.push('"></div><span ');
+      }
+      h.push(c ? '>' + c + '</span>' : '/>');
+      h.push('</div>');
+      return h.join('');
+    },
+    _paletteHTML1: function() {
+      var h = [],
+          labels = this.options.strings.split(','),
+          oTD = '<td  class="colorpickersquare" style=" ',
+          cTD = isIE ? '"><div style="width:2px;"></div>' : '"><span>',
+          fTD = '</span></td>',
+          oTRTH = '<tr><th colspan="' + this.options.cols + '" class="ui-widget-content">';
+      h.push('<table class="evo-palette', _ie, '">', oTRTH, labels[0], '</th></tr>');
+      for (var r = 0; r < this.options.rows; r++) {
+        h.push('<tr class="in">');
+        if (this.options.type === 'colorpicker') {
+          for (var i = 0; i < this.options.cols; i++) {
+            h.push(oTD, 'background: #' + this.options.subThemeColors[r * this.options.cols + i] + ';" data-color="' + this.options.subThemeColors[r * this.options.cols + i], cTD, fTD);
           }
-          e.attr('aria-disabled', 'true');
-          this._enabled = false;
-          return this;
-        },
-        isDisabled: function() {
-          return !this._enabled;
-        },
-        destroy: function() {
-          jQuery$1(document.body).off('click.' + this._id);
-          if (this._palette) {
-            this._palette.off('mouseover click', 'td').find('.evo-more a').off('click');
-            if (this._isPopup) {
-              this._palette.remove();
-            }
-            this._palette = this._cTxt = null;
-          }
-          if (this._isPopup) {
-            this.element.next().off('click').remove().end().off('focus').unwrap();
-          }
-          this.element.removeClass('colorPicker ' + this.id).empty();
-          jQuery$1.Widget.prototype.destroy.call(this);
+        } else if (this.options.type === 'gradient') {
+          h.push(oTD);
+          h.push(this.getGradient(r));
+          h.push(';width: 150px;border:1px solid #EEE" data-gradient="' + r, cTD, fTD);
         }
+        h.push('</tr>');
+      }
+      h.push('</table>');
+      return h.join('');
+    },
+    getGradient: function(gradientid) {
+      var thisgradient = [];
+      thisgradient.push('background: linear-gradient(to right ');
+      var colorlength = this.options.subThemeColors[gradientid][1].length;
+      for (var i = 0; i < colorlength; i++) {
+        thisgradient.push(' , ', this.options.subThemeColors[gradientid][1][i], ' ', 10 * (10 * i / colorlength), '% ');
+      }
+      thisgradient.push(')');
+      thisgradient = thisgradient.join('');
+      return thisgradient;
+    },
+    showPalette: function() {
+      if (this._enabled) {
+        jQuery('.colorPicker').not('.' + this._id).colorpicker('hidePalette');
+        if (this._palette === null) {
+          this._palette = this.element.next().after(this._paletteHTML()).next().on('click', function(evt) {
+            evt.stopPropagation();
+          });
+          this._bindColors();
+          var that = this;
+          jQuery(document.body).on('click.' + this._id, function(evt) {
+            if (evt.target !== that.element.get(0)) {
+              that.hidePalette();
+            }
+          });
+        }
+      }
+      return this;
+    },
+    hidePalette: function() {
+      if (this._isPopup && this._palette) {
+        jQuery(document.body).off('click.' + this._id);
+        var that = this;
+        this._palette.off('mouseover click', 'td').fadeOut(function() {
+          that._palette.remove();
+          that._palette = that._cTxt = null;
+        }).find('.evo-more a').off('click');
+      }
+      return this;
+    },
+    _bindColors: function() {
+      var es = this._palette.find('div.evo-color'),
+          sel = this.options.history ? 'td,.evo-cHist div' : 'td';
+      this._cTxt1 = es.eq(0).children().eq(0);
+      this._cTxt2 = es.eq(1).children().eq(0);
+      var that = this;
+      this._palette.on('click', sel, function(evt) {
+        if (that._enabled) {
+          if (that.options.type === 'colorpicker') {
+            var c = toHex3(jQuery(this).data('color'));
+            that._setValue(String(c));
+          } else if (that.options.type === 'gradient') {
+            var gradientid = jQuery(this).data('gradient');
+            that.options.gradientid = gradientid;
+            that._setValue(String(gradientid));
+            jQuery('.gradientpicker', that.element.parent()).attr('style', that.getGradient(gradientid));
+          }
+        }
+      }).on('mouseover', sel, function(evt) {
+        if (that._enabled) {
+          var c = toHex3(jQuery(this).data('color'));
+          if (that.options.displayIndicator) {
+            that._setColorInd(c, 2);
+          }
+          that.element.trigger('mouseover.color', c);
+        }
+      }).find('.evo-more a').on('click', function() {
+        that._switchPalette(this);
       });
-      $__export('default', jQuery$1);
+    },
+    val: function(value) {
+      if (typeof value === 'undefined') {
+        return this.options.color;
+      } else {
+        this._setValue(value);
+        return this;
+      }
+    },
+    _setValue: function(c, noHide) {
+      c = c || '#999999';
+      c = String(c).replace(/ /g, '');
+      this.options.color = c;
+      if (this._isPopup) {
+        if (!noHide) {
+          this.hidePalette();
+        }
+        this.element.val(c).next().attr('style', 'background-color:' + c);
+      } else {
+        this._setColorInd(c, 1);
+      }
+      if (this.options.history && this._paletteIdx > 0) {
+        this._add2History(c);
+      }
+      this.element.trigger('change.color', c);
+    },
+    _setColorInd: function(c, idx) {
+      this['_cTxt' + idx].attr('style', 'background-color:' + c).next().html(c);
+    },
+    _setOption: function(key, value) {
+      if (key === 'color') {
+        this._setValue(value, true);
+      } else {
+        this.options[key] = value;
+      }
+    },
+    _add2History: function(c) {
+      var iMax = history.length;
+      for (var i = 0; i < iMax; i++) {
+        if (c === history[i]) {
+          return;
+        }
+      }
+      if (iMax > 27) {
+        history.shift();
+      }
+      history.push(c);
+    },
+    enable: function() {
+      var e = this.element;
+      if (this._isPopup) {
+        e.removeAttr('disabled');
+      } else {
+        e.css({
+          'opacity': '1',
+          'pointer-events': 'auto'
+        });
+      }
+      if (this.options.showOn !== 'focus') {
+        this.element.next().addClass('evo-pointer');
+      }
+      e.removeAttr('aria-disabled');
+      this._enabled = true;
+      return this;
+    },
+    disable: function() {
+      var e = this.element;
+      if (this._isPopup) {
+        e.attr('disabled', 'disabled');
+      } else {
+        this.hidePalette();
+        e.css({
+          'opacity': '0.3',
+          'pointer-events': 'none'
+        });
+      }
+      if (this.options.showOn !== 'focus') {
+        this.element.next().removeClass('evo-pointer');
+      }
+      e.attr('aria-disabled', 'true');
+      this._enabled = false;
+      return this;
+    },
+    isDisabled: function() {
+      return !this._enabled;
+    },
+    destroy: function() {
+      jQuery(document.body).off('click.' + this._id);
+      if (this._palette) {
+        this._palette.off('mouseover click', 'td').find('.evo-more a').off('click');
+        if (this._isPopup) {
+          this._palette.remove();
+        }
+        this._palette = this._cTxt = null;
+      }
+      if (this._isPopup) {
+        this.element.next().off('click').remove().end().off('focus').unwrap();
+      }
+      this.element.removeClass('colorPicker ' + this.id).empty();
+      jQuery.Widget.prototype.destroy.call(this);
     }
-  };
+  });
+  return jQuery;
 });
 
+})();
 })
 (function(factory) {
   if (typeof define == 'function' && define.amd)

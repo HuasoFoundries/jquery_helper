@@ -3,7 +3,7 @@ SystemJS.config({
   packages: {
     "src": {
       "main": "./jquery_helper.js",
-      "format": "esm"
+      "format": "amd"
     }
   }
 });

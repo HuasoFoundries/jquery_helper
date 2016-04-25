@@ -1,9 +1,8 @@
 {
   "name": "jquery_helper",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "registry": "github",
   "main": "jquery_helper.js",
-  "jsnext:main": "jquery.esm.js",
   "description": "This helper bundles jQuery library plus all the jQuery and jQuery-UI plugins our app uses  in a single monolithic file.",
   "directories": {
     "example": "example"
@@ -55,9 +54,7 @@
       "jquery.waitforChild": "huasofoundries/jquery.waitforChild@^1"
     },
     "overrides": {
-      "github:carhartl/jquery-cookie@1.4.1": {
-        "format": "esm"
-      },
+
       "github:components/jqueryui@1.11.4": {
         "main": "jquery-ui.js",
 
@@ -66,15 +63,7 @@
           "jquery": "*"
         }
       },
-      "github:evanplaice/jquery-csv@0.8.1": {
-        "format": "esm"
-      },
-      "github:huasofoundries/jquery.waitforChild@1.0.4": {
-        "format": "esm"
-      },
-      "github:marioizquierdo/jquery.serializeJSON@2.7.2": {
-        "format": "esm"
-      },
+
       "npm:jquery@2.2.3": {
         "format": "amd"
       }
