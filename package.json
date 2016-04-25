@@ -1,6 +1,6 @@
 {
   "name": "jquery_helper",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "registry": "github",
   "main": "jquery_helper.js",
   "jsnext:main": "jquery.esm.js",
@@ -20,10 +20,7 @@
   "scripts": {
     "test": "make test"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HuasoFoundries/jquery_helper.git"
-  },
+
   "keywords": [
     "jquery",
     "jqueryui",
@@ -33,14 +30,18 @@
   ],
   "author": "amenadiel@gmail.com",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HuasoFoundries/jquery_helper.git"
+  },
   "bugs": {
     "url": "https://github.com/HuasoFoundries/jquery_helper/issues"
   },
   "homepage": "https://github.com/HuasoFoundries/jquery_helper#readme",
   "jspm": {
-    "format": "esm",
+    "format": "amd",
     "registry": "github",
-    "main":"jquery.esm.js",
+    "main": "jquery_helper.js",
     "directories": {
       "lib": "dist"
     },
@@ -59,7 +60,7 @@
       },
       "github:components/jqueryui@1.11.4": {
         "main": "jquery-ui.js",
-        
+
         "registry": "jspm",
         "dependencies": {
           "jquery": "*"
@@ -68,7 +69,7 @@
       "github:evanplaice/jquery-csv@0.8.1": {
         "format": "esm"
       },
-      "github:huasofoundries/jquery.waitforChild@1.0.2": {
+      "github:huasofoundries/jquery.waitforChild@1.0.3": {
         "format": "esm"
       },
       "github:marioizquierdo/jquery.serializeJSON@2.7.2": {
