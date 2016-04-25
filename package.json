@@ -1,6 +1,6 @@
 {
   "name": "jquery_helper",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "registry": "github",
   "main": "jquery_helper.js",
   "jsnext:main": "jquery.esm.js",
@@ -69,7 +69,7 @@
       "github:evanplaice/jquery-csv@0.8.1": {
         "format": "esm"
       },
-      "github:huasofoundries/jquery.waitforChild@1.0.3": {
+      "github:huasofoundries/jquery.waitforChild@1.0.4": {
         "format": "esm"
       },
       "github:marioizquierdo/jquery.serializeJSON@2.7.2": {
