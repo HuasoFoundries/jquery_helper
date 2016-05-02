@@ -1,29 +1,71 @@
 {
-  "name": "ig_jquery_helper",
-  "version": "0.9.1",
+  "name": "jquery_helper",
+  "version": "1.1.0",
   "registry": "github",
-  "main": "dist/jquery_helper.js",
-  "devDependencies": {
-    "jspm": "0.16.27",
-    "grunt": "^0.4.5",
+  "main": "jquery_helper.js",
+  "description": "This helper bundles jQuery library plus all the jQuery and jQuery-UI plugins our app uses  in a single monolithic file.",
+  "directories": {
+    "example": "example"
+  },
+  "dependencies": {
+    "jspm": "^0.17.0-beta.13",
+    "grunt": "^1",
     "grunt-contrib-connect": "^0.11.2"
   },
+  "devDependencies": {
+    "eslint": "^1.10.3",
+    "babel-eslint": "^6.0.3"
+  },
+  "scripts": {
+    "test": "make test"
+  },
+
+  "keywords": [
+    "jquery",
+    "jqueryui",
+    "bundle",
+    "systemjs",
+    "jspm"
+  ],
+  "author": "amenadiel@gmail.com",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HuasoFoundries/jquery_helper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/HuasoFoundries/jquery_helper/issues"
+  },
+  "homepage": "https://github.com/HuasoFoundries/jquery_helper#readme",
   "jspm": {
     "format": "amd",
-    "dependencies": {
-      "jquery": "npm:jquery@^2.2.3",
-      "jquery-ui": "components/jqueryui@^1.11.4"
+    "registry": "github",
+    "main": "jquery_helper.js",
+    "directories": {
+      "lib": "dist"
     },
+    "dependencies": {},
     "devDependencies": {
-      "jquery-csv": "evanplaice/jquery-csv@^0.9.1",
-      "jquery-impromptu": "trentrichardson/jQuery-Impromptu@^6.2.2",
+      "jquery": "npm:jquery@^2.2.3",
+      "jquery-ui": "components/jqueryui@^1.11.4",
+      "jquery-csv": "evanplaice/jquery-csv@~0.8",
       "jquery-serializejson": "marioizquierdo/jquery.serializeJSON@~2.7",
       "jquery.cookie": "carhartl/jquery-cookie@^1.4.1",
       "jquery.waitforChild": "huasofoundries/jquery.waitforChild@^1"
     },
     "overrides": {
-      "github:trentrichardson/jQuery-Impromptu@6.2.2": {
-        "main": "dist/jquery-impromptu.js"
+
+      "github:components/jqueryui@1.11.4": {
+        "main": "jquery-ui.js",
+
+        "registry": "jspm",
+        "dependencies": {
+          "jquery": "*"
+        }
+      },
+
+      "npm:jquery@2.2.3": {
+        "format": "amd"
       }
     }
   }

@@ -1,15 +1,13 @@
 !function(e){function r(e,r,o){return 4===arguments.length?t.apply(this,arguments):void n(e,{declarative:!0,deps:r,declare:o})}function t(e,r,t,o){n(e,{declarative:!1,deps:r,executingRequire:t,execute:o})}function n(e,r){r.name=e,e in p||(p[e]=r),r.normalizedDeps=r.deps}function o(e,r){if(r[e.groupIndex]=r[e.groupIndex]||[],-1==v.call(r[e.groupIndex],e)){r[e.groupIndex].push(e);for(var t=0,n=e.normalizedDeps.length;n>t;t++){var a=e.normalizedDeps[t],u=p[a];if(u&&!u.evaluated){var d=e.groupIndex+(u.declarative!=e.declarative);if(void 0===u.groupIndex||u.groupIndex<d){if(void 0!==u.groupIndex&&(r[u.groupIndex].splice(v.call(r[u.groupIndex],u),1),0==r[u.groupIndex].length))throw new TypeError("Mixed dependency cycle detected");u.groupIndex=d}o(u,r)}}}}function a(e){var r=p[e];r.groupIndex=0;var t=[];o(r,t);for(var n=!!r.declarative==t.length%2,a=t.length-1;a>=0;a--){for(var u=t[a],i=0;i<u.length;i++){var s=u[i];n?d(s):l(s)}n=!n}}function u(e){return x[e]||(x[e]={name:e,dependencies:[],exports:{},importers:[]})}function d(r){if(!r.module){var t=r.module=u(r.name),n=r.module.exports,o=r.declare.call(e,function(e,r){if(t.locked=!0,"object"==typeof e)for(var o in e)n[o]=e[o];else n[e]=r;for(var a=0,u=t.importers.length;u>a;a++){var d=t.importers[a];if(!d.locked)for(var i=0;i<d.dependencies.length;++i)d.dependencies[i]===t&&d.setters[i](n)}return t.locked=!1,r},r.name);t.setters=o.setters,t.execute=o.execute;for(var a=0,i=r.normalizedDeps.length;i>a;a++){var l,s=r.normalizedDeps[a],c=p[s],v=x[s];v?l=v.exports:c&&!c.declarative?l=c.esModule:c?(d(c),v=c.module,l=v.exports):l=f(s),v&&v.importers?(v.importers.push(t),t.dependencies.push(v)):t.dependencies.push(null),t.setters[a]&&t.setters[a](l)}}}function i(e){var r,t=p[e];if(t)t.declarative?c(e,[]):t.evaluated||l(t),r=t.module.exports;else if(r=f(e),!r)throw new Error("Unable to load dependency "+e+".");return(!t||t.declarative)&&r&&r.__useDefault?r["default"]:r}function l(r){if(!r.module){var t={},n=r.module={exports:t,id:r.name};if(!r.executingRequire)for(var o=0,a=r.normalizedDeps.length;a>o;o++){var u=r.normalizedDeps[o],d=p[u];d&&l(d)}r.evaluated=!0;var c=r.execute.call(e,function(e){for(var t=0,n=r.deps.length;n>t;t++)if(r.deps[t]==e)return i(r.normalizedDeps[t]);throw new TypeError("Module "+e+" not declared as a dependency.")},t,n);c&&(n.exports=c),t=n.exports,t&&t.__esModule?r.esModule=t:r.esModule=s(t)}}function s(r){if(r===e)return r;var t={};if("object"==typeof r||"function"==typeof r)if(g){var n;for(var o in r)(n=Object.getOwnPropertyDescriptor(r,o))&&h(t,o,n)}else{var a=r&&r.hasOwnProperty;for(var o in r)(!a||r.hasOwnProperty(o))&&(t[o]=r[o])}return t["default"]=r,h(t,"__useDefault",{value:!0}),t}function c(r,t){var n=p[r];if(n&&!n.evaluated&&n.declarative){t.push(r);for(var o=0,a=n.normalizedDeps.length;a>o;o++){var u=n.normalizedDeps[o];-1==v.call(t,u)&&(p[u]?c(u,t):f(u))}n.evaluated||(n.evaluated=!0,n.module.execute.call(e))}}function f(e){if(D[e])return D[e];if("@node/"==e.substr(0,6))return y(e.substr(6));var r=p[e];if(!r)throw"Module "+e+" not present.";return a(e),c(e,[]),p[e]=void 0,r.declarative&&h(r.module.exports,"__esModule",{value:!0}),D[e]=r.declarative?r.module.exports:r.esModule}var p={},v=Array.prototype.indexOf||function(e){for(var r=0,t=this.length;t>r;r++)if(this[r]===e)return r;return-1},g=!0;try{Object.getOwnPropertyDescriptor({a:0},"a")}catch(m){g=!1}var h;!function(){try{Object.defineProperty({},"a",{})&&(h=Object.defineProperty)}catch(e){h=function(e,r,t){try{e[r]=t.value||t.get.call(e)}catch(n){}}}}();var x={},y="undefined"!=typeof System&&System._nodeRequire||"undefined"!=typeof require&&require.resolve&&"undefined"!=typeof process&&require,D={"@empty":{}};return function(e,n,o){return function(a){a(function(a){for(var u={_nodeRequire:y,register:r,registerDynamic:t,get:f,set:function(e,r){D[e]=r},newModule:function(e){return e}},d=0;d<n.length;d++)(function(e,r){r&&r.__esModule?D[e]=r:D[e]=s(r)})(n[d],arguments[d]);o(u);var i=f(e[0]);if(e.length>1)for(var d=1;d<e.length;d++)f(e[d]);return i.__useDefault?i["default"]:i})}}}("undefined"!=typeof self?self:global)
 
-(["1"], [], function($__System) {
+(["src/jquery_helper.js"], [], function($__System) {
 
-!function(){var t=$__System;if("undefined"!=typeof window&&"undefined"!=typeof document&&window.location)var s=location.protocol+"//"+location.hostname+(location.port?":"+location.port:"");t.set("@@cjs-helpers",t.newModule({getPathVars:function(t){var n,o=t.lastIndexOf("!");n=-1!=o?t.substr(0,o):t;var e=n.split("/");return e.pop(),e=e.join("/"),"file:///"==n.substr(0,8)?(n=n.substr(7),e=e.substr(7),isWindows&&(n=n.substr(1),e=e.substr(1))):s&&n.substr(0,s.length)===s&&(n=n.substr(s.length),e=e.substr(s.length)),{filename:n,dirname:e}}}))}();
-!function(e){function n(e,n){e=e.replace(l,"");var r=e.match(s),i=(r[1].split(",")[n]||"require").replace(p,""),t=c[i]||(c[i]=new RegExp(u+i+a,"g"));t.lastIndex=0;for(var o,f=[];o=t.exec(e);)f.push(o[2]||o[3]);return f}function r(e,n,i,t){if("object"==typeof e&&!(e instanceof Array))return r.apply(null,Array.prototype.splice.call(arguments,1,arguments.length-1));if("string"==typeof e&&"function"==typeof n&&(e=[e]),!(e instanceof Array)){if("string"==typeof e){var f=o.get(e);return f.__useDefault?f["default"]:f}throw new TypeError("Invalid require")}for(var l=[],u=0;u<e.length;u++)l.push(o["import"](e[u],t));Promise.all(l).then(function(e){n&&n.apply(null,e)},i)}function i(i,t,l){"string"!=typeof i&&(l=t,t=i,i=null),t instanceof Array||(l=t,t=["require","exports","module"].splice(0,l.length)),"function"!=typeof l&&(l=function(e){return function(){return e}}(l)),void 0===t[t.length-1]&&t.pop();var u,a,s;-1!=(u=f.call(t,"require"))&&(t.splice(u,1),i||(t=t.concat(n(l.toString(),u)))),-1!=(a=f.call(t,"exports"))&&t.splice(a,1),-1!=(s=f.call(t,"module"))&&t.splice(s,1);var p={name:i,deps:t,execute:function(n,i,f){for(var p=[],c=0;c<t.length;c++)p.push(n(t[c]));f.uri=f.id,f.config=function(){},-1!=s&&p.splice(s,0,f),-1!=a&&p.splice(a,0,i),-1!=u&&p.splice(u,0,function(e,i,t){return"string"==typeof e&&"function"!=typeof i?n(e):r.call(o,e,i,t,f.id)});var d=l.apply(-1==a?e:i,p);return"undefined"==typeof d&&f&&(d=f.exports),"undefined"!=typeof d?d:void 0}};if(i)d.anonDefine||d.isBundle?(d.anonDefine&&d.anonDefine.name&&o.registerDynamic(d.anonDefine.name,d.anonDefine.deps,!1,d.anonDefine.execute),d.anonDefine=null):d.anonDefine=p,d.isBundle=!0,o.registerDynamic(i,p.deps,!1,p.execute);else{if(d.anonDefine)throw new TypeError("Multiple defines for anonymous module");d.anonDefine=p}}function t(n){d.anonDefine=null,d.isBundle=!1;var r=e.module,t=e.exports,o=e.define;return e.module=void 0,e.exports=void 0,e.define=i,function(){e.define=o,e.module=r,e.exports=t}}var o=$__System,f=Array.prototype.indexOf||function(e){for(var n=0,r=this.length;r>n;n++)if(this[n]===e)return n;return-1},l=/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/gm,u="(?:^|[^$_a-zA-Z\\xA0-\\uFFFF.])",a="\\s*\\(\\s*(\"([^\"]+)\"|'([^']+)')\\s*\\)",s=/\(([^\)]*)\)/,p=/^\s+|\s+$/g,c={};i.amd={};var d={isBundle:!1,anonDefine:null};o.set("@@amd-helpers",o.newModule({createDefine:t,require:r,define:i,lastModule:d})),o.amdDefine=i,o.amdRequire=r}("undefined"!=typeof self?self:global);
+!function(e){function n(e,n){e=e.replace(l,"");var r=e.match(u),t=(r[1].split(",")[n]||"require").replace(s,""),i=p[t]||(p[t]=new RegExp(a+t+f,"g"));i.lastIndex=0;for(var o,c=[];o=i.exec(e);)c.push(o[2]||o[3]);return c}function r(e,n,t,o){if("object"==typeof e&&!(e instanceof Array))return r.apply(null,Array.prototype.splice.call(arguments,1,arguments.length-1));if("string"==typeof e&&"function"==typeof n&&(e=[e]),!(e instanceof Array)){if("string"==typeof e){var l=i.get(e);return l.__useDefault?l["default"]:l}throw new TypeError("Invalid require")}for(var a=[],f=0;f<e.length;f++)a.push(i["import"](e[f],o));Promise.all(a).then(function(e){n&&n.apply(null,e)},t)}function t(t,l,a){"string"!=typeof t&&(a=l,l=t,t=null),l instanceof Array||(a=l,l=["require","exports","module"].splice(0,a.length)),"function"!=typeof a&&(a=function(e){return function(){return e}}(a)),void 0===l[l.length-1]&&l.pop();var f,u,s;-1!=(f=o.call(l,"require"))&&(l.splice(f,1),t||(l=l.concat(n(a.toString(),f)))),-1!=(u=o.call(l,"exports"))&&l.splice(u,1),-1!=(s=o.call(l,"module"))&&l.splice(s,1);var p={name:t,deps:l,execute:function(n,t,o){for(var p=[],c=0;c<l.length;c++)p.push(n(l[c]));o.uri=o.id,o.config=function(){},-1!=s&&p.splice(s,0,o),-1!=u&&p.splice(u,0,t),-1!=f&&p.splice(f,0,function(e,t,l){return"string"==typeof e&&"function"!=typeof t?n(e):r.call(i,e,t,l,o.id)});var d=a.apply(-1==u?e:t,p);return"undefined"==typeof d&&o&&(d=o.exports),"undefined"!=typeof d?d:void 0}};if(t)c.anonDefine||c.isBundle?c.anonDefine&&c.anonDefine.name&&(c.anonDefine=null):c.anonDefine=p,c.isBundle=!0,i.registerDynamic(p.name,p.deps,!1,p.execute);else{if(c.anonDefine&&!c.anonDefine.name)throw new Error("Multiple anonymous defines in module "+t);c.anonDefine=p}}var i=$__System,o=Array.prototype.indexOf||function(e){for(var n=0,r=this.length;r>n;n++)if(this[n]===e)return n;return-1},l=/(\/\*([\s\S]*?)\*\/|([^:]|^)\/\/(.*)$)/gm,a="(?:^|[^$_a-zA-Z\\xA0-\\uFFFF.])",f="\\s*\\(\\s*(\"([^\"]+)\"|'([^']+)')\\s*\\)",u=/\(([^\)]*)\)/,s=/^\s+|\s+$/g,p={};t.amd={};var c={isBundle:!1,anonDefine:null};i.amdDefine=t,i.amdRequire=r}("undefined"!=typeof self?self:global);
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-"format amd";
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
-    define("2", ["3"], factory);
+    define("github:carhartl/jquery-cookie@1.4.1/jquery.cookie.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
   } else if (typeof exports === 'object') {
     factory(require('jquery'));
   } else {
@@ -76,21 +74,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   };
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-define("4", ["2"], function(main) {
-  return main;
-});
-
-_removeDefine();
-})();
-(function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(root, factory) {
   if (typeof define === "function" && define.amd) {
-    define("5", ["3"], factory);
+    define("github:huasofoundries/jquery.waitforChild@1.0.1/jquery.waitforChild.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
   } else if (typeof module !== 'undefined' && typeof exports === "object") {
     module.exports = factory(require('jquery'));
   } else {
@@ -164,21 +153,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   };
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-define("6", ["5"], function(main) {
-  return main;
-});
-
-_removeDefine();
-})();
-(function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === 'function' && define.amd) {
-    define("7", ["3"], factory);
+    define("github:marioizquierdo/jquery.serializeJSON@2.7.2/jquery.serializejson.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
   } else if (typeof exports === 'object') {
     var jQuery = require('jquery');
     module.exports = factory(jQuery);
@@ -474,21 +454,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   };
 }));
 
-_removeDefine();
 })();
-(function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-define("8", ["7"], function(main) {
-  return main;
-});
-
-_removeDefine();
-})();
-$__System.registerDynamic("9", [], true, function($__require, exports, module) {
+$__System.registerDynamic("github:evanplaice/jquery-csv@0.8.1/src/jquery.csv.js", [], true, function($__require, exports, module) {
   ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
+  var define,
+      global = this,
+      GLOBAL = this;
   RegExp.escape = function(s) {
     return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
   };
@@ -1111,25 +1082,14 @@ $__System.registerDynamic("9", [], true, function($__require, exports, module) {
       module.exports = $.csv;
     }
   }).call(this);
-  global.define = __define;
-  return module.exports;
-});
-
-$__System.registerDynamic("a", ["9"], true, function($__require, exports, module) {
-  ;
-  var global = this,
-      __define = global.define;
-  global.define = undefined;
-  module.exports = $__require('9');
-  global.define = __define;
   return module.exports;
 });
 
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("b", ["3", "c", "d", "e"], factory);
+    define("github:components/jqueryui@1.11.4/ui/draggable.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -1924,13 +1884,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   return $.ui.draggable;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("f", ["3", "c", "e", "d", "b"], factory);
+    define("github:components/jqueryui@1.11.4/ui/droppable.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/draggable.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -2220,13 +2179,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   return $.ui.droppable;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("10", ["3", "c", "d", "e"], factory);
+    define("github:components/jqueryui@1.11.4/ui/resizable.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -3141,13 +3099,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   return $.ui.resizable;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("11", ["3", "c", "d", "e"], factory);
+    define("github:components/jqueryui@1.11.4/ui/selectable.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -3358,13 +3315,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("12", ["3", "c", "d", "e"], factory);
+    define("github:components/jqueryui@1.11.4/ui/sortable.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -4311,13 +4267,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("13", ["3", "c", "e", "14", "15"], factory);
+    define("github:components/jqueryui@1.11.4/ui/autocomplete.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/position.js", "github:components/jqueryui@1.11.4/ui/menu.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -4776,13 +4731,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   return $.ui.autocomplete;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("14", ["3"], factory);
+    define("github:components/jqueryui@1.11.4/ui/position.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -5202,13 +5156,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   return $.ui.position;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("15", ["3", "c", "e", "14"], factory);
+    define("github:components/jqueryui@1.11.4/ui/menu.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/position.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -5640,13 +5593,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("16", ["3", "c", "e"], factory);
+    define("github:components/jqueryui@1.11.4/ui/progressbar.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -5740,13 +5692,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("17", ["3", "c", "d", "e"], factory);
+    define("github:components/jqueryui@1.11.4/ui/slider.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -6333,13 +6284,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("18", ["3", "c", "e"], factory);
+    define("github:components/jqueryui@1.11.4/ui/tabs.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -6957,605 +6907,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-(function(root, factory) {
-  if (typeof define === 'function' && define.amd) {
-    define("19", ["3"], factory);
-  } else {
-    factory(root.jQuery);
-  }
-}(this, function($) {
-  'use strict';
-  var Imp = function(message, options) {
-    var t = this;
-    t.id = Imp.count++;
-    Imp.lifo.push(t);
-    if (message) {
-      t.open(message, options);
-    }
-    return t;
-  };
-  Imp.defaults = {
-    prefix: 'jqi',
-    classes: {
-      box: '',
-      fade: '',
-      prompt: '',
-      form: '',
-      close: '',
-      title: '',
-      message: '',
-      buttons: '',
-      button: '',
-      defaultButton: ''
-    },
-    title: '',
-    closeText: '&times;',
-    buttons: {Ok: true},
-    buttonTimeout: 1000,
-    loaded: function(e) {},
-    submit: function(e, v, m, f) {},
-    close: function(e, v, m, f) {},
-    statechanging: function(e, from, to) {},
-    statechanged: function(e, to) {},
-    opacity: 0.6,
-    zIndex: 999,
-    overlayspeed: 'slow',
-    promptspeed: 'fast',
-    show: 'fadeIn',
-    hide: 'fadeOut',
-    focus: 0,
-    defaultButton: 0,
-    useiframe: false,
-    top: '15%',
-    position: {
-      container: null,
-      x: null,
-      y: null,
-      arrow: null,
-      width: null
-    },
-    persistent: true,
-    timeout: 0,
-    states: {},
-    initialState: 0,
-    state: {
-      name: null,
-      title: '',
-      html: '',
-      buttons: {Ok: true},
-      focus: 0,
-      defaultButton: 0,
-      position: {
-        container: null,
-        x: null,
-        y: null,
-        arrow: null,
-        width: null
-      },
-      submit: function(e, v, m, f) {
-        return true;
-      }
-    }
-  };
-  Imp.setDefaults = function(o) {
-    Imp.defaults = $.extend({}, Imp.defaults, o);
-  };
-  Imp.setStateDefaults = function(o) {
-    Imp.defaults.state = $.extend({}, Imp.defaults.state, o);
-  };
-  Imp.count = 0;
-  Imp.lifo = [];
-  Imp.getLast = function() {
-    var l = Imp.lifo.length;
-    return (l > 0) ? Imp.lifo[l - 1] : false;
-  };
-  Imp.removeFromStack = function(id) {
-    for (var i = Imp.lifo.length - 1; i >= 0; i--) {
-      if (Imp.lifo[i].id === id) {
-        return Imp.lifo.splice(i, 1)[0];
-      }
-    }
-  };
-  Imp.prototype = {
-    id: null,
-    open: function(message, options) {
-      var t = this;
-      t.options = $.extend({}, Imp.defaults, options);
-      if (t.timeout) {
-        clearTimeout(t.timeout);
-      }
-      t.timeout = false;
-      var opts = t.options,
-          $body = $(document.body),
-          $window = $(window);
-      var msgbox = '<div class="' + opts.prefix + 'box ' + opts.classes.box + '">';
-      if (opts.useiframe && ($('object, applet').length > 0)) {
-        msgbox += '<iframe src="javascript:false;" class="' + opts.prefix + 'fade ' + opts.classes.fade + '"></iframe>';
-      } else {
-        msgbox += '<div class="' + opts.prefix + 'fade ' + opts.classes.fade + '"></div>';
-      }
-      msgbox += '<div class="' + opts.prefix + ' ' + opts.classes.prompt + '">' + '<form action="#" class="' + opts.prefix + 'form ' + opts.classes.form + '">' + '<div class="' + opts.prefix + 'close ' + opts.classes.close + '">' + opts.closeText + '</div>' + '<div class="' + opts.prefix + 'states"></div>' + '</form>' + '</div>' + '</div>';
-      t.jqib = $(msgbox).appendTo($body);
-      t.jqi = t.jqib.children('.' + opts.prefix);
-      t.jqif = t.jqib.children('.' + opts.prefix + 'fade');
-      if (message.constructor === String) {
-        message = {state0: {
-            title: opts.title,
-            html: message,
-            buttons: opts.buttons,
-            position: opts.position,
-            focus: opts.focus,
-            defaultButton: opts.defaultButton,
-            submit: opts.submit
-          }};
-      }
-      t.options.states = {};
-      var k,
-          v;
-      for (k in message) {
-        v = $.extend({}, Imp.defaults.state, {name: k}, message[k]);
-        t.addState(v.name, v);
-        if (t.currentStateName === '') {
-          t.currentStateName = v.name;
-        }
-      }
-      t.jqi.on('click', '.' + opts.prefix + 'buttons button', function(e) {
-        var $t = $(this),
-            $state = $t.parents('.' + opts.prefix + 'state'),
-            statename = $state.data('jqi-name'),
-            stateobj = t.options.states[statename],
-            msg = $state.children('.' + opts.prefix + 'message'),
-            clicked = stateobj.buttons[$t.text()] || stateobj.buttons[$t.html()],
-            forminputs = {};
-        if (t.options.buttonTimeout > 0) {
-          t.disableStateButtons(statename);
-          setTimeout(function() {
-            t.enableStateButtons(statename);
-          }, t.options.buttonTimeout);
-        }
-        if (clicked === undefined) {
-          for (var i in stateobj.buttons) {
-            if (stateobj.buttons[i].title === $t.text() || stateobj.buttons[i].title === $t.html()) {
-              clicked = stateobj.buttons[i].value;
-            }
-          }
-        }
-        $.each(t.jqi.children('form').serializeArray(), function(i, obj) {
-          if (forminputs[obj.name] === undefined) {
-            forminputs[obj.name] = obj.value;
-          } else if (typeof forminputs[obj.name] === Array || typeof forminputs[obj.name] === 'object') {
-            forminputs[obj.name].push(obj.value);
-          } else {
-            forminputs[obj.name] = [forminputs[obj.name], obj.value];
-          }
-        });
-        var promptsubmite = new $.Event('impromptu:submit');
-        promptsubmite.stateName = stateobj.name;
-        promptsubmite.state = $state;
-        $state.trigger(promptsubmite, [clicked, msg, forminputs]);
-        if (!promptsubmite.isDefaultPrevented()) {
-          t.close(true, clicked, msg, forminputs);
-        }
-      });
-      var fadeClicked = function() {
-        if (opts.persistent) {
-          var offset = (opts.top.toString().indexOf('%') >= 0 ? ($window.height() * (parseInt(opts.top, 10) / 100)) : parseInt(opts.top, 10)),
-              top = parseInt(t.jqi.css('top').replace('px', ''), 10) - offset;
-          $('html,body').animate({scrollTop: top}, 'fast', function() {
-            var i = 0;
-            t.jqib.addClass(opts.prefix + 'warning');
-            var intervalid = setInterval(function() {
-              t.jqib.toggleClass(opts.prefix + 'warning');
-              if (i++ > 1) {
-                clearInterval(intervalid);
-                t.jqib.removeClass(opts.prefix + 'warning');
-              }
-            }, 100);
-          });
-        } else {
-          t.close(true);
-        }
-      };
-      var keyDownEventHandler = function(e) {
-        var key = (window.event) ? event.keyCode : e.keyCode;
-        if (key === 27) {
-          fadeClicked();
-        }
-        if (key === 13) {
-          var $defBtn = t.getCurrentState().find('.' + opts.prefix + 'defaultbutton');
-          var $tgt = $(e.target);
-          if ($tgt.is('textarea,.' + opts.prefix + 'button') === false && $defBtn.length > 0) {
-            e.preventDefault();
-            $defBtn.click();
-          }
-        }
-        if (key === 9) {
-          var $inputels = $('input,select,textarea,button', t.getCurrentState());
-          var fwd = !e.shiftKey && e.target === $inputels[$inputels.length - 1];
-          var back = e.shiftKey && e.target === $inputels[0];
-          if (fwd || back) {
-            setTimeout(function() {
-              if (!$inputels) {
-                return;
-              }
-              var el = $inputels[back === true ? $inputels.length - 1 : 0];
-              if (el) {
-                el.focus();
-              }
-            }, 10);
-            return false;
-          }
-        }
-      };
-      t.position();
-      t.style();
-      t._windowResize = function(e) {
-        t.position(e);
-      };
-      $window.resize({animate: false}, t._windowResize);
-      t.jqif.click(fadeClicked);
-      t.jqi.find('.' + opts.prefix + 'close').click(function() {
-        t.close();
-      });
-      t.jqi.find('.' + opts.prefix + 'form').submit(function() {
-        return false;
-      });
-      t.jqib.on("keydown", keyDownEventHandler).on('impromptu:loaded', opts.loaded).on('impromptu:close', opts.close).on('impromptu:statechanging', opts.statechanging).on('impromptu:statechanged', opts.statechanged);
-      t.jqif[opts.show](opts.overlayspeed);
-      t.jqi[opts.show](opts.promptspeed, function() {
-        t.goToState(isNaN(opts.initialState) ? opts.initialState : t.jqi.find('.' + opts.prefix + 'states .' + opts.prefix + 'state').eq(opts.initialState).data('jqi-name'));
-        t.jqib.trigger('impromptu:loaded');
-      });
-      if (opts.timeout > 0) {
-        t.timeout = setTimeout(function() {
-          t.close(true);
-        }, opts.timeout);
-      }
-      return t;
-    },
-    close: function(callCallback, clicked, msg, formvals) {
-      var t = this;
-      Imp.removeFromStack(t.id);
-      if (t.timeout) {
-        clearTimeout(t.timeout);
-        t.timeout = false;
-      }
-      if (t.jqib) {
-        t.jqib[t.options.hide]('fast', function() {
-          t.jqib.trigger('impromptu:close', [clicked, msg, formvals]);
-          t.jqib.remove();
-          $(window).off('resize', t._windowResize);
-          if (typeof callCallback === 'function') {
-            callCallback();
-          }
-        });
-      }
-      t.currentStateName = "";
-      return t;
-    },
-    addState: function(statename, stateobj, afterState) {
-      var t = this,
-          state = '',
-          $state = null,
-          arrow = '',
-          title = '',
-          opts = t.options,
-          pos = $.isFunction(stateobj.position) ? stateobj.position() : stateobj.position,
-          $jqistates = t.jqi.find('.' + opts.prefix + 'states'),
-          buttons = [],
-          showHtml,
-          defbtn,
-          k,
-          v,
-          l,
-          i = 0;
-      stateobj = $.extend({}, Imp.defaults.state, {name: statename}, stateobj);
-      if ($.isPlainObject(pos) && pos.arrow !== null) {
-        arrow = '<div class="' + opts.prefix + 'arrow ' + opts.prefix + 'arrow' + pos.arrow + '"></div>';
-      }
-      if (stateobj.title && stateobj.title !== '') {
-        title = '<div class="lead ' + opts.prefix + 'title ' + opts.classes.title + '">' + stateobj.title + '</div>';
-      }
-      showHtml = stateobj.html;
-      if (typeof stateobj.html === 'function') {
-        showHtml = 'Error: html function must return text';
-      }
-      state += '<div class="' + opts.prefix + 'state" data-jqi-name="' + statename + '">' + arrow + title + '<div class="' + opts.prefix + 'message ' + opts.classes.message + '">' + showHtml + '</div>' + '<div class="' + opts.prefix + 'buttons' + ($.isEmptyObject(stateobj.buttons) ? 'hide ' : ' ') + opts.classes.buttons + '">';
-      if ($.isArray(stateobj.buttons)) {
-        buttons = stateobj.buttons;
-      } else if ($.isPlainObject(stateobj.buttons)) {
-        for (k in stateobj.buttons) {
-          if (stateobj.buttons.hasOwnProperty(k)) {
-            buttons.push({
-              title: k,
-              value: stateobj.buttons[k]
-            });
-          }
-        }
-      }
-      for (i = 0, l = buttons.length; i < l; i++) {
-        v = buttons[i], defbtn = stateobj.focus === i || (isNaN(stateobj.focus) && stateobj.defaultButton === i) ? (opts.prefix + 'defaultbutton ' + opts.classes.defaultButton) : '';
-        state += '<button class="' + opts.classes.button + ' ' + opts.prefix + 'button ' + defbtn;
-        if (typeof v.classes !== "undefined") {
-          state += ' ' + ($.isArray(v.classes) ? v.classes.join(' ') : v.classes) + ' ';
-        }
-        state += '" name="' + opts.prefix + '_' + statename + '_button' + v.title.replace(/[^a-z0-9]+/gi, '') + '" value="' + v.value + '">' + v.title + '</button>';
-      }
-      state += '</div></div>';
-      $state = $(state).css({display: 'none'});
-      $state.on('impromptu:submit', stateobj.submit);
-      if (afterState !== undefined) {
-        t.getState(afterState).after($state);
-      } else {
-        $jqistates.append($state);
-      }
-      t.options.states[statename] = stateobj;
-      return $state;
-    },
-    removeState: function(state, newState) {
-      var t = this,
-          $state = t.getState(state),
-          rm = function() {
-            $state.remove();
-          };
-      if ($state.length === 0) {
-        return false;
-      }
-      if ($state.css('display') !== 'none') {
-        if (newState !== undefined && t.getState(newState).length > 0) {
-          t.goToState(newState, false, rm);
-        } else if ($state.next().length > 0) {
-          t.nextState(rm);
-        } else if ($state.prev().length > 0) {
-          t.prevState(rm);
-        } else {
-          t.close();
-        }
-      } else {
-        $state.slideUp('slow', rm);
-      }
-      return true;
-    },
-    getApi: function() {
-      return this;
-    },
-    getBox: function() {
-      return this.jqib;
-    },
-    getPrompt: function() {
-      return this.jqi;
-    },
-    getState: function(statename) {
-      return this.jqi.find('[data-jqi-name="' + statename + '"]');
-    },
-    getCurrentState: function() {
-      return this.getState(this.getCurrentStateName());
-    },
-    getCurrentStateName: function() {
-      return this.currentStateName;
-    },
-    disableStateButtons: function(statename, buttons, enable) {
-      var t = this;
-      if ($.isArray(statename)) {
-        buttons = statename;
-        statename = null;
-      }
-      t.getState(statename || t.getCurrentStateName()).find('.' + t.options.prefix + 'button').each(function(i, btn) {
-        if (buttons === undefined || $.inArray(btn.value, buttons) !== -1) {
-          btn.disabled = !enable;
-        }
-      });
-    },
-    enableStateButtons: function(statename, buttons) {
-      this.disableStateButtons(statename, buttons, true);
-    },
-    position: function(e) {
-      var t = this,
-          restoreFx = $.fx.off,
-          $state = t.getCurrentState(),
-          stateObj = t.options.states[$state.data('jqi-name')],
-          pos = stateObj ? $.isFunction(stateObj.position) ? stateObj.position() : stateObj.position : undefined,
-          $window = $(window),
-          bodyHeight = document.body.scrollHeight,
-          windowHeight = $(window).height(),
-          documentHeight = $(document).height(),
-          height = (bodyHeight > windowHeight) ? bodyHeight : windowHeight,
-          scrollTop = parseInt($window.scrollTop(), 10),
-          top = scrollTop + (t.options.top.toString().indexOf('%') >= 0 ? (windowHeight * (parseInt(t.options.top, 10) / 100)) : parseInt(t.options.top, 10));
-      if (e !== undefined && e.data.animate === false) {
-        $.fx.off = true;
-      }
-      t.jqib.css({
-        position: "absolute",
-        height: height,
-        width: "100%",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
-      });
-      t.jqif.css({
-        position: "fixed",
-        height: height,
-        width: "100%",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0
-      });
-      if (pos && pos.container) {
-        var offset = $(pos.container).offset(),
-            hasScrolled = false;
-        if ($.isPlainObject(offset) && offset.top !== undefined) {
-          top = (offset.top + pos.y) - (t.options.top.toString().indexOf('%') >= 0 ? (windowHeight * (parseInt(t.options.top, 10) / 100)) : parseInt(t.options.top, 10));
-          t.jqi.css({position: "absolute"});
-          t.jqi.animate({
-            top: offset.top + pos.y,
-            left: offset.left + pos.x,
-            marginLeft: 0,
-            width: (pos.width !== undefined) ? pos.width : null
-          }, function() {
-            if (!hasScrolled && (offset.top + pos.y + t.jqi.outerHeight(true)) > (scrollTop + windowHeight)) {
-              $('html,body').animate({scrollTop: top}, 'slow', 'swing', function() {});
-              hasScrolled = true;
-            }
-          });
-          if (top < scrollTop || top > scrollTop + windowHeight) {
-            $('html,body').animate({scrollTop: top}, 'slow', 'swing', function() {});
-            hasScrolled = true;
-          }
-        }
-      } else if (pos && pos.width) {
-        t.jqi.css({
-          position: "absolute",
-          left: '50%'
-        });
-        t.jqi.animate({
-          top: pos.y || top,
-          left: pos.x || '50%',
-          marginLeft: ((pos.width / 2) * -1),
-          width: pos.width
-        });
-      } else {
-        t.jqi.css({
-          position: "absolute",
-          top: top,
-          left: '50%',
-          marginLeft: ((t.jqi.outerWidth(false) / 2) * -1)
-        });
-      }
-      if (e !== undefined && e.data.animate === false) {
-        $.fx.off = restoreFx;
-      }
-    },
-    style: function() {
-      var t = this;
-      t.jqif.css({
-        zIndex: t.options.zIndex,
-        display: "none",
-        opacity: t.options.opacity
-      });
-      t.jqi.css({
-        zIndex: t.options.zIndex + 1,
-        display: "none"
-      });
-      t.jqib.css({zIndex: t.options.zIndex});
-    },
-    goToState: function(state, subState, callback) {
-      var t = this,
-          $jqi = t.jqi,
-          jqiopts = t.options,
-          $state = t.getState(state),
-          stateobj = jqiopts.states[$state.data('jqi-name')],
-          promptstatechanginge = new $.Event('impromptu:statechanging'),
-          opts = t.options;
-      if (stateobj !== undefined) {
-        if (typeof stateobj.html === 'function') {
-          var contentLaterFunc = stateobj.html;
-          $state.find('.' + opts.prefix + 'message ').html(contentLaterFunc());
-        }
-        if (typeof subState === 'function') {
-          callback = subState;
-          subState = false;
-        }
-        t.jqib.trigger(promptstatechanginge, [t.getCurrentStateName(), state]);
-        if (!promptstatechanginge.isDefaultPrevented() && $state.length > 0) {
-          t.jqi.find('.' + opts.prefix + 'parentstate').removeClass(opts.prefix + 'parentstate');
-          if (subState) {
-            t.jqi.find('.' + opts.prefix + 'substate').not($state).slideUp(jqiopts.promptspeed).removeClass('.' + opts.prefix + 'substate').find('.' + opts.prefix + 'arrow').hide();
-            t.jqi.find('.' + opts.prefix + 'state:visible').addClass(opts.prefix + 'parentstate');
-            $state.addClass(opts.prefix + 'substate');
-          } else {
-            t.jqi.find('.' + opts.prefix + 'state').not($state).slideUp(jqiopts.promptspeed).find('.' + opts.prefix + 'arrow').hide();
-          }
-          t.currentStateName = stateobj.name;
-          $state.slideDown(jqiopts.promptspeed, function() {
-            var $t = $(this);
-            t.enableStateButtons();
-            if (typeof(stateobj.focus) === 'string') {
-              $t.find(stateobj.focus).eq(0).focus();
-            } else {
-              $t.find('.' + opts.prefix + 'defaultbutton').focus();
-            }
-            $t.find('.' + opts.prefix + 'arrow').show(jqiopts.promptspeed);
-            if (typeof callback === 'function') {
-              t.jqib.on('impromptu:statechanged', callback);
-            }
-            t.jqib.trigger('impromptu:statechanged', [state]);
-            if (typeof callback === 'function') {
-              t.jqib.off('impromptu:statechanged', callback);
-            }
-          });
-          if (!subState) {
-            t.position();
-          }
-        }
-      }
-      return $state;
-    },
-    nextState: function(callback) {
-      var t = this,
-          $next = t.getCurrentState().next();
-      if ($next.length > 0) {
-        t.goToState($next.data('jqi-name'), callback);
-      }
-      return $next;
-    },
-    prevState: function(callback) {
-      var t = this,
-          $prev = t.getCurrentState().prev();
-      if ($prev.length > 0) {
-        t.goToState($prev.data('jqi-name'), callback);
-      }
-      return $prev;
-    }
-  };
-  $.prompt = function(message, options) {
-    var api = new Imp(message, options);
-    return api.jqi;
-  };
-  $.each(Imp, function(k, v) {
-    $.prompt[k] = v;
-  });
-  $.each(Imp.prototype, function(k, v) {
-    $.prompt[k] = function() {
-      var api = Imp.getLast();
-      if (api && typeof api[k] === "function") {
-        return api[k].apply(api, arguments);
-      }
-    };
-  });
-  $.fn.prompt = function(options) {
-    if (options === undefined) {
-      options = {};
-    }
-    if (options.withDataAndEvents === undefined) {
-      options.withDataAndEvents = false;
-    }
-    $.prompt($(this).clone(options.withDataAndEvents).html(), options);
-  };
-  window.Impromptu = Imp;
-}));
-
-_removeDefine();
-})();
-(function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-define("1a", ["19"], function(main) {
-  return main;
-});
-
-_removeDefine();
-})();
-(function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(root, factory) {
   if (typeof define === "function" && define.amd) {
-    define("1b", ["3"], factory);
+    define("src/plugins/jquery.ajax.progress.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
   } else if (typeof module !== 'undefined' && typeof exports === "object") {
     module.exports = factory(require('jquery'));
   } else {
@@ -7584,13 +6941,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   })(jQuery);
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(root, factory) {
   if (typeof define === "function" && define.amd) {
-    define("1c", ["3"], factory);
+    define("src/plugins/jquery.hotkeys.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
   } else if (typeof module !== 'undefined' && typeof exports === "object") {
     module.exports = factory(require('jquery'));
   } else {
@@ -7724,13 +7080,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("c", ["3"], factory);
+    define("github:components/jqueryui@1.11.4/ui/core.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -7958,10 +7313,9 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   };
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(global, factory) {
   if (typeof module === "object" && typeof module.exports === "object") {
     module.exports = global.document ? factory(global, true) : function(w) {
@@ -13963,8 +13317,10 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   });
   jQuery.fn.andSelf = jQuery.fn.addBack;
   if (typeof define === "function" && define.amd) {
-    define("1d", [], function() {
+    define("npm:jquery@2.2.3/dist/jquery.js", [], function() {
       return jQuery;
+    }), define("jquery", ["npm:jquery@2.2.3/dist/jquery.js"], function(m) {
+      return m;
     });
   }
   var _jQuery = window.jQuery,
@@ -13984,21 +13340,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   return jQuery;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-define("3", ["1d"], function(main) {
-  return main;
-});
-
-_removeDefine();
-})();
-(function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("e", ["3"], factory);
+    define("github:components/jqueryui@1.11.4/ui/widget.js", ["npm:jquery@2.2.3/dist/jquery.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -14397,13 +13744,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   return $.widget;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("d", ["3", "e"], factory);
+    define("github:components/jqueryui@1.11.4/ui/mouse.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/widget.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -14526,13 +13872,12 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   });
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
+var define = $__System.amdDefine;
 (function(factory) {
   if (typeof define === "function" && define.amd) {
-    define("1e", ["3", "c", "e", "d"], factory);
+    define("src/plugins/jquery.ui.rotatable.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js"], factory);
   } else {
     factory(jQuery);
   }
@@ -14678,11 +14023,10 @@ var _removeDefine = $__System.get("@@amd-helpers").createDefine();
   return $.ui.rotatable;
 }));
 
-_removeDefine();
 })();
 (function() {
-var _removeDefine = $__System.get("@@amd-helpers").createDefine();
-define("1", ["3", "4", "6", "8", "a", "c", "e", "d", "14", "b", "f", "10", "11", "12", "13", "15", "16", "17", "18", "1a", "1b", "1c", "1e"], function(jQuery) {
+var define = $__System.amdDefine;
+define("src/jquery_helper.js", ["npm:jquery@2.2.3/dist/jquery.js", "github:carhartl/jquery-cookie@1.4.1/jquery.cookie.js", "github:huasofoundries/jquery.waitforChild@1.0.1/jquery.waitforChild.js", "github:marioizquierdo/jquery.serializeJSON@2.7.2/jquery.serializejson.js", "github:evanplaice/jquery-csv@0.8.1/src/jquery.csv.js", "github:components/jqueryui@1.11.4/ui/core.js", "github:components/jqueryui@1.11.4/ui/widget.js", "github:components/jqueryui@1.11.4/ui/mouse.js", "github:components/jqueryui@1.11.4/ui/position.js", "github:components/jqueryui@1.11.4/ui/draggable.js", "github:components/jqueryui@1.11.4/ui/droppable.js", "github:components/jqueryui@1.11.4/ui/resizable.js", "github:components/jqueryui@1.11.4/ui/selectable.js", "github:components/jqueryui@1.11.4/ui/sortable.js", "github:components/jqueryui@1.11.4/ui/autocomplete.js", "github:components/jqueryui@1.11.4/ui/menu.js", "github:components/jqueryui@1.11.4/ui/progressbar.js", "github:components/jqueryui@1.11.4/ui/slider.js", "github:components/jqueryui@1.11.4/ui/tabs.js", "src/plugins/jquery.ajax.progress.js", "src/plugins/jquery.hotkeys.js", "src/plugins/jquery.ui.rotatable.js"], function(jQuery) {
   'use strict';
   jQuery.error = function(message) {
     console.warn('jQuery.error', message);
@@ -15029,7 +14373,6 @@ define("1", ["3", "4", "6", "8", "a", "c", "e", "d", "14", "b", "f", "10", "11",
   return jQuery;
 });
 
-_removeDefine();
 })();
 })
 (function(factory) {
@@ -15038,5 +14381,5 @@ _removeDefine();
   else if (typeof module == 'object' && module.exports && typeof require == 'function')
     module.exports = factory();
   else
-    factory();
+    jQuery = factory();
 });
