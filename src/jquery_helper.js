@@ -29,32 +29,6 @@ define([
 
 	'use strict';
 
-	jQuery.error = function (message) {
-		console.warn('jQuery.error', message);
-		globalvars.trackJavaScriptError('jQuery', message, navigator.userAgent);
-
-	};
-	// Track AJAX errors (jQuery API)
-	jQuery(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
-		console.debug('ajaxError', {
-			jqXHR: jqXHR,
-			thrownError: thrownError
-		});
-
-		// Si viene el atributo responseJSON, tirarlo a la consola como tabla
-		if (jqXHR.responseJSON) {
-			globalvars.jsonErrorDump(jqXHR.responseJSON);
-		}
-
-
-		globalvars.trackJavaScriptError('jQuery Ajax', ajaxSettings.url, JSON.stringify({
-			result: event.result,
-			status: jqXHR.status,
-			statusText: jqXHR.statusText,
-			crossDomain: ajaxSettings.crossDomain,
-			dataType: ajaxSettings.dataType
-		}));
-	});
 
 	/**
 	 * Devuelve el elemento que calza con el selector, o crea un nuevo elemento
