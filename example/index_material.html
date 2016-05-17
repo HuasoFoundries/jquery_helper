@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>jQuery UI Button - Default functionality</title>
+    <link rel="stylesheet" href="/example/smoothness/jquery-ui.css">
+    <script src="/dist/material_helper.js"></script>
+    <style>
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        margin-bottom: 10px;
+    }
+    
+    li {
+        margin: 5px;
+        padding: 5px;
+        width: 150px;
+    }
+    
+    #resizable {
+        width: 200px;
+        height: 150px;
+        padding: 5px;
+    }
+    
+    #resizable h3 {
+        text-align: center;
+        margin: 0;
+    }
+    
+    .ui-rotatable-handle {
+        height: 16px;
+        width: 16px;
+        cursor: pointer;
+        background-image: url(/example/rotate.png);
+        background-size: 100%;
+        left: 2px;
+        bottom: 2px;
+    }
+    </style>
+    <script>
+    jQuery(function() {
+
+
+        jQuery("#draggable").draggable({
+            connectToSortable: "#sortable",
+            helper: "clone",
+            revert: "invalid"
+        });
+
+        jQuery("#sortable").sortable({
+            revert: true
+        });
+
+        jQuery("ul, li").disableSelection();
+
+
+        jQuery("#resizable").resizable({
+                maxHeight: 250,
+                maxWidth: 350,
+                minHeight: 150,
+                minWidth: 200
+            })
+            .draggable()
+            .rotatable({
+                // Callback fired on rotation start.
+                start: function(event, ui) {},
+                // Callback fired during rotation.
+                rotate: function(event, ui) {},
+                // Callback fired on rotation end.
+                stop: function(event, ui) {},
+                // Set the rotation center at (25%, 75%).
+                rotationCenterX: 25.0,
+                rotationCenterY: 75.0
+            });
+    });
+    </script>
+</head>
+
+<body>
+    <ul>
+        <li id="draggable" class="ui-state-highlight">Drag me down</li>
+    </ul>
+    <ul id="sortable">
+        <li class="ui-state-default">Item 1</li>
+        <li class="ui-state-default">Item 2</li>
+        <li class="ui-state-default">Item 3</li>
+        <li class="ui-state-default">Item 4</li>
+        <li class="ui-state-default">Item 5</li>
+    </ul>
+    <div id="resizable" class="ui-widget-content">
+        <h3 class="ui-widget-header">Resize larger / smaller</h3>
+    </div>
+</body>
+
+</html>
