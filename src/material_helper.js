@@ -1141,5 +1141,5 @@ define([
 
 	}); // End of $(document).ready
 
-	return Materialize;
+	return jQuery;
 });
