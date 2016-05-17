@@ -6,5 +6,7 @@
   "github:marioizquierdo/jquery.serializeJSON@2.7.2": {},
   "github:evanplaice/jquery-csv@0.8.1": {},
   "github:carhartl/jquery-cookie@1.4.1": {},
-  "github:huasofoundries/jquery.waitforChild@1.0.1": {}
+  "github:huasofoundries/jquery.waitforChild@1.0.1": {},
+  "github:hammerjs/hammer.js@2.0.8": {},
+  "github:julianshapiro/velocity@1.2.3": {}
 }
