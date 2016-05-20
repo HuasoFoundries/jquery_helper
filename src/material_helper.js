@@ -432,7 +432,7 @@ define([
 			if ($select.find('option:selected') !== undefined) {
 				label = $select.find('option:selected');
 			} else {
-				label = options.first();
+				label = selectOptions.first();
 			}
 
 
