@@ -17,11 +17,11 @@ SystemJS.config({
   map: {
     "hammerjs": "github:hammerjs/hammer.js@2.0.8",
     "jquery": "npm:jquery@3.1.0",
-    "jquery-csv": "github:evanplaice/jquery-csv@0.8.1",
+    "jquery-csv": "github:evanplaice/jquery-csv@0.8.2",
     "jquery-serializejson": "github:marioizquierdo/jquery.serializeJSON@2.7.2",
     "jquery-ui": "github:components/jqueryui@1.11.4",
     "jquery.cookie": "github:carhartl/jquery-cookie@1.4.1",
-    "jquery.waitforChild": "github:huasofoundries/jquery.waitforChild@1.0.1",
+    "jquery.waitforChild": "github:huasofoundries/jquery.waitforChild@1.1.0",
     "materialize-css": "npm:materialize-css@0.97.6",
     "velocity": "npm:velocity-animate@1.2.3"
   },

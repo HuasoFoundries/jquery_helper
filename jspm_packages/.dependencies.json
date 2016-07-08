@@ -3,9 +3,6 @@
     "jquery": "npm:jquery"
   },
   "github:marioizquierdo/jquery.serializeJSON@2.7.2": {},
-  "github:evanplaice/jquery-csv@0.8.1": {},
-  "github:carhartl/jquery-cookie@1.4.1": {},
-  "github:huasofoundries/jquery.waitforChild@1.0.1": {},
   "github:hammerjs/hammer.js@2.0.8": {},
   "npm:jquery@3.1.0": {},
   "npm:velocity-animate@1.2.3": {
@@ -16,5 +13,8 @@
   "npm:materialize-css@0.97.6": {
     "jquery": "github:components/jquery",
     "css": "github:systemjs/plugin-css"
-  }
+  },
+  "github:carhartl/jquery-cookie@1.4.1": {},
+  "github:evanplaice/jquery-csv@0.8.2": {},
+  "github:huasofoundries/jquery.waitforChild@1.1.0": {}
 }
