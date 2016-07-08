@@ -49,6 +49,10 @@ module.exports = function (grunt) {
 
 		options: {
 			process: function (src, filepath) {
+				var explodedpath = filepath.split('/'),
+					filename = explodedpath.pop().replace('.js', ''),
+					modified_src = '';
+
 				if (filepath.indexOf('npm/materialize-css') !== -1) {
 					// Replaces head with my own code
 					if (filepath.indexOf('initial.js') !== -1) {
@@ -57,7 +61,8 @@ module.exports = function (grunt) {
 					} else if (filepath.indexOf('waves.js') !== -1) {
 						return '// Source: ' + filepath + '\n' + src.replace('})(window);', ' return Materialize; });').replace(';(function(window) {', '');
 					} else {
-						return '// Source: ' + filepath + '\n' + src.replace('(function($) {', '').replace('(function ($) {', '').replace('}( jQuery ));', '').replace('})(jQuery);', '');
+						modified_src = '// Source: ' + filepath + '\n' + src.replace('(function($) {', '').replace('(function ($) {', '');
+						return modified_src.replace('}( jQuery ));', '').replace('})(jQuery);', '').replace(/methods/g, filename + 'methods');
 					}
 				}
 			}
@@ -71,11 +76,14 @@ module.exports = function (grunt) {
 				"jspm_packages/npm/materialize-css@0.97.6/animation.js",
 
 
+				"src/material_components/collapsible.js",
+
 				"jspm_packages/npm/materialize-css@0.97.6/dropdown.js",
 				"jspm_packages/npm/materialize-css@0.97.6/leanModal.js",
 				"jspm_packages/npm/materialize-css@0.97.6/materialbox.js",
 				"jspm_packages/npm/materialize-css@0.97.6/tabs.js",
 
+				"jspm_packages/npm/materialize-css@0.97.6/tooltip.js",
 				"jspm_packages/npm/materialize-css@0.97.6/sideNav.js",
 				"jspm_packages/npm/materialize-css@0.97.6/scrollspy.js",
 				"jspm_packages/npm/materialize-css@0.97.6/slider.js",
@@ -84,7 +92,7 @@ module.exports = function (grunt) {
 				"jspm_packages/npm/materialize-css@0.97.6/pushpin.js",
 				"jspm_packages/npm/materialize-css@0.97.6/buttons.js",
 				"jspm_packages/npm/materialize-css@0.97.6/transitions.js",
-				"jspm_packages/npm/materialize-css@0.97.6/tooltip.js",
+
 				//"jspm_packages/npm/materialize-css@0.97.6/collapsible.js",
 
 				//"jspm_packages/npm/materialize-css@0.97.6/global.js",
