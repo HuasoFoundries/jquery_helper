@@ -4,25 +4,25 @@ define([
 	'jquery.waitforChild',
 	'jquery-serializejson',
 	'jquery-csv',
-	'jquery-ui/ui/core',
-	'jquery-ui/ui/widget',
-	'jquery-ui/ui/mouse',
-	'jquery-ui/ui/position',
-	'jquery-ui/ui/draggable',
-	'jquery-ui/ui/droppable',
-	'jquery-ui/ui/resizable',
-	'jquery-ui/ui/selectable',
-	'jquery-ui/ui/sortable',
-	'jquery-ui/ui/autocomplete',
-	'jquery-ui/ui/menu',
-	'jquery-ui/ui/progressbar',
-	'jquery-ui/ui/slider',
-	'jquery-ui/ui/tabs',
+	'jquery-ui/ui/core.js',
+	'jquery-ui/ui/widget.js',
+	'jquery-ui/ui/mouse.js',
+	'jquery-ui/ui/position.js',
+	'jquery-ui/ui/draggable.js',
+	'jquery-ui/ui/droppable.js',
+	'jquery-ui/ui/resizable.js',
+	'jquery-ui/ui/selectable.js',
+	'jquery-ui/ui/sortable.js',
+	'jquery-ui/ui/autocomplete.js',
+	'jquery-ui/ui/menu.js',
+	'jquery-ui/ui/progressbar.js',
+	'jquery-ui/ui/slider.js',
+	'jquery-ui/ui/tabs.js',
 
 
-	'./plugins/jquery.ajax.progress',
-	'./plugins/jquery.hotkeys',
-	'./plugins/jquery.ui.rotatable'
+	'./plugins/jquery.ajax.progress.js',
+	'./plugins/jquery.hotkeys.js',
+	'./plugins/jquery.ui.rotatable.js'
 
 
 ], function (jQuery) {

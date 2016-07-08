@@ -1,3 +1,4 @@
+"format amd";
 define([
 	'jquery',
 	'velocity',
@@ -5,25 +6,25 @@ define([
 	'./materialize.js',
 	'materialize-css/jquery.hammer.js',
 	'velocity/velocity.ui.js',
+	'jquery-ui/ui/core.js',
+	'jquery-ui/ui/widget.js',
+	'jquery-ui/ui/mouse.js',
+	'jquery-ui/ui/position.js',
+	'jquery-ui/ui/draggable.js',
+	'jquery-ui/ui/droppable.js',
+	'jquery-ui/ui/resizable.js',
+	'jquery-ui/ui/selectable.js',
+	'jquery-ui/ui/sortable.js',
+	'jquery-ui/ui/progressbar.js',
+	'./material_amd/tabs.js',
+	'./plugins/jquery.ajax.progress.js',
+	'./plugins/jquery.hotkeys.js',
+	'./plugins/jquery.ui.rotatable.js',
+	'./plugins/jquery.evol.colorpicker.js',
 
 	'jquery.cookie',
 	'jquery.waitforChild',
-	'jquery-serializejson',
-
-	'jquery-ui/ui/core',
-	'jquery-ui/ui/widget',
-	'jquery-ui/ui/mouse',
-	'jquery-ui/ui/position',
-	'jquery-ui/ui/draggable',
-	'jquery-ui/ui/droppable',
-	'jquery-ui/ui/resizable',
-	'jquery-ui/ui/selectable',
-	'jquery-ui/ui/sortable',
-	'jquery-ui/ui/progressbar',
-	'./plugins/jquery.ajax.progress',
-	'./plugins/jquery.hotkeys',
-	'./plugins/jquery.ui.rotatable',
-	'./plugins/jquery.evol.colorpicker'
+	'jquery-serializejson'
 
 ], function (jQuery, Velocity, hammerjs, Materialize) {
 
@@ -357,221 +358,7 @@ define([
 		});
 	};
 
-	/*$.fn.tooltip = function (options) {
-		var timeout = null,
-			counter = null,
-			started = false,
-			counterInterval = null,
-			margin = 5;
 
-		// Defaults
-		var defaults = {
-			delay: 350
-		};
-
-		// Remove tooltip from the activator
-		if (options === "remove") {
-			this.each(function () {
-				$('#' + $(this).attr('data-tooltip-id')).remove();
-			});
-			return false;
-		}
-
-		options = $.extend(defaults, options);
-
-
-		return this.each(function () {
-			var tooltipId = Materialize.guid();
-			var origin = $(this);
-			origin.attr('data-tooltip-id', tooltipId);
-
-			// Create Text span
-			var tooltip_text = $('<span></span>').text(origin.attr('data-tooltip'));
-
-			// Create tooltip
-			var newTooltip = $('<div></div>');
-			newTooltip.addClass('material-tooltip').append(tooltip_text)
-				.appendTo($('body'))
-				.attr('id', tooltipId);
-
-			var backdrop = $('<div></div>').addClass('backdrop');
-			backdrop.appendTo(newTooltip);
-			backdrop.css({
-				top: 0,
-				left: 0
-			});
-
-
-			//Destroy previously binded events
-			origin.off('mouseenter.tooltip mouseleave.tooltip');
-			// Mouse In
-			origin.on({
-				'mouseenter.tooltip': function (e) {
-					var tooltip_delay = origin.data("delay");
-					tooltip_delay = (tooltip_delay === undefined || tooltip_delay === '') ? options.delay : tooltip_delay;
-					counter = 0;
-					counterInterval = setInterval(function () {
-						counter += 10;
-						if (counter >= tooltip_delay && started === false) {
-							started = true;
-							newTooltip.css({
-								display: 'block',
-								left: '0px',
-								top: '0px'
-							});
-
-							// Set Tooltip text
-							newTooltip.children('span').text(origin.attr('data-tooltip'));
-
-							// Tooltip positioning
-							var originWidth = origin.outerWidth();
-							var originHeight = origin.outerHeight();
-							var tooltipPosition = origin.attr('data-position');
-							var tooltipHeight = newTooltip.outerHeight();
-							var tooltipWidth = newTooltip.outerWidth();
-							var tooltipVerticalMovement = '0px';
-							var tooltipHorizontalMovement = '0px';
-							var scale_factor = 8;
-
-							if (tooltipPosition === "top") {
-								// Top Position
-								newTooltip.css({
-									top: origin.offset().top - tooltipHeight - margin,
-									left: origin.offset().left + originWidth / 2 - tooltipWidth / 2
-								});
-								tooltipVerticalMovement = '-10px';
-								backdrop.css({
-									borderRadius: '14px 14px 0 0',
-									transformOrigin: '50% 90%',
-									marginTop: tooltipHeight,
-									marginLeft: (tooltipWidth / 2) - (backdrop.width() / 2)
-
-								});
-
-							} else if (tooltipPosition === "left") {
-								// Left Position
-								newTooltip.css({
-									top: origin.offset().top + originHeight / 2 - tooltipHeight / 2,
-									left: origin.offset().left - tooltipWidth - margin
-								});
-								tooltipHorizontalMovement = '-10px';
-								backdrop.css({
-									width: '14px',
-									height: '14px',
-									borderRadius: '14px 0 0 14px',
-									transformOrigin: '95% 50%',
-									marginTop: tooltipHeight / 2,
-									marginLeft: tooltipWidth
-								});
-							} else if (tooltipPosition === "right") {
-								// Right Position
-								newTooltip.css({
-									top: origin.offset().top + originHeight / 2 - tooltipHeight / 2,
-									left: origin.offset().left + originWidth + margin
-								});
-								tooltipHorizontalMovement = '+10px';
-								backdrop.css({
-									width: '14px',
-									height: '14px',
-									borderRadius: '0 14px 14px 0',
-									transformOrigin: '5% 50%',
-									marginTop: tooltipHeight / 2,
-									marginLeft: '0px'
-								});
-							} else {
-								// Bottom Position
-								newTooltip.css({
-									top: origin.offset().top + origin.outerHeight() + margin,
-									left: origin.offset().left + originWidth / 2 - tooltipWidth / 2
-								});
-								tooltipVerticalMovement = '+10px';
-								backdrop.css({
-									marginLeft: (tooltipWidth / 2) - (backdrop.width() / 2)
-								});
-							}
-
-							// Calculate Scale to fill
-							scale_factor = tooltipWidth / 8;
-							if (scale_factor < 8) {
-								scale_factor = 8;
-							}
-							if (tooltipPosition === "right" || tooltipPosition === "left") {
-								scale_factor = tooltipWidth / 10;
-								if (scale_factor < 6) {
-									scale_factor = 6;
-								}
-							}
-
-							newTooltip.velocity({
-									marginTop: tooltipVerticalMovement,
-									marginLeft: tooltipHorizontalMovement
-								}, {
-									duration: 350,
-									queue: false
-								})
-								.velocity({
-									opacity: 1
-								}, {
-									duration: 300,
-									delay: 50,
-									queue: false
-								});
-							backdrop.css({
-									display: 'block'
-								})
-								.velocity({
-									opacity: 1
-								}, {
-									duration: 55,
-									delay: 0,
-									queue: false
-								})
-								.velocity({
-									scale: scale_factor
-								}, {
-									duration: 300,
-									delay: 0,
-									queue: false,
-									easing: 'easeInOutQuad'
-								});
-
-						}
-					}, 10); // End Interval
-
-					// Mouse Out
-				},
-				'mouseleave.tooltip': function () {
-					// Reset State
-					clearInterval(counterInterval);
-					counter = 0;
-
-					// Animate back
-					newTooltip.velocity({
-						opacity: 0,
-						marginTop: 0,
-						marginLeft: 0
-					}, {
-						duration: 225,
-						queue: false,
-						delay: 225
-					});
-					backdrop.velocity({
-						opacity: 0,
-						scale: 1
-					}, {
-						duration: 225,
-						delay: 275,
-						queue: false,
-						complete: function () {
-							backdrop.css('display', 'none');
-							newTooltip.css('display', 'none');
-							started = false;
-						}
-					});
-				}
-			});
-		});
-	};*/
 
 	$(document).ready(function () {
 
@@ -785,131 +572,7 @@ define([
 		});
 
 
-		/****************
-		 *  Range Input  *
-		 ****************/
-
-		/*var range_type = 'input[type=range]';
-			var range_mousedown = false;
-			var left;
-
-			$(range_type).each(function () {
-				var thumb = $('<span class="thumb"><span class="value"></span></span>');
-				$(this).after(thumb);
-			});
-
-			var range_wrapper = '.range-field';
-			$(document).on('change', range_type, function (e) {
-				var thumb = $(this).siblings('.thumb');
-				thumb.find('.value').html($(this).val());
-			});
-
-			$(document).on('input mousedown touchstart', range_type, function (e) {
-				var thumb = $(this).siblings('.thumb');
-
-				// If thumb indicator does not exist yet, create it
-				if (thumb.length <= 0) {
-					thumb = $('<span class="thumb"><span class="value"></span></span>');
-					$(this).append(thumb);
-				}
-
-				// Set indicator value
-				thumb.find('.value').html($(this).val());
-
-				range_mousedown = true;
-				$(this).addClass('active');
-
-				if (!thumb.hasClass('active')) {
-					thumb.velocity({
-						height: "30px",
-						width: "30px",
-						top: "-20px",
-						marginLeft: "-15px"
-					}, {
-						duration: 300,
-						easing: 'easeOutExpo'
-					});
-				}
-
-				if (e.pageX === undefined || e.pageX === null) { //mobile
-					left = e.originalEvent.touches[0].pageX - $(this).offset().left;
-				} else { // desktop
-					left = e.pageX - $(this).offset().left;
-				}
-				var width = $(this).outerWidth();
-
-				if (left < 0) {
-					left = 0;
-				} else if (left > width) {
-					left = width;
-				}
-				thumb.addClass('active').css('left', left);
-				thumb.find('.value').html($(this).val());
-
-
-			});
-
-			$(document).on('mouseup touchend', range_wrapper, function () {
-				range_mousedown = false;
-				$(this).removeClass('active');
-			});
-
-			$(document).on('mousemove touchmove', range_wrapper, function (e) {
-				var thumb = $(this).children('.thumb');
-				var left;
-				if (range_mousedown) {
-					if (!thumb.hasClass('active')) {
-						thumb.velocity({
-							height: '30px',
-							width: '30px',
-							top: '-20px',
-							marginLeft: '-15px'
-						}, {
-							duration: 300,
-							easing: 'easeOutExpo'
-						});
-					}
-					if (e.pageX === undefined || e.pageX === null) { //mobile
-						left = e.originalEvent.touches[0].pageX - $(this).offset().left;
-					} else { // desktop
-						left = e.pageX - $(this).offset().left;
-					}
-					var width = $(this).outerWidth();
-
-					if (left < 0) {
-						left = 0;
-					} else if (left > width) {
-						left = width;
-					}
-					thumb.addClass('active').css('left', left);
-					thumb.find('.value').html(thumb.siblings(range_type).val());
-				}
-			});
-
-			$(document).on('mouseout touchleave', range_wrapper, function () {
-				if (!range_mousedown) {
-
-					var thumb = $(this).children('.thumb');
-
-					if (thumb.hasClass('active')) {
-						thumb.velocity({
-							height: '0',
-							width: '0',
-							top: '10px',
-							marginLeft: '-6px'
-						}, {
-							duration: 100
-						});
-					}
-					thumb.removeClass('active');
-				}
-			});
-*/
-
-
-	}); // End of $(document).ready
-
-
+	});
 
 
 	return jQuery;

@@ -9,8 +9,11 @@ version:
 	@echo $(VERSION)
 	
 build:
-	jspm build src/jquery_helper.js dist/jquery_helper.js --minify --global-name jQuery
-	jspm build src/material_helper.js dist/material_helper.js --minify --global-name jQuery
+	jspm build src/jquery_helper.js dist/jquery_helper.js --skip-source-maps --global-name jQuery
+	jspm build src/material_helper.js dist/material_helper.js --skip-source-maps --global-name jQuery
+
+	jspm build src/jquery_helper.js dist/jquery_helper.min.js --minify --global-name jQuery
+	jspm build src/material_helper.js dist/material_helper.min.js --minify --global-name jQuery
 
 
 install:

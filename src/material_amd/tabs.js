@@ -1,4 +1,5 @@
 define(['jquery'], function ($) {
+  var jQuery = $;
 
   var methods = {
     init: function () {
@@ -12,7 +13,7 @@ define(['jquery'], function ($) {
         $this.width('100%');
         var $active, $content, $links = $this.find('li.tab a'),
           $tabs_width = $this.width(),
-          $tab_width = $this.find('li').first().outerWidth(),
+          $tab_width = Math.max($tabs_width, $this[0].scrollWidth) / $links.length,
           $index = 0;
 
         // If the location.hash matches one of the links, use that as the active tab.
@@ -32,7 +33,9 @@ define(['jquery'], function ($) {
           $index = 0;
         }
 
-        $content = $($active[0].hash);
+        if ($active[0] !== undefined) {
+          $content = $($active[0].hash);
+        }
 
         // append indicator then set indicator width to tab width
         $this.append('<div class="indicator"></div>');
@@ -47,7 +50,7 @@ define(['jquery'], function ($) {
         }
         $(window).resize(function () {
           $tabs_width = $this.width();
-          $tab_width = $this.find('li').first().outerWidth();
+          $tab_width = Math.max($tabs_width, $this[0].scrollWidth) / $links.length;
           if ($index < 0) {
             $index = 0;
           }
@@ -75,11 +78,13 @@ define(['jquery'], function ($) {
           }
 
           $tabs_width = $this.width();
-          $tab_width = $this.find('li').first().outerWidth();
+          $tab_width = Math.max($tabs_width, $this[0].scrollWidth) / $links.length;
 
           // Make the old tab inactive.
           $active.removeClass('active');
-          $content.hide();
+          if ($content !== undefined) {
+            $content.hide();
+          }
 
           // Update the variables with the new link and content
           $active = $(this);
@@ -96,7 +101,9 @@ define(['jquery'], function ($) {
           // Change url to current tab
           // window.location.hash = $active.attr('href');
 
-          $content.show();
+          if ($content !== undefined) {
+            $content.show();
+          }
 
           // Update indicator
           if (($index - $prev_index) >= 0) {
