@@ -2,23 +2,10 @@ define([
 	'jquery',
 	'velocity',
 	'hammerjs',
-	'./material_components/waves',
-	'./material_components/animation',
-	'./material_components/buttons',
-	'./material_components/cards',
-	'./material_components/character_counter',
-	'./material_components/chips',
-	'./material_components/dropdown',
-	'./material_components/jquery.easing.1.3',
-	'./material_components/jquery.hammer',
-	'./material_components/leanModal',
-	'./material_components/materialbox',
-	'./material_components/parallax',
-	'./material_components/pushpin',
-	'./material_components/scrollspy',
-	'./material_components/sideNav',
-	'./material_components/slider',
-	'./material_components/tabs',
+	'./materialize.js',
+	'materialize-css/jquery.hammer.js',
+	'velocity/velocity.ui.js',
+
 	'jquery.cookie',
 	'jquery.waitforChild',
 	'jquery-serializejson',
@@ -37,11 +24,23 @@ define([
 	'./plugins/jquery.hotkeys',
 	'./plugins/jquery.ui.rotatable'
 
-], function (jQuery, Velocity, hammerjs, Waves) {
+], function (jQuery, Velocity, hammerjs, Materialize) {
 
 	var $ = jQuery;
 
-	var Materialize = {};
+
+
+	var guidfn = (function () {
+		function s4() {
+			return Math.floor((1 + Math.random()) * 0x10000)
+				.toString(16)
+				.substring(1);
+		}
+		return function () {
+			return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+				s4() + '-' + s4() + s4() + s4();
+		};
+	});
 
 	/**
 	 * Devuelve el elemento que calza con el selector, o crea un nuevo elemento
@@ -60,17 +59,7 @@ define([
 	};
 
 	// Unique ID
-	Materialize.guid = (function () {
-		function s4() {
-			return Math.floor((1 + Math.random()) * 0x10000)
-				.toString(16)
-				.substring(1);
-		}
-		return function () {
-			return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-				s4() + '-' + s4() + s4() + s4();
-		};
-	})();
+	Materialize.guid = guidfn();
 
 	Materialize.elementOrParentIsFixed = function (element) {
 		var $element = $(element);
@@ -83,109 +72,6 @@ define([
 			}
 		});
 		return isFixed;
-	};
-
-	// Image transition function
-	Materialize.fadeInImage = function (selector) {
-		var element = $(selector);
-		element.css({
-			opacity: 0
-		});
-		$(element).velocity({
-			opacity: 1
-		}, {
-			duration: 650,
-			queue: false,
-			easing: 'easeOutSine'
-		});
-		$(element).velocity({
-			opacity: 1
-		}, {
-			duration: 1300,
-			queue: false,
-			easing: 'swing',
-			step: function (now, fx) {
-				fx.start = 100;
-				var grayscale_setting = now / 100;
-				var brightness_setting = 150 - (100 - now) / 1.75;
-
-				if (brightness_setting < 100) {
-					brightness_setting = 100;
-				}
-				if (now >= 0) {
-					$(this).css({
-						"-webkit-filter": "grayscale(" + grayscale_setting + ")" + "brightness(" + brightness_setting + "%)",
-						"filter": "grayscale(" + grayscale_setting + ")" + "brightness(" + brightness_setting + "%)"
-					});
-				}
-			}
-		});
-	};
-
-	// Horizontal staggered list
-	Materialize.showStaggeredList = function (selector) {
-		var time = 0;
-		$(selector).find('li').velocity({
-			translateX: "-100px"
-		}, {
-			duration: 0
-		});
-
-		$(selector).find('li').each(function () {
-			$(this).velocity({
-				opacity: "1",
-				translateX: "0"
-			}, {
-				duration: 800,
-				delay: time,
-				easing: [60, 10]
-			});
-			time += 120;
-		});
-	};
-
-	Materialize.scrollFire = function (options) {
-
-		var didScroll = false;
-
-		window.addEventListener("scroll", function () {
-			didScroll = true;
-		});
-
-		var conditionallyFire = function (windowScroll, value) {
-			var selector = value.selector,
-				offset = value.offset,
-				callback = value.callback;
-
-			var currentElement = document.querySelector(selector);
-			if (currentElement !== null) {
-				var elementOffset = currentElement.getBoundingClientRect().top + window.pageYOffset;
-
-				if (windowScroll > (elementOffset + offset) && value.done !== true) {
-
-					var callbackFunc = callback;
-					callbackFunc();
-					value.done = true;
-
-				}
-			}
-		};
-
-		// Rate limit to 100ms
-		setInterval(function () {
-			if (didScroll) {
-				didScroll = false;
-
-				var windowScroll = window.pageYOffset + window.innerHeight;
-
-				for (var i = 0; i < options.length; i++) {
-					// Get options from each line
-					var value = options[i];
-					conditionallyFire(windowScroll, value);
-
-				}
-			}
-		}, 100);
 	};
 
 	// Text based inputs
@@ -254,7 +140,7 @@ define([
 
 			var $this = $(this);
 
-			var $panel_headers = $(this).find('> li > .collapsible-header');
+			var $panel_headers = $this.find('> li > .collapsible-header');
 
 			var collapsible_type = $this.data("collapsible");
 
@@ -272,10 +158,6 @@ define([
 				$panel_headers = $this.find('> li > .collapsible-header');
 				if (object.hasClass('active')) {
 					object.parent().addClass('active');
-				} else {
-					object.parent().removeClass('active');
-				}
-				if (object.parent().hasClass('active')) {
 					object.siblings('.collapsible-body').stop(true, false).slideDown({
 						duration: 350,
 						easing: "easeOutQuart",
@@ -283,7 +165,7 @@ define([
 						complete: function () {
 							$(this).css('height', '');
 						}
-					});
+					}).trigger('shown');
 				} else {
 					object.siblings('.collapsible-body').stop(true, false).slideUp({
 						duration: 350,
@@ -292,7 +174,7 @@ define([
 						complete: function () {
 							$(this).css('height', '');
 						}
-					});
+					}).trigger('hidden');
 				}
 
 				$panel_headers.not(object).removeClass('active').parent().removeClass('active');
@@ -303,17 +185,13 @@ define([
 					complete: function () {
 						$(this).css('height', '');
 					}
-				});
+				}).trigger('hidden');
 			}
 
 			// Expandable Open
 			function expandableOpen(object) {
 				if (object.hasClass('active')) {
 					object.parent().addClass('active');
-				} else {
-					object.parent().removeClass('active');
-				}
-				if (object.parent().hasClass('active')) {
 					object.siblings('.collapsible-body').stop(true, false).slideDown({
 						duration: 350,
 						easing: "easeOutQuart",
@@ -321,8 +199,9 @@ define([
 						complete: function () {
 							$(this).css('height', '');
 						}
-					});
+					}).trigger('shown');
 				} else {
+					object.parent().removeClass('active');
 					object.siblings('.collapsible-body').stop(true, false).slideUp({
 						duration: 350,
 						easing: "easeOutQuart",
@@ -330,8 +209,9 @@ define([
 						complete: function () {
 							$(this).css('height', '');
 						}
-					});
+					}).trigger('hidden');
 				}
+
 			}
 
 			/**
@@ -357,38 +237,33 @@ define([
 			}
 
 			/*****  End Helper Functions  *****/
+			$this.on('click.collapse', '> li > .collapsible-header', function (e) {
+				var $header = $(this),
+					element = $(e.target);
 
-			if (options.accordion || collapsible_type === "accordion" || collapsible_type === undefined) { // Handle Accordion
-				// Add click handler to only direct collapsible header children
-				$panel_headers = $this.find('> li > .collapsible-header');
-				$panel_headers.on('click.collapse', function (e) {
-					var element = $(e.target);
+				if (isChildrenOfPanelHeader(element)) {
+					element = getPanelHeader(element);
+				}
 
-					if (isChildrenOfPanelHeader(element)) {
-						element = getPanelHeader(element);
-					}
+				element.toggleClass('active');
 
-					element.toggleClass('active');
+				if (options.accordion || collapsible_type === "accordion" || collapsible_type === undefined) { // Handle Accordion
 					accordionOpen(element);
-				});
-				// Open first active
+				} else { // Handle Expandables
+					expandableOpen(element);
+
+					if ($header.hasClass('active')) {
+						expandableOpen($header);
+					}
+				}
+			});
+
+			// Open first active
+			if (options.accordion || collapsible_type === "accordion" || collapsible_type === undefined) { // Handle Accordion
 				accordionOpen($panel_headers.filter('.active').first());
 			} else { // Handle Expandables
-				$panel_headers.each(function () {
-					// Add click handler to only direct collapsible header children
-					$(this).on('click.collapse', function (e) {
-						var element = $(e.target);
-						if (isChildrenOfPanelHeader(element)) {
-							element = getPanelHeader(element);
-						}
-						element.toggleClass('active');
-						expandableOpen(element);
-					});
-					// Open any bodies that have the active class
-					if ($(this).hasClass('active')) {
-						expandableOpen($(this));
-					}
-
+				$panel_headers.filter('.active').each(function () {
+					expandableOpen($(this));
 				});
 			}
 
@@ -589,7 +464,7 @@ define([
 		});
 	};
 
-	$.fn.tooltip = function (options) {
+	/*$.fn.tooltip = function (options) {
 		var timeout = null,
 			counter = null,
 			started = false,
@@ -679,9 +554,9 @@ define([
 									marginLeft: (tooltipWidth / 2) - (backdrop.width() / 2)
 
 								});
-							}
-							// Left Position
-							else if (tooltipPosition === "left") {
+
+							} else if (tooltipPosition === "left") {
+								// Left Position
 								newTooltip.css({
 									top: origin.offset().top + originHeight / 2 - tooltipHeight / 2,
 									left: origin.offset().left - tooltipWidth - margin
@@ -695,9 +570,8 @@ define([
 									marginTop: tooltipHeight / 2,
 									marginLeft: tooltipWidth
 								});
-							}
-							// Right Position
-							else if (tooltipPosition === "right") {
+							} else if (tooltipPosition === "right") {
+								// Right Position
 								newTooltip.css({
 									top: origin.offset().top + originHeight / 2 - tooltipHeight / 2,
 									left: origin.offset().left + originWidth + margin
@@ -730,8 +604,9 @@ define([
 							}
 							if (tooltipPosition === "right" || tooltipPosition === "left") {
 								scale_factor = tooltipWidth / 10;
-								if (scale_factor < 6)
+								if (scale_factor < 6) {
 									scale_factor = 6;
+								}
 							}
 
 							newTooltip.velocity({
@@ -803,7 +678,7 @@ define([
 				}
 			});
 		});
-	};
+	};*/
 
 	$(document).ready(function () {
 

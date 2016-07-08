@@ -15,15 +15,6 @@ jspm install jquery=github:huasofoundries/jquery_helper
 Or (in case you're not into jspm) just copy `dist/jquery_helper.js` to your project.
 
 
-### Building
-
-If you change anything in `src/jquery_helper.js` remember to update the build like so:
-
-
-```sh
-make build
-```
-
 
 ### Testing
 
