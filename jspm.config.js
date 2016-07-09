@@ -50,22 +50,6 @@ SystemJS.config({
     "jquery_helper": {
       "main": "jquery_helper.js"
     },
-    "npm:materialize-css@0.97.6": {
-      "map": {
-        "css": "github:systemjs/plugin-css@0.1.23",
-        "jquery": "src/jquery.slim.js"
-      }
-    },
-    "npm:velocity-animate@1.2.3": {
-      "map": {
-        "jquery": "src/jquery.slim.js"
-      }
-    },
-    "github:components/jqueryui@1.11.4": {
-      "map": {
-        "jquery": "src/jquery.slim.js"
-      }
-    },
     "src": {
       "main": "./jquery_helper.js",
       "defaultExtension": "js",
@@ -86,25 +70,6 @@ SystemJS.config({
     "npm:@*/*.json",
     "npm:*.json"
   ],
-  map: {
-    "jquery": "src/jquery.slim.js"
-  },
-  packages: {
-    "npm:materialize-css@0.97.6": {
-      "map": {
-        "css": "github:systemjs/plugin-css@0.1.23",
-        "jquery": "src/jquery.slim.js"
-      }
-    },
-    "npm:velocity-animate@1.2.3": {
-      "map": {
-        "jquery": "src/jquery.slim.js"
-      }
-    },
-    "github:components/jqueryui@1.11.4": {
-      "map": {
-        "jquery": "src/jquery.slim.js"
-      }
-    }
-  }
+  map: {},
+  packages: {}
 });

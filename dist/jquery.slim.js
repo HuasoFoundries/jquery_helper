@@ -10,7 +10,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2016-07-08T23:18Z
+ * Date: 2016-07-08T23:59Z
  */
 (function (global, factory) {
 
@@ -46,11 +46,7 @@
 	// enough that all such attempts are guarded in a try block.
 	"use strict";
 
-	// @CODE
-	// build.js inserts compiled jQuery here
-
-	return jQuery;
-});
+	// 
 var arr = [];
 
 var document = window.document;
@@ -7115,7 +7111,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 // https://github.com/jrburke/requirejs/wiki/Updating-existing-libraries#wiki-anon
 
 if ( typeof define === "function" && define.amd ) {
-	define( "jquery", [], function() {
+	define( "true", [], function() {
 		return jQuery;
 	} );
 }
@@ -7150,4 +7146,8 @@ jQuery.noConflict = function( deep ) {
 if ( !noGlobal ) {
 	window.jQuery = window.$ = jQuery;
 }
-undefined
+
+	// build.js inserts compiled jQuery here
+
+	return jQuery;
+});

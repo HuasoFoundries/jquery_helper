@@ -1,13 +1,13 @@
 {
+  "npm:jquery@3.1.0": {
+    "deps": {},
+    "peerDeps": {}
+  },
   "npm:materialize-css@0.97.6": {
     "deps": {
       "jquery": "npm:jquery",
       "css": "github:systemjs/plugin-css"
     },
-    "peerDeps": {}
-  },
-  "npm:jquery@3.1.0": {
-    "deps": {},
     "peerDeps": {}
   },
   "github:components/jqueryui@1.11.4": {
@@ -16,15 +16,7 @@
     },
     "peerDeps": {}
   },
-  "github:marioizquierdo/jquery.serializeJSON@2.7.2": {
-    "deps": {},
-    "peerDeps": {}
-  },
   "github:evanplaice/jquery-csv@0.8.2": {
-    "deps": {},
-    "peerDeps": {}
-  },
-  "github:huasofoundries/jquery.waitforChild@1.1.0": {
     "deps": {},
     "peerDeps": {}
   },
@@ -38,7 +30,15 @@
     },
     "peerDeps": {}
   },
+  "github:marioizquierdo/jquery.serializeJSON@2.7.2": {
+    "deps": {},
+    "peerDeps": {}
+  },
   "npm:systemjs-plugin-babel@0.0.12": {
+    "deps": {},
+    "peerDeps": {}
+  },
+  "github:huasofoundries/jquery.waitforChild@1.1.0": {
     "deps": {},
     "peerDeps": {}
   },

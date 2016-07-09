@@ -12,7 +12,12 @@
     "globals":{
         "requirejs":true,
         "google":true,
-        "SystemJS":true
+        "SystemJS":true,
+        "window": true,
+          "jQuery": true,
+          "define": true,
+          "module": true,
+          "noGlobal": true
         
     },
     
