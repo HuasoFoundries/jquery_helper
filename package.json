@@ -12,6 +12,7 @@
     "grunt": "^1",
     "grunt-contrib-concat": "^1.0.1",
     "grunt-contrib-connect": "^0.11.2",
+    "jquery": "^3.1.0",
     "jspm": "^0.17.0-beta.22"
   },
   "scripts": {
@@ -41,11 +42,11 @@
     "directories": {
       "lib": "dist"
     },
-
+    "dependencies": {},
     "devDependencies": {
+      "css": "systemjs/plugin-css@^0.1.23",
       "materialize-css": "npm:materialize-css@^0.97.6",
       "hammerjs": "hammerjs/hammer.js@^2.0.8",
-      "jquery_full": "npm:jquery@3.1.0",
       "jquery-ui": "components/jqueryui@^1.11.4",
       "jquery-csv": "evanplaice/jquery-csv@~0.8",
       "jquery-serializejson": "marioizquierdo/jquery.serializeJSON@~2.7",
@@ -55,23 +56,21 @@
       "velocity": "npm:velocity-animate@^1.2.3"
     },
     "overrides": {
-      "github:components/jqueryui@1.11.4": {
+      "github:components/jqueryui@1.12.0": {
         "main": "jquery-ui.js",
         "registry": "jspm",
-        "dependencies": {
-          "jquery": "*"
+        "dependencies": {},
+        "map": {
+          "jquery": "src/jquery.js"
         }
-      },
-      "npm:jquery@3.1.0": {
-        "format": "amd"
       },
       "npm:materialize-css@0.97.6": {
         "format": "global",
         "main": "dist/js/materialize",
         "registry": "jspm",
-        "dependencies": {
-          "jquery": "*",
-          "css": "github:systemjs/plugin-css"
+        "dependencies": {},
+        "map": {
+          "jquery": "src/jquery.js"
         },
         "jspmNodeConversion": false,
         "directories": {
@@ -86,6 +85,12 @@
             "exports": "$",
             "format": "global"
           }
+        }
+      },
+      "npm:velocity-animate@1.2.3": {
+        "dependencies": {},
+        "map": {
+          "jquery": "src/jquery.js"
         }
       }
     }

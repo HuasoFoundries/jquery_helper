@@ -7,9 +7,8 @@
 		// AMD. Register as an anonymous module.
 		define([
 			'jquery',
-			'jquery-ui/ui/core',
 			'jquery-ui/ui/widget',
-			'jquery-ui/ui/mouse'
+			'jquery-ui/ui/widgets/mouse'
 		], factory);
 	} else {
 
@@ -66,10 +65,11 @@
 				start: this.dragStart,
 				handle: handle
 			});
-			handle.bind('mousedown', this.listeners.startRotate);
-			handle.appendTo(this.element);
 
-			if (this.options.angle != false) {
+			handle.appendTo(this.element);
+			handle.on('mousedown', this.listeners.startRotate);
+
+			if (this.options.angle !== false) {
 				this.elementCurrentAngle = this.options.angle;
 				this.performRotation(this.elementCurrentAngle);
 			} else {
@@ -100,7 +100,7 @@
 			var elementOffset = this.getElementOffset();
 			var elementCentreX = elementOffset.left + this.element.width() / 2;
 			var elementCentreY = elementOffset.top + this.element.height() / 2;
-			return Array(elementCentreX, elementCentreY);
+			return [elementCentreX, elementCentreY];
 		},
 
 		dragStart: function (event) {
@@ -119,8 +119,8 @@
 
 			this._propagate("start", event);
 
-			$(document).bind('mousemove', this.listeners.rotateElement);
-			$(document).bind('mouseup', this.listeners.stopRotate);
+			$(document).on('mousemove', this.listeners.rotateElement);
+			$(document).on('mouseup', this.listeners.stopRotate);
 
 			return false;
 		},
@@ -147,7 +147,7 @@
 			// Plugins callbacks need to be called first.
 			this._propagate("rotate", event);
 
-			if (previousRotateAngle != rotateAngle) {
+			if (previousRotateAngle !== rotateAngle) {
 				this._trigger("rotate", event, this.ui());
 				this.hasRotated = true;
 			}
@@ -160,8 +160,8 @@
 				return;
 			}
 
-			$(document).unbind('mousemove', this.listeners.rotateElement);
-			$(document).unbind('mouseup', this.listeners.stopRotate);
+			$(document).off('mousemove', this.listeners.rotateElement);
+			$(document).off('mouseup', this.listeners.stopRotate);
 
 			this.elementStopAngle = this.elementCurrentAngle;
 			if (this.hasRotated) {
@@ -176,7 +176,9 @@
 
 		_propagate: function (n, event) {
 			$.ui.plugin.call(this, n, [event, this.ui()]);
-			(n !== "rotate" && this._trigger(n, event, this.ui()));
+			if (n !== "rotate") {
+				this._trigger(n, event, this.ui());
+			}
 		},
 
 		plugins: {},

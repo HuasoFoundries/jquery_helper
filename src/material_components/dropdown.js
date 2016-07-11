@@ -139,7 +139,8 @@
 
         // Show dropdown
         activates.stop(true, true).css('opacity', 0)
-          .velocity('slideDown').velocity('slideDown')({
+          .velocity('slideDown')
+          .velocity({
             opacity: 1
           }, {
             queue: false,

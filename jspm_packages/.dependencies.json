@@ -1,40 +1,9 @@
 {
-  "npm:jquery@3.1.0": {
-    "deps": {},
-    "peerDeps": {}
-  },
   "npm:materialize-css@0.97.6": {
-    "deps": {
-      "jquery": "npm:jquery",
-      "css": "github:systemjs/plugin-css"
-    },
-    "peerDeps": {}
-  },
-  "github:components/jqueryui@1.11.4": {
-    "deps": {
-      "jquery": "npm:jquery"
-    },
-    "peerDeps": {}
-  },
-  "github:evanplaice/jquery-csv@0.8.2": {
-    "deps": {},
-    "peerDeps": {}
-  },
-  "github:hammerjs/hammer.js@2.0.8": {
     "deps": {},
     "peerDeps": {}
   },
   "npm:velocity-animate@1.2.3": {
-    "deps": {
-      "jquery": "npm:jquery"
-    },
-    "peerDeps": {}
-  },
-  "github:marioizquierdo/jquery.serializeJSON@2.7.2": {
-    "deps": {},
-    "peerDeps": {}
-  },
-  "npm:systemjs-plugin-babel@0.0.12": {
     "deps": {},
     "peerDeps": {}
   },
@@ -42,11 +11,31 @@
     "deps": {},
     "peerDeps": {}
   },
+  "github:evanplaice/jquery-csv@0.8.2": {
+    "deps": {},
+    "peerDeps": {}
+  },
   "github:systemjs/plugin-css@0.1.23": {
     "deps": {},
     "peerDeps": {}
   },
+  "github:hammerjs/hammer.js@2.0.8": {
+    "deps": {},
+    "peerDeps": {}
+  },
+  "npm:systemjs-plugin-babel@0.0.12": {
+    "deps": {},
+    "peerDeps": {}
+  },
+  "github:marioizquierdo/jquery.serializeJSON@2.7.2": {
+    "deps": {},
+    "peerDeps": {}
+  },
   "github:carhartl/jquery-cookie@1.4.1": {
+    "deps": {},
+    "peerDeps": {}
+  },
+  "github:components/jqueryui@1.12.0": {
     "deps": {},
     "peerDeps": {}
   }

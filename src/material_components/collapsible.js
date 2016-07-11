@@ -29,24 +29,28 @@
         $panel_headers = $this.find('> li > .collapsible-header');
         if (object.hasClass('active')) {
           object.parent().addClass('active');
-          object.siblings('.collapsible-body').stop(true, false).velocity('slideDown').trigger('shown');
+          object.siblings('.collapsible-body').velocity('slideDown', function () {
+            jQuery(this).css('height', '');
+          }).trigger('shown');
         } else {
           object.parent().removeClass('active');
-          object.siblings('.collapsible-body').stop(true, false).velocity('slideUp').trigger('hidden');
+          object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');
         }
 
         $panel_headers.not(object).removeClass('active').parent().removeClass('active');
-        $panel_headers.not(object).parent().children('.collapsible-body').stop(true, false).velocity('slideUp').trigger('hidden');
+        $panel_headers.not(object).parent().children('.collapsible-body').velocity('slideUp').trigger('hidden');
       }
 
       // Expandable Open
       function expandableOpen(object) {
         if (object.hasClass('active')) {
           object.parent().addClass('active');
-          object.siblings('.collapsible-body').stop(true, false).velocity('slideDown').trigger('shown');
+          object.siblings('.collapsible-body').velocity('slideDown', function () {
+            jQuery(this).css('height', '');
+          }).trigger('shown');
         } else {
           object.parent().removeClass('active');
-          object.siblings('.collapsible-body').stop(true, false).velocity('slideUp').trigger('hidden');
+          object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');
         }
       }
 

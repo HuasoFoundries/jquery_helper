@@ -6,16 +6,15 @@ define([
 	'./materialize.js',
 	'materialize-css/jquery.hammer.js',
 	'velocity/velocity.ui.js',
-	'jquery-ui/ui/core.js',
 	'jquery-ui/ui/widget.js',
-	'jquery-ui/ui/mouse.js',
+	'jquery-ui/ui/widgets/mouse.js',
 	'jquery-ui/ui/position.js',
-	'jquery-ui/ui/draggable.js',
-	'jquery-ui/ui/droppable.js',
-	'jquery-ui/ui/resizable.js',
-	'jquery-ui/ui/selectable.js',
-	'jquery-ui/ui/sortable.js',
-	'jquery-ui/ui/progressbar.js',
+	'jquery-ui/ui/widgets/draggable.js',
+	'jquery-ui/ui/widgets/droppable.js',
+	'jquery-ui/ui/widgets/resizable.js',
+	'jquery-ui/ui/widgets/selectable.js',
+	'jquery-ui/ui/widgets/sortable.js',
+	'jquery-ui/ui/widgets/progressbar.js',
 	'./material_amd/tabs.js',
 	'./plugins/jquery.ajax.progress.js',
 	'./plugins/jquery.hotkeys.js',
@@ -30,6 +29,63 @@ define([
 
 	var $ = jQuery;
 
+
+	jQuery.fn.fadeOut = function (speed, easing, callback) {
+		return this.each(function () {
+			$(this).velocity({
+				opacity: 'hide'
+			}, speed, easing, callback);
+		});
+	};
+
+	jQuery.fn.fadeIn = function (speed, easing, callback) {
+		return this.each(function () {
+			$(this).velocity({
+				opacity: 'show'
+			}, speed, easing, callback);
+		});
+	};
+
+	/*
+			jQuery.fn.extend({
+			show: function () {
+				return jQuery(this).removeClass('invisible');
+			},
+			hide: function () {
+				return jQuery(this).addClass('invisible');
+			},
+			toggle: function (state) {
+				return jQuery(this).toggleClass('invisible');
+			}
+		});
+		*/
+
+	$.fn.modal = function (option) {
+		var defaults = {
+			dismissible: true, // Modal can be dismissed by clicking outside of the modal
+			opacity: 0.5, // Opacity of modal background
+			in_duration: 300, // Transition in duration
+			out_duration: 200, // Transition out duration
+			ready: function () {
+				alert('Ready');
+			}, // Callback for Modal open
+			complete: function () {
+					alert('Closed');
+				} // Callback for Modal close
+		};
+
+		var options = $.extend(defaults, option);
+
+		return this.each(function () {
+			if (option === 'show') {
+				$(this).openModal();
+			} else if (options === 'hide') {
+				$(this).closeModal();
+			} else {
+				$(this).leanModal(options);
+			}
+		});
+	};
 
 
 	var guidfn = (function () {

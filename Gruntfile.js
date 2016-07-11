@@ -1,13 +1,11 @@
 module.exports = function (grunt) {
 
 	var fs = require("fs"),
-
 		// Skip jsdom-related tests in Node.js 0.10 & 0.12
 		runJsdomTests = !/^v0/.test(process.version),
 		requirejs = require("requirejs"),
-		Insight = require("insight"),
-		jqFolder = __dirname + "/jspm_packages/npm/jquery@3.1.0/",
-		pkg = require(jqFolder + "/package.json"),
+		jqFolder = __dirname + "/node_modules/jquery/",
+		pkg = require(jqFolder + "package.json"),
 		srcFolder = jqFolder + "src/",
 		rdefineEnd = /\}\s*?\);[^}\w]*$/,
 		read = function (fileName) {
@@ -72,7 +70,7 @@ module.exports = function (grunt) {
 		}
 
 		// AMD Name
-		if ((amdName = grunt.option("amd")) != null && /^exports\/amd$/.test(name)) {
+		if ((amdName = grunt.option("amd")) !== null && /^exports\/amd$/.test(name)) {
 			if (amdName) {
 				grunt.log.writeln("Naming jQuery with AMD name: " + amdName);
 			} else {
@@ -86,8 +84,6 @@ module.exports = function (grunt) {
 		}
 		return contents;
 	}
-
-
 
 	var config = {
 		baseUrl: srcFolder,
@@ -119,13 +115,12 @@ module.exports = function (grunt) {
 	};
 
 
-
 	grunt.registerMultiTask(
 		"build",
 		"Concatenate source, remove sub AMD definitions, " +
 		"(include/exclude modules with +/- flags), embed date/version",
 		function () {
-			var flag, index,
+			var index,
 				done = this.async(),
 				flags = this.flags,
 				optIn = flags["*"],
@@ -135,45 +130,7 @@ module.exports = function (grunt) {
 				excluded = [],
 				included = [],
 				version = grunt.config("pkg.version"),
-
-				/**
-				 * Recursively calls the excluder to remove on all modules in the list
-				 * @param {Array} list
-				 * @param {String} [prepend] Prepend this to the module name.
-				 *  Indicates we're walking a directory
-				 */
-				excludeList = function (list, prepend) {
-					if (list) {
-						prepend = prepend ? prepend + "/" : "";
-						list.forEach(function (module) {
-
-							// Exclude var modules as well
-							if (module === "var") {
-								excludeList(
-									fs.readdirSync(srcFolder + prepend + module), prepend + module
-								);
-								return;
-							}
-							if (prepend) {
-
-								// Skip if this is not a js file and we're walking files in a dir
-								if (!(module = /([\w-\/]+)\.js$/.exec(module))) {
-									return;
-								}
-
-								// Prepend folder name if passed
-								// Remove .js extension
-								module = prepend + module[1];
-							}
-
-							// Avoid infinite recursion
-							if (excluded.indexOf(module) === -1) {
-								excluder("-" + module);
-							}
-						});
-					}
-				},
-
+				excludeList = function () {},
 				/**
 				 * Adds the specified module to the excluded or included list, depending on the flag
 				 * @param {String} flag A module path relative to
@@ -186,49 +143,85 @@ module.exports = function (grunt) {
 						exclude = m[1] === "-",
 						module = m[2];
 
-					if (exclude) {
-
+					if (!exclude) {
+						grunt.log.writeln(flag);
+						included.push(module);
+					} else if (minimum.indexOf(module) === -1) {
 						// Can't exclude certain modules
-						if (minimum.indexOf(module) === -1) {
 
-							// Add to excluded
-							if (excluded.indexOf(module) === -1) {
-								grunt.log.writeln(flag);
-								excluded.push(module);
+						// Add to excluded
+						if (excluded.indexOf(module) === -1) {
+							grunt.log.writeln(flag);
+							excluded.push(module);
 
-								// Exclude all files in the folder of the same name
-								// These are the removable dependencies
-								// It's fine if the directory is not there
-								try {
-									excludeList(fs.readdirSync(srcFolder + module), module);
-								} catch (e) {
-									grunt.verbose.writeln(e);
-								}
+							// Exclude all files in the folder of the same name
+							// These are the removable dependencies
+							// It's fine if the directory is not there
+							try {
+								excludeList(fs.readdirSync(srcFolder + module), module);
+							} catch (e) {
+								grunt.verbose.writeln(e);
 							}
+						}
 
-							additional = removeWith[module];
+						additional = removeWith[module];
 
-							// Check removeWith list
-							if (additional) {
-								excludeList(additional.remove || additional);
-								if (additional.include) {
-									included = included.concat(additional.include);
-									grunt.log.writeln("+" + additional.include);
-								}
-							}
-						} else {
-							grunt.log.error("Module \"" + module + "\" is a minimum requirement.");
-							if (module === "selector") {
-								grunt.log.error(
-									"If you meant to replace Sizzle, use -sizzle instead."
-								);
+						// Check removeWith list
+						if (additional) {
+							excludeList(additional.remove || additional);
+							if (additional.include) {
+								included = included.concat(additional.include);
+								grunt.log.writeln("+" + additional.include);
 							}
 						}
 					} else {
-						grunt.log.writeln(flag);
-						included.push(module);
+						grunt.log.error("Module \"" + module + "\" is a minimum requirement.");
+						if (module === "selector") {
+							grunt.log.error(
+								"If you meant to replace Sizzle, use -sizzle instead."
+							);
+						}
 					}
+
 				};
+			/**
+			 * Recursively calls the excluder to remove on all modules in the list
+			 * @param {Array} list
+			 * @param {String} [prepend] Prepend this to the module name.
+			 *  Indicates we're walking a directory
+			 */
+			excludeList = function (list, prepend) {
+				if (list) {
+					prepend = prepend ? prepend + "/" : "";
+					list.forEach(function (module) {
+
+						// Exclude var modules as well
+						if (module === "var") {
+							excludeList(
+								fs.readdirSync(srcFolder + prepend + module), prepend + module
+							);
+							return;
+						}
+						if (prepend) {
+
+							// Skip if this is not a js file and we're walking files in a dir
+							if (!(module = /([\w-\/]+)\.js$/.exec(module))) {
+								return;
+							}
+
+							// Prepend folder name if passed
+							// Remove .js extension
+							module = prepend + module[1];
+						}
+
+						// Avoid infinite recursion
+						if (excluded.indexOf(module) === -1) {
+							excluder("-" + module);
+						}
+					});
+				}
+			};
+
 
 			// Filename can be passed to the command line using
 			// command line options
@@ -254,10 +247,12 @@ module.exports = function (grunt) {
 			//                     trumped by explicit exclude of dependency)
 			//  *:+effects         none except effects and its dependencies
 			//                     (explicit include trumps implicit exclude of dependency)
-			delete flags["*"];
-			for (flag in flags) {
-				excluder(flag);
-			}
+
+			Object.keys(flags).forEach(function (flag) {
+				if (flag !== '*') {
+					excluder(flag);
+				}
+			});
 
 			// Handle Sizzle exclusion
 			// Replace with selector-native
@@ -337,50 +332,19 @@ module.exports = function (grunt) {
 	grunt.registerTask("custom", function () {
 		var args = this.args,
 			modules = args.length ? args[0].replace(/,/g, ":") : "",
-			done = this.async(),
-			insight = new Insight({
-				trackingCode: "UA-1076265-4",
-				pkg: pkg
-			});
+			done = this.async();
 
-		function exec(trackingAllowed) {
-			var tracks = args.length ? args[0].split(",") : [];
+		function exec() {
 			var defaultPath = ["build", "custom"];
-
-			tracks = tracks.map(function (track) {
-				return track.replace(/\//g, "+");
-			});
-
-			if (trackingAllowed) {
-
-				// Track individuals
-				tracks.forEach(function (module) {
-					var path = defaultPath.concat(["individual"], module);
-
-					insight.track.apply(insight, path);
-				});
-
-				// Track full command
-				insight.track.apply(insight, defaultPath.concat(["full"], tracks));
-			}
-
 			grunt.task.run(["build:*:*" + (modules ? ":" + modules : "")]);
 			done();
 		}
 
 		grunt.log.writeln("Creating custom build...\n");
 
-		// Ask for permission the first time
-		if (insight.optOut === undefined) {
-			insight.askPermission(null, function (error, result) {
-				exec(result);
-			});
-		} else {
-			exec(!insight.optOut);
-		}
+		exec();
+
 	});
-
-
 
 
 	grunt.initConfig({
@@ -459,23 +423,36 @@ module.exports = function (grunt) {
 			process: function (src, filepath) {
 				var explodedpath = filepath.split('/'),
 					filename = explodedpath.pop().replace('.js', ''),
-					modified_src = '';
+					modified_src = '',
+					common_replaces = function (content) {
+						content = content.replace('(function($) {', '').replace('(function ($) {', '');
+						content = content.replace('}( jQuery ));', '').replace('})(jQuery);', '');
+						content = content.replace('}(jQuery));', '').replace(/methods/g, filename + 'methods');
+						return content;
+					};
 
 
 				// Replaces head with my own code
 				if (filepath.indexOf('tabs.js') !== -1) {
 
-					modified_src = src.replace('(function ($) {', "define(['jquery'], function ($) { var jQuery=$; ");
+					modified_src = src.replace('(function ($) {', "define(['jquery'], function ($) { " + '\n' + "var jQuery=$; " + '\n');
 					return modified_src.replace('}( jQuery ));', '});');
 
+				} else if (filepath.indexOf('animation.js') !== -1) {
+
+					modified_src = 'jQuery.easing = {linear: function( p ) {return p;},swing: function( p ) ';
+					modified_src = modified_src + '{return 0.5 - Math.cos( p * Math.PI ) / 2;},_default: "swing"};' + '\n';
+					modified_src = modified_src + '\n' + common_replaces(src);
+					return modified_src;
+
 				} else if (filepath.indexOf('initial.js') !== -1) {
-					return "define(['jquery','velocity','hammerjs'], function ($, Velocity, hammerjs) { var jQuery=$, Materialize={};";
+					return "define(['jquery','velocity','hammerjs'], function ($, Velocity, hammerjs) { " + '\n' + "var jQuery=$, Materialize={};" + '\n';
 					// Replaces tail
 				} else if (filepath.indexOf('waves.js') !== -1) {
 					return '// Source: ' + filepath + '\n' + src.replace('})(window);', ' return Materialize; });').replace(';(function(window) {', '');
 				} else {
-					modified_src = '// Source: ' + filepath + '\n' + src.replace('(function($) {', '').replace('(function ($) {', '');
-					return modified_src.replace('}( jQuery ));', '').replace('})(jQuery);', '').replace('}(jQuery));', '').replace(/methods/g, filename + 'methods');
+					modified_src = '// Source: ' + filepath + '\n' + common_replaces(src);
+					return modified_src;
 				}
 
 			}
@@ -489,8 +466,8 @@ module.exports = function (grunt) {
 			// the files to concatenate
 			src: [
 				"jspm_packages/npm/materialize-css@0.97.6/initial.js",
-				"jspm_packages/npm/materialize-css@0.97.6/jquery.easing.1.3.js",
 				"jspm_packages/npm/materialize-css@0.97.6/animation.js",
+				"jspm_packages/npm/materialize-css@0.97.6/jquery.easing.1.3.js",
 
 
 				"src/material_components/collapsible.js",
