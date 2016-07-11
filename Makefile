@@ -8,9 +8,15 @@ default: build
 version:
 	@echo $(VERSION)
 	
+jquery:
+	grunt custom:-effects,-deprecated,-css/showHide,-manipulation/_evalUrl --amd
+
 build:
-	jspm build src/jquery_helper.js dist/jquery_helper.js --minify --global-name jQuery
-	jspm build src/material_helper.js dist/material_helper.js --minify --global-name jQuery
+	jspm build src/jquery_helper.js dist/jquery_helper.js --skip-source-maps --global-name jQuery --skip-encode-names
+	jspm build src/material_helper.js dist/material_helper.js --skip-source-maps --global-name jQuery --skip-encode-names
+
+	jspm build src/jquery_helper.js dist/jquery_helper.min.js --minify --global-name jQuery --skip-encode-names
+	jspm build src/material_helper.js dist/material_helper.min.js --minify --global-name jQuery --skip-encode-names
 
 
 install:

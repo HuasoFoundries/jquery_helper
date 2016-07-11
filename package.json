@@ -1,19 +1,19 @@
 {
   "name": "jquery_helper",
   "version": "1.3.5",
-
   "main": "jquery_helper.js",
   "description": "This helper bundles jQuery library plus all the jQuery and jQuery-UI plugins our app uses  in a single monolithic file.",
   "directories": {
     "example": "example"
   },
-
   "devDependencies": {
-    "grunt": "^1",
-    "grunt-contrib-connect": "^0.11.2",
-    "jspm": "^0.17.0-beta.14",
+    "babel-eslint": "^6.0.3",
     "eslint": "^1.10.3",
-    "babel-eslint": "^6.0.3"
+    "grunt": "^1",
+    "grunt-contrib-concat": "^1.0.1",
+    "grunt-contrib-connect": "^0.11.2",
+    "jquery": "^3.1.0",
+    "jspm": "^0.17.0-beta.22"
   },
   "scripts": {
     "test": "make test"
@@ -42,27 +42,56 @@
     "directories": {
       "lib": "dist"
     },
-
+    "dependencies": {},
     "devDependencies": {
+      "css": "systemjs/plugin-css@^0.1.23",
+      "materialize-css": "npm:materialize-css@^0.97.6",
       "hammerjs": "hammerjs/hammer.js@^2.0.8",
-      "velocity": "julianshapiro/velocity@^1.2",
-      "jquery": "npm:jquery@^2.2.3",
       "jquery-ui": "components/jqueryui@^1.11.4",
       "jquery-csv": "evanplaice/jquery-csv@~0.8",
       "jquery-serializejson": "marioizquierdo/jquery.serializeJSON@~2.7",
       "jquery.cookie": "carhartl/jquery-cookie@^1.4.1",
-      "jquery.waitforChild": "huasofoundries/jquery.waitforChild@^1"
+      "jquery.waitforChild": "huasofoundries/jquery.waitforChild@^1",
+      "plugin-babel": "npm:systemjs-plugin-babel@^0.0.12",
+      "velocity": "npm:velocity-animate@^1.2.3"
     },
     "overrides": {
-      "github:components/jqueryui@1.11.4": {
+      "github:components/jqueryui@1.12.0": {
         "main": "jquery-ui.js",
         "registry": "jspm",
-        "dependencies": {
-          "jquery": "*"
+        "dependencies": {},
+        "map": {
+          "jquery": "src/jquery.js"
         }
       },
-      "npm:jquery@2.2.3": {
-        "format": "amd"
+      "npm:materialize-css@0.97.6": {
+        "format": "global",
+        "main": "dist/js/materialize",
+        "registry": "jspm",
+        "dependencies": {},
+        "map": {
+          "jquery": "src/jquery.js"
+        },
+        "jspmNodeConversion": false,
+        "directories": {
+          "lib": "js"
+        },
+        "meta": {
+          "dist/js/materialize.js": {
+            "deps": [
+              "jquery",
+              "../css/materialize.css!"
+            ],
+            "exports": "$",
+            "format": "global"
+          }
+        }
+      },
+      "npm:velocity-animate@1.2.3": {
+        "dependencies": {},
+        "map": {
+          "jquery": "src/jquery.js"
+        }
       }
     }
   }
