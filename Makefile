@@ -3,7 +3,7 @@ VERSION = $(shell cat package.json | sed -n 's/.*"version": "\([^"]*\)",/\1/p')
 SHELL = /usr/bin/env bash
 
 default: build
-.PHONY: default build install tag
+.PHONY: default build install tag build_jquery build_material
 
 version:
 	@echo $(VERSION)
@@ -11,12 +11,19 @@ version:
 jquery:
 	grunt custom:-effects,-deprecated,-css/showHide,-manipulation/_evalUrl --amd
 
-build:
-	jspm build src/jquery_helper.js dist/jquery_helper.js --skip-source-maps --global-name jQuery --skip-encode-names
-	jspm build src/material_helper.js dist/material_helper.js --skip-source-maps --global-name jQuery --skip-encode-names
+build: build_jquery build_material
 
-	jspm build src/jquery_helper.js dist/jquery_helper.min.js --minify --global-name jQuery --skip-encode-names
-	jspm build src/material_helper.js dist/material_helper.min.js --minify --global-name jQuery --skip-encode-names
+	
+
+build_jquery:
+	jspm build src_jquery/jquery_helper.js dist/jquery_helper.js --skip-source-maps --global-name jQuery --skip-encode-names
+	jspm build src_jquery/jquery_helper.js dist/jquery_helper.min.js --minify --global-name jQuery --skip-encode-names
+
+
+build_material:
+	jspm build src_material/material_helper.js dist/material_helper.js --skip-source-maps --global-name jQuery --skip-encode-names
+	jspm build src_material/material_helper.js dist/material_helper.min.js --minify --global-name jQuery --skip-encode-names
+
 
 
 install:

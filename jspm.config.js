@@ -18,7 +18,6 @@ SystemJS.config({
       "velocity": "npm:velocity-animate@1.2.3",
       "plugin-babel": "npm:systemjs-plugin-babel@0.0.12",
       "css": "github:systemjs/plugin-css@0.1.23"
-
     }
   },
   transpiler: "plugin-babel",
@@ -33,14 +32,22 @@ SystemJS.config({
     "jquery_helper": {
       "main": "jquery_helper.js"
     },
-    "src": {
+    "node_modules/jquery": {
+      "main": "src/jquery.js",
+      "defaultExtension": "js"
+    },
+    "src_jquery": {
       "main": "./jquery_helper.js",
       "defaultExtension": "js",
       "format": "amd"
+    },
+    "src_material": {
+      "main": "./material_helper.js",
+      "defaultExtension": "js"
     }
   },
   map: {
-    "jquery": "src/jquery.js"
+    "jquery": "node_modules/jquery"
   }
 });
 

@@ -219,7 +219,7 @@ jQuery.extend( jQuery.easing,
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-// Source: src/material_components/collapsible.js
+// Source: src_material/material_components/collapsible.js
 
   $.fn.collapsible = function (options) {
     var defaults = {
@@ -251,24 +251,28 @@ jQuery.extend( jQuery.easing,
         $panel_headers = $this.find('> li > .collapsible-header');
         if (object.hasClass('active')) {
           object.parent().addClass('active');
-          object.siblings('.collapsible-body').stop(true, false).velocity('slideDown').trigger('shown');
+          object.siblings('.collapsible-body').velocity('slideDown', function () {
+            jQuery(this).css('height', '');
+          }).trigger('shown');
         } else {
           object.parent().removeClass('active');
-          object.siblings('.collapsible-body').stop(true, false).velocity('slideUp').trigger('hidden');
+          object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');
         }
 
         $panel_headers.not(object).removeClass('active').parent().removeClass('active');
-        $panel_headers.not(object).parent().children('.collapsible-body').stop(true, false).velocity('slideUp').trigger('hidden');
+        $panel_headers.not(object).parent().children('.collapsible-body').velocity('slideUp').trigger('hidden');
       }
 
       // Expandable Open
       function expandableOpen(object) {
         if (object.hasClass('active')) {
           object.parent().addClass('active');
-          object.siblings('.collapsible-body').stop(true, false).velocity('slideDown').trigger('shown');
+          object.siblings('.collapsible-body').velocity('slideDown', function () {
+            jQuery(this).css('height', '');
+          }).trigger('shown');
         } else {
           object.parent().removeClass('active');
-          object.siblings('.collapsible-body').stop(true, false).velocity('slideUp').trigger('hidden');
+          object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');
         }
       }
 
@@ -338,7 +342,7 @@ jQuery.extend( jQuery.easing,
   });
 
 
-// Source: src/material_components/dropdown.js
+// Source: src_material/material_components/dropdown.js
 
 
   // Add posibility to scroll to selected option
@@ -480,7 +484,8 @@ jQuery.extend( jQuery.easing,
 
         // Show dropdown
         activates.stop(true, true).css('opacity', 0)
-          .velocity('slideDown').velocity('slideDown')({
+          .velocity('slideDown')
+          .velocity({
             opacity: 1
           }, {
             queue: false,

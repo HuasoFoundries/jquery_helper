@@ -36,7 +36,6 @@
   },
   "homepage": "https://github.com/HuasoFoundries/jquery_helper#readme",
   "jspm": {
-    "format": "amd",
     "registry": "github",
     "main": "jquery_helper.js",
     "directories": {
@@ -47,7 +46,7 @@
       "css": "systemjs/plugin-css@^0.1.23",
       "materialize-css": "npm:materialize-css@^0.97.6",
       "hammerjs": "hammerjs/hammer.js@^2.0.8",
-      "jquery-ui": "components/jqueryui@^1.11.4",
+      "jquery-ui": "components/jqueryui@^1.12.0",
       "jquery-csv": "evanplaice/jquery-csv@~0.8",
       "jquery-serializejson": "marioizquierdo/jquery.serializeJSON@~2.7",
       "jquery.cookie": "carhartl/jquery-cookie@^1.4.1",
@@ -57,11 +56,10 @@
     },
     "overrides": {
       "github:components/jqueryui@1.12.0": {
-        "main": "jquery-ui.js",
         "registry": "jspm",
         "dependencies": {},
         "map": {
-          "jquery": "src/jquery.js"
+          "jquery": "node_modules/jquery"
         }
       },
       "npm:materialize-css@0.97.6": {
@@ -69,8 +67,8 @@
         "main": "dist/js/materialize",
         "registry": "jspm",
         "dependencies": {},
-        "map": {
-          "jquery": "src/jquery.js"
+       "map": {
+          "jquery": "node_modules/jquery"
         },
         "jspmNodeConversion": false,
         "directories": {
@@ -90,7 +88,7 @@
       "npm:velocity-animate@1.2.3": {
         "dependencies": {},
         "map": {
-          "jquery": "src/jquery.js"
+          "jquery": "node_modules/jquery"
         }
       }
     }

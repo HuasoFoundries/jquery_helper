@@ -19,10 +19,10 @@ define([
 	'jquery-ui/ui/widgets/tabs.js',
 
 
-	'./plugins/jquery.ajax.progress.js',
-	'./plugins/jquery.hotkeys.js',
-	'./plugins/jquery.evol.colorpicker.js',
-	'./plugins/jquery.ui.rotatable.js'
+	'libs/plugins/jquery.ajax.progress.js',
+	'libs/plugins/jquery.hotkeys.js',
+	'libs/plugins/jquery.evol.colorpicker.js',
+	'libs/plugins/jquery.ui.rotatable.js'
 
 
 

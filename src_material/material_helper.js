@@ -4,8 +4,11 @@ define([
 	'velocity',
 	'hammerjs',
 	'./materialize.js',
+	
 	'materialize-css/jquery.hammer.js',
+	
 	'velocity/velocity.ui.js',
+
 	'jquery-ui/ui/widget.js',
 	'jquery-ui/ui/widgets/mouse.js',
 	'jquery-ui/ui/position.js',
@@ -15,11 +18,13 @@ define([
 	'jquery-ui/ui/widgets/selectable.js',
 	'jquery-ui/ui/widgets/sortable.js',
 	'jquery-ui/ui/widgets/progressbar.js',
+
 	'./material_amd/tabs.js',
-	'./plugins/jquery.ajax.progress.js',
-	'./plugins/jquery.hotkeys.js',
-	'./plugins/jquery.ui.rotatable.js',
-	'./plugins/jquery.evol.colorpicker.js',
+
+	'libs/plugins/jquery.ajax.progress.js',
+	'libs/plugins/jquery.hotkeys.js',
+	'libs/plugins/jquery.evol.colorpicker.js',
+	'libs/plugins/jquery.ui.rotatable.js',
 
 	'jquery.cookie',
 	'jquery.waitforChild',
