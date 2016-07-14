@@ -12605,10 +12605,7 @@ var hiddenDiv=$('.hiddendiv').first();if(!hiddenDiv.length){hiddenDiv=$('<div cl
 $(document).on('change','.file-field input[type="file"]',function(){var file_field=$(this).closest('.file-field');var path_input=file_field.find('input.file-path');var files=$(this)[0].files;var file_names=[];for(var i=0;i<files.length;i++){file_names.push(files[i].name);}path_input.val(file_names.join(", "));path_input.trigger('change');});});$_GLOBAL=typeof window!=='undefined'?window:typeof global!=='undefined'?global:Function('return this')();if(typeof exports==='object'&&typeof module!=='undefined'){module.exports=jQuery;}else if(typeof define==='function'&&define.amd){define(function(){return jQuery;});}else{$_GLOBAL.jQuery=jQuery;}_export('jQuery',jQuery);_export('default',jQuery);}};});
 })
 (function(factory) {
-  if (typeof define == 'function' && define.amd)
-    define([], factory);
-  else if (typeof module == 'object' && module.exports && typeof require == 'function')
-    module.exports = factory();
-  else
-    factory();
+  main = factory();
 });
+
+export default main;

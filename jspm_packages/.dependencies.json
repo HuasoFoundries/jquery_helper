@@ -1,17 +1,5 @@
 {
-  "npm:velocity-animate@1.2.3": {
-    "deps": {},
-    "peerDeps": {}
-  },
-  "npm:materialize-css@0.97.6": {
-    "deps": {},
-    "peerDeps": {}
-  },
   "github:systemjs/plugin-css@0.1.23": {
-    "deps": {},
-    "peerDeps": {}
-  },
-  "github:hammerjs/hammer.js@2.0.8": {
     "deps": {},
     "peerDeps": {}
   },
@@ -31,11 +19,11 @@
     "deps": {},
     "peerDeps": {}
   },
-  "github:components/jqueryui@1.12.0": {
+  "github:carhartl/jquery-cookie@1.4.1": {
     "deps": {},
     "peerDeps": {}
   },
-  "github:carhartl/jquery-cookie@1.4.1": {
+  "github:components/jqueryui@1.12.0": {
     "deps": {},
     "peerDeps": {}
   }
