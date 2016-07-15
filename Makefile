@@ -3,16 +3,20 @@ VERSION = $(shell cat package.json | sed -n 's/.*"version": "\([^"]*\)",/\1/p')
 SHELL = /usr/bin/env bash
 
 default: build
-.PHONY: default build install tag
+.PHONY: default build install tag publish
 
 version:
 	@echo $(VERSION)
 	
 jquery:
-	grunt custom:-effects,-deprecated,-css/showHide,-manipulation/_evalUrl,-exports/amd,-exports/global
+	grunt custom:-effects,-deprecated,-manipulation/_evalUrl,-exports/amd,-exports/global
+	grunt concat:jquery
+	jspm build jquery_shim dist/jquery.js  --skip-source-maps --skip-encode-names --global-name jQuery
+	jspm build jquery_shim dist/jquery.min.js --global-name jQuery -m
 
+build: jquery publish
 
-build:
+publish:	
 	grunt publish
 
 

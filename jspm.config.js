@@ -3,7 +3,7 @@ SystemJS.config({
     "paths": {
       "github:": "jspm_packages/github/",
       "npm:": "jspm_packages/npm/",
-      "jquery_helper/": "dist/"
+      "jquery":"dist/jquery.js"
     }
   },
   transpiler: "plugin-babel",
@@ -30,11 +30,15 @@ SystemJS.config({
       "babelOptions": {
         "stage1": true
       }
+    },
+   
+    "dist/jquery.js":{
+      "build":false
     }
   },
   packages: {
-    "jquery_helper": {
-      "main": "jquery_helper.js"
+    "jquery_helper":{
+      "main":"jquery.js"
     },
     "jquery_shim": {
       "main": "index.js",
@@ -50,17 +54,18 @@ SystemJS.config({
         "jquery": "libs/jquery.js"
       }
     },
-    "src_material": {
+    "src": {
       "main": "./material_helper.js",
       "defaultExtension": "js",
-      "format": "esm"
+      "format": "esm",
+      "map":{
+        "jquery":"dist/jquery.js"
+      }
     }
   },
   map: {
     "jquery": "libs/jquery.js",
-    "velocity": "libs/velocity.es6.js",
-    "hammerjs": "libs/hammer.es6.js",
-    "materialize": "libs/materialize.es6.js"
+    "hammerjs": "libs/hammer.es6.js"
   }
 });
 

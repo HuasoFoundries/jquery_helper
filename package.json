@@ -1,7 +1,7 @@
 {
   "name": "jquery_helper",
-  "version": "1.5.0",
-  "main": "jquery_helper.js",
+  "version": "1.5.1",
+  "main": "jquery.js",
   "description": "This helper bundles jQuery library plus all the jQuery and jQuery-UI plugins our app uses  in a single monolithic file.",
   "directories": {
     "example": "example"
@@ -40,7 +40,7 @@
   "homepage": "https://github.com/HuasoFoundries/jquery_helper#readme",
   "jspm": {
     "registry": "github",
-    "main": "jquery_helper.js",
+    "main": "jquery.js",
     "directories": {
       "lib": "dist"
     },

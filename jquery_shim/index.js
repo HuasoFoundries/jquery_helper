@@ -16,7 +16,10 @@ define([
 	'jquery.cookie',
 	'jquery.waitforChild',
 	'jquery-serializejson'
-], function (jQuery) {
+], function (jQ2) {
 
-	return jQuery;
+	var $_GLOBAL = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : Function('return this')();
+
+    $_GLOBAL.jQ2 = jQ2;
+    return jQ2;
 });
