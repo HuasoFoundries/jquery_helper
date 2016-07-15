@@ -465,13 +465,6 @@ document.addEventListener('DOMContentLoaded', function () {
     Waves.displayEffect();
 }, false);
 
-
-
-var $ = jQuery;
-
-
-
-
 /*
         jQuery.fn.extend({
         show: function () {
@@ -484,7 +477,7 @@ var $ = jQuery;
             return jQuery(this).toggleClass('invisible');
         }
     });
-    */
+*/
 
 $.fn.modal = function (option) {
     var defaults = {

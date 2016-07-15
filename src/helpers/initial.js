@@ -1,5 +1,5 @@
 import jQuery from 'jquery';
-
+import $ from 'jquery';
 
 import {
     Hammer
@@ -7,8 +7,7 @@ import {
 
 var $_GLOBAL = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : Function('return this')();
 
-var $ = jQuery,
-    Materialize = {},
+var Materialize = {},
     document = window.document;
 
 function hammerify(el, options) {

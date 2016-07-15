@@ -1,4 +1,4 @@
-import jQuery from 'jquery';
+import $ from 'jquery';
 
 var $_GLOBAL$1 = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : Function('return this')();
 var document$1 = $_GLOBAL$1.document;
@@ -2551,8 +2551,8 @@ $.fn.collapsible=function(options){var defaults={accordion:undefined};options=$.
 $this.off('click.collapse','> li > .collapsible-header');$panel_headers.off('click.collapse'); /****************
       Helper Functions
       ****************/ // Accordion Open
-function accordionOpen(object){$panel_headers=$this.find('> li > .collapsible-header');if(object.hasClass('active')){object.parent().addClass('active');object.siblings('.collapsible-body').velocity('slideDown',function(){jQuery(this).css('height','');}).trigger('shown');}else {object.parent().removeClass('active');object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');}$panel_headers.not(object).removeClass('active').parent().removeClass('active');$panel_headers.not(object).parent().children('.collapsible-body').velocity('slideUp').trigger('hidden');} // Expandable Open
-function expandableOpen(object){if(object.hasClass('active')){object.parent().addClass('active');object.siblings('.collapsible-body').velocity('slideDown',function(){jQuery(this).css('height','');}).trigger('shown');}else {object.parent().removeClass('active');object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');}} /**
+function accordionOpen(object){$panel_headers=$this.find('> li > .collapsible-header');if(object.hasClass('active')){object.parent().addClass('active');object.siblings('.collapsible-body').velocity('slideDown',function(){$(this).css('height','');}).trigger('shown');}else {object.parent().removeClass('active');object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');}$panel_headers.not(object).removeClass('active').parent().removeClass('active');$panel_headers.not(object).parent().children('.collapsible-body').velocity('slideUp').trigger('hidden');} // Expandable Open
+function expandableOpen(object){if(object.hasClass('active')){object.parent().addClass('active');object.siblings('.collapsible-body').velocity('slideDown',function(){$(this).css('height','');}).trigger('shown');}else {object.parent().removeClass('active');object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');}} /**
        * Get panel header from a children element
        * @param  {Object} object Jquery object
        * @return {Object} panel header object
@@ -2920,7 +2920,7 @@ Effect.wrapInput($$('.waves-effect'));if('ontouchstart' in $_GLOBAL){document.bo
  * where the user doesn't want a delegated click handler.
  */Waves.attach=function(element){ //FUTURE: automatically add waves classes and allow users
 // to specify them with an options param? Eg. light/classic/button
-if(element.tagName.toLowerCase()==='input'){Effect.wrapInput([element]);element=element.parentElement;}if('ontouchstart' in $_GLOBAL){element.addEventListener('touchstart',showEffect,false);}element.addEventListener('mousedown',showEffect,false);};$_GLOBAL.Waves=Waves;document.addEventListener('DOMContentLoaded',function(){Waves.displayEffect();},false);var $=jQuery; /*
+if(element.tagName.toLowerCase()==='input'){Effect.wrapInput([element]);element=element.parentElement;}if('ontouchstart' in $_GLOBAL){element.addEventListener('touchstart',showEffect,false);}element.addEventListener('mousedown',showEffect,false);};$_GLOBAL.Waves=Waves;document.addEventListener('DOMContentLoaded',function(){Waves.displayEffect();},false); /*
         jQuery.fn.extend({
         show: function () {
             return jQuery(this).removeClass('invisible');
@@ -2932,7 +2932,7 @@ if(element.tagName.toLowerCase()==='input'){Effect.wrapInput([element]);element=
             return jQuery(this).toggleClass('invisible');
         }
     });
-    */$.fn.modal=function(option){var defaults={dismissible:true, // Modal can be dismissed by clicking outside of the modal
+*/$.fn.modal=function(option){var defaults={dismissible:true, // Modal can be dismissed by clicking outside of the modal
 opacity:0.5, // Opacity of modal background
 in_duration:300, // Transition in duration
 out_duration:200, // Transition out duration
@@ -2943,7 +2943,7 @@ complete:function complete(){alert('Closed');} // Callback for Modal close
  * @param  {String} selector  selector CSS para buscar si existe el elemento
  * @param  {String} html  definicion del elemento a crear
  * @return {jQuery Object} uno o mas elementos que calzan con el criterio de seleccion
- */jQuery.getOrCreate=function(selector,html){var elemento=jQuery(selector);if(elemento.length===0){elemento=jQuery(html);}return elemento;};$.fn.tabs=function(methodOrOptions){var wavesmethods={init:function init(){return this.each(function(){ // For each set of tabs, we want to keep track of
+ */$.getOrCreate=function(selector,html){var elemento=$(selector);if(elemento.length===0){elemento=$(html);}return elemento;};$.fn.tabs=function(methodOrOptions){var wavesmethods={init:function init(){return this.each(function(){ // For each set of tabs, we want to keep track of
 // which tab is active and its associated content
 var $this=$(this),$_GLOBAL_width=$($_GLOBAL).width();$this.width('100%');var $active,$content,$links=$this.find('li.tab a'),$tabs_width=$this.width(),$tab_width=Math.max($tabs_width,$this[0].scrollWidth)/$links.length,$index=0; // If the location.hash matches one of the links, use that as the active tab.
 $active=$($links.filter('[href="'+location.hash+'"]')); // If no match is found, use the first link or any with class 'active' as the initial active tab.

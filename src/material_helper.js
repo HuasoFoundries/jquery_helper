@@ -1,6 +1,6 @@
 // Source: src/helpers/initial.js
 import jQuery from 'jquery';
-
+import $ from 'jquery';
 
 import {
     Hammer
@@ -8,8 +8,7 @@ import {
 
 var $_GLOBAL = typeof $_GLOBAL !== 'undefined' ? $_GLOBAL : typeof global !== 'undefined' ? global : Function('return this')();
 
-var $ = jQuery,
-    Materialize = {},
+var Materialize = {},
     document = $_GLOBAL.document;
 
 function hammerify(el, options) {
@@ -3042,13 +3041,6 @@ document.addEventListener('DOMContentLoaded', function () {
     Waves.displayEffect();
 }, false);
 
-
-
-var $ = jQuery;
-
-
-
-
 /*
         jQuery.fn.extend({
         show: function () {
@@ -3061,7 +3053,7 @@ var $ = jQuery;
             return jQuery(this).toggleClass('invisible');
         }
     });
-    */
+*/
 
 $.fn.modal = function (option) {
     var defaults = {
