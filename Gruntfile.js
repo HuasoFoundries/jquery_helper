@@ -519,6 +519,44 @@ module.exports = function (grunt) {
 			],
 			dest: 'libs/jquery.js'
 		},
+		hammer_effects: {
+			options: {
+				stripBanners: {
+					block: true
+				},
+				process: function (src, filepath) {
+					var explodedpath = filepath.split('/'),
+						filename = explodedpath.pop().replace('.js', ''),
+						modified_src = '',
+						common_replaces = function (content) {
+							content = content.replace('(function($) {', '').replace('(function ($) {', '');
+							content = content.replace('}( jQuery ));', '').replace('})(jQuery);', '');
+							content = content.replace('}(jQuery));', '').replace(/methods/g, filename + 'methods');
+							content = content.replace(/window/g, '$_GLOBAL').replace(/wodniw/g, 'window');
+
+							return content;
+						};
+
+
+					modified_src = '// Source: ' + filepath + '\n' + common_replaces(src);
+					return modified_src;
+
+				}
+
+			},
+			// the files to concatenate
+			src: [
+				"src/helpers/hammer_initial.js",
+				"node_modules/materialize-css/js/sideNav.js",
+				"node_modules/materialize-css/js/scrollspy.js",
+				"node_modules/materialize-css/js/slider.js",
+				"node_modules/materialize-css/js/pushpin.js",
+				"node_modules/materialize-css/js/transitions.js"
+
+			],
+			// the location of the resulting JS file
+			dest: 'src/hammer_helper.js'
+		},
 		material: {
 			options: {
 				stripBanners: {
@@ -552,15 +590,9 @@ module.exports = function (grunt) {
 				"src/helpers/leanModal.js",
 				"node_modules/materialize-css/js/materialbox.js",
 				"node_modules/materialize-css/js/tooltip.js",
-				"node_modules/materialize-css/js/sideNav.js",
-				"node_modules/materialize-css/js/scrollspy.js",
-				"node_modules/materialize-css/js/slider.js",
 				"node_modules/materialize-css/js/cards.js",
 				"node_modules/materialize-css/js/chips.js",
-				"node_modules/materialize-css/js/pushpin.js",
 				"node_modules/materialize-css/js/buttons.js",
-				"node_modules/materialize-css/js/transitions.js",
-
 				"src/helpers/waves.js"
 			],
 			// the location of the resulting JS file
@@ -570,9 +602,6 @@ module.exports = function (grunt) {
 
 
 	});
-
-
-
 
 	grunt.registerTask('jspmbuild', function () {
 		var done = this.async(),
@@ -594,7 +623,6 @@ module.exports = function (grunt) {
 			}
 
 		};
-
 
 
 		return builder.buildStatic(

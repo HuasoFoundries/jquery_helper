@@ -17,7 +17,8 @@ jquery:
 build: jquery material
 
 material:	
-	grunt publish
+	#grunt publish
+	grunt jspmbuild
 
 
 

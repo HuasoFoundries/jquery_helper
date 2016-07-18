@@ -1,21 +1,13 @@
 import jQuery from 'jquery';
 import $ from 'jquery';
 
-import {
-    Hammer
-} from 'hammerjs';
 
-var $_GLOBAL = typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : Function('return this')();
 
 var Materialize = {},
     document = window.document;
 
-function hammerify(el, options) {
-    var $el = $(el);
-    if (!$el.data("hammer")) {
-        $el.data("hammer", new Hammer($el[0], options));
-    }
-}
+var Waves = {},
+    $$ = document.querySelectorAll.bind(document);
 
 $.fn.stop = function () {
     return this.each(function () {
@@ -23,23 +15,20 @@ $.fn.stop = function () {
     });
 };
 
-$.fn.hammer = function (options) {
-    return this.each(function () {
-        hammerify(this, options);
-    });
-};
 
-// extend the emit method to also trigger jQuery events
-Hammer.Manager.prototype.emit = (function (originalEmit) {
-    return function (type, data) {
-        originalEmit.call(this, type, data);
-        $(this.element).trigger({
-            type: type,
-            gesture: data
-        });
+var guidfn = (function () {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return function () {
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
     };
-})(Hammer.Manager.prototype.emit);
-
+});
+// Unique ID
+Materialize.guid = guidfn();
 
 $.fn.material_select = function (callback) {
 

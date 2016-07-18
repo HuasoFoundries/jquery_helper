@@ -8,45 +8,32 @@
  */
 
 
-'use strict';
 
 
 
-var guidfn = (function () {
-        function s4() {
-            return Math.floor((1 + Math.random()) * 0x10000)
-                .toString(16)
-                .substring(1);
+var validate_field = function (object) {
+    var hasLength = object.attr('length') !== undefined;
+    var lenAttr = parseInt(object.attr('length'), 10);
+    var len = object.val().length;
+
+    if (object.val().length === 0 && object[0].validity.badInput === false) {
+        if (object.hasClass('validate')) {
+            object.removeClass('valid');
+            object.removeClass('invalid');
         }
-        return function () {
-            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-                s4() + '-' + s4() + s4() + s4();
-        };
-    }),
-    validate_field = function (object) {
-        var hasLength = object.attr('length') !== undefined;
-        var lenAttr = parseInt(object.attr('length'), 10);
-        var len = object.val().length;
-
-        if (object.val().length === 0 && object[0].validity.badInput === false) {
-            if (object.hasClass('validate')) {
-                object.removeClass('valid');
-                object.removeClass('invalid');
-            }
-        } else if (object.hasClass('validate')) {
-            // Check for character counter attributes
-            if ((object.is(':valid') && hasLength && (len <= lenAttr)) || (object.is(':valid') && !hasLength)) {
-                object.removeClass('invalid');
-                object.addClass('valid');
-            } else {
-                object.removeClass('valid');
-                object.addClass('invalid');
-            }
+    } else if (object.hasClass('validate')) {
+        // Check for character counter attributes
+        if ((object.is(':valid') && hasLength && (len <= lenAttr)) || (object.is(':valid') && !hasLength)) {
+            object.removeClass('invalid');
+            object.addClass('valid');
+        } else {
+            object.removeClass('valid');
+            object.addClass('invalid');
         }
+    }
 
-    };
-// Unique ID
-Materialize.guid = guidfn();
+};
+
 
 Materialize.elementOrParentIsFixed = function (element) {
     var $element = $(element);
@@ -136,9 +123,7 @@ $(document).ready(function () {
 
 
 
-var Waves = Waves || {},
-    document = window.document,
-    $$ = document.querySelectorAll.bind(document);
+
 
 // Find exact position of element
 function isWindow(obj) {
@@ -726,91 +711,10 @@ function textareaAutoResize($textarea) {
 
 $(document).ready(function () {
 
-    var swipeLeft = false;
-    var swipeRight = false;
+
     $('ul.tabs').tabs();
     // Dismissible Collections
-    $('.dismissable').each(function () {
-        $(this).hammer({
-            prevent_default: false
-        }).bind('pan', function (e) {
-            if (e.gesture.pointerType === "touch") {
-                var $this = $(this);
-                var direction = e.gesture.direction;
-                var x = e.gesture.deltaX;
-                var velocityX = e.gesture.velocityX;
 
-                $this.velocity({
-                    translateX: x
-                }, {
-                    duration: 50,
-                    queue: false,
-                    easing: 'easeOutQuad'
-                });
-
-                // Swipe Left
-                if (direction === 4 && (x > ($this.innerWidth() / 2) || velocityX < -0.75)) {
-                    swipeLeft = true;
-                }
-
-                // Swipe Right
-                if (direction === 2 && (x < (-1 * $this.innerWidth() / 2) || velocityX > 0.75)) {
-                    swipeRight = true;
-                }
-            }
-        }).bind('panend', function (e) {
-            // Reset if collection is moved back into original position
-            if (Math.abs(e.gesture.deltaX) < ($(this).innerWidth() / 2)) {
-                swipeRight = false;
-                swipeLeft = false;
-            }
-
-            if (e.gesture.pointerType === "touch") {
-                var $this = $(this);
-                if (swipeLeft || swipeRight) {
-                    var fullWidth;
-                    if (swipeLeft) {
-                        fullWidth = $this.innerWidth();
-                    } else {
-                        fullWidth = -1 * $this.innerWidth();
-                    }
-
-                    $this.velocity({
-                        translateX: fullWidth
-                    }, {
-                        duration: 100,
-                        queue: false,
-                        easing: 'easeOutQuad',
-                        complete: function () {
-                            $this.css('border', 'none');
-                            $this.velocity({
-                                height: 0,
-                                padding: 0
-                            }, {
-                                duration: 200,
-                                queue: false,
-                                easing: 'easeOutQuad',
-                                complete: function () {
-                                    $this.remove();
-                                }
-                            });
-                        }
-                    });
-                } else {
-                    $this.velocity({
-                        translateX: 0
-                    }, {
-                        duration: 100,
-                        queue: false,
-                        easing: 'easeOutQuad'
-                    });
-                }
-                swipeLeft = false;
-                swipeRight = false;
-            }
-        });
-
-    });
 
 
     // Handle HTML5 autofocus
