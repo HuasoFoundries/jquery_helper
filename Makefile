@@ -14,9 +14,9 @@ jquery:
 	jspm build jquery_shim dist/jquery.js  --skip-source-maps --skip-encode-names --global-name jQuery
 	jspm build jquery_shim dist/jquery.min.js --global-name jQuery -m
 
-build: jquery publish
+build: jquery material
 
-publish:	
+material:	
 	grunt publish
 
 

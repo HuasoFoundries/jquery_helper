@@ -2577,7 +2577,7 @@
     $.fn.scrollTo=function(elem){$(this).scrollTop($(this).scrollTop()-$(this).offset().top+$(elem).offset().top);return this;};$.fn.dropdown=function(option){var defaults={inDuration:300,outDuration:225,constrain_width:true, // Constrains width of dropdown to the activator
     hover:false,gutter:0, // Spacing from edge
     belowOrigin:false,alignment:'left'};this.each(function(){var origin=$(this);var options=$.extend({},defaults,option);var isFocused=false; // Dropdown menu
-    var activates=$("#"+origin.attr('data-activates'));function updateOptions(){if(origin.data('induration')!==undefined)options.inDuration=origin.data('inDuration');if(origin.data('outduration')!==undefined)options.outDuration=origin.data('outDuration');if(origin.data('constrainwidth')!==undefined)options.constrain_width=origin.data('constrainwidth');if(origin.data('hover')!==undefined)options.hover=origin.data('hover');if(origin.data('gutter')!==undefined)options.gutter=origin.data('gutter');if(origin.data('beloworigin')!==undefined)options.belowOrigin=origin.data('beloworigin');if(origin.data('alignment')!==undefined)options.alignment=origin.data('alignment');}updateOptions(); // Attach dropdown to its activator
+    var activates=$("#"+origin.attr('data-activates'));function updateOptions(){if(origin.data('induration')!==undefined){options.inDuration=origin.data('inDuration');}if(origin.data('outduration')!==undefined){options.outDuration=origin.data('outDuration');}if(origin.data('constrainwidth')!==undefined){options.constrain_width=origin.data('constrainwidth');}if(origin.data('hover')!==undefined){options.hover=origin.data('hover');}if(origin.data('gutter')!==undefined){options.gutter=origin.data('gutter');}if(origin.data('beloworigin')!==undefined){options.belowOrigin=origin.data('beloworigin');}if(origin.data('alignment')!==undefined){options.alignment=origin.data('alignment');}}updateOptions(); // Attach dropdown to its activator
     origin.after(activates); /*
             Helper function to position and resize dropdown.
             Used in hover and click handler.
@@ -2598,17 +2598,17 @@
     activates.css({position:'absolute',top:origin.position().top+verticalOffset+scrollOffset,left:leftPosition}); // Show dropdown
     activates.stop(true,true).css('opacity',0).velocity('slideDown').velocity({opacity:1},{queue:false,duration:options.inDuration,easing:'easeOutSine'});}function hideDropdown(){ // Check for simultaneous focus and click events.
     isFocused=false;activates.fadeOut(options.outDuration);activates.removeClass('active');origin.removeClass('active');setTimeout(function(){activates.css('max-height','');},options.outDuration);} // Hover
-    if(options.hover){var open=false;origin.unbind('click.'+origin.attr('id')); // Hover handler to show dropdown
+    if(options.hover){var open=false;origin.off('click.'+origin.attr('id')); // Hover handler to show dropdown
     origin.on('mouseenter',function(e){ // Mouse over
     if(open===false){placeDropdown();open=true;}});origin.on('mouseleave',function(e){ // If hover on origin then to something other than dropdown content, then close
     var toEl=e.toElement||e.relatedTarget; // added browser compatibility for target element
     if(!$(toEl).closest('.dropdown-content').is(activates)){activates.stop(true,true);hideDropdown();open=false;}});activates.on('mouseleave',function(e){ // Mouse out
     var toEl=e.toElement||e.relatedTarget;if(!$(toEl).closest('.dropdown-button').is(origin)){activates.stop(true,true);hideDropdown();open=false;}}); // Click
     }else { // Click handler to show dropdown
-    origin.unbind('click.'+origin.attr('id'));origin.bind('click.'+origin.attr('id'),function(e){if(!isFocused){if(origin[0]==e.currentTarget&&!origin.hasClass('active')&&$(e.target).closest('.dropdown-content').length===0){e.preventDefault(); // Prevents button click from moving $_GLOBAL
-    placeDropdown('click');} // If origin is clicked and menu is open, close menu
-    else if(origin.hasClass('active')){hideDropdown();$(document).unbind('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'));} // If menu open, add click close handler to document
-    if(activates.hasClass('active')){$(document).bind('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'),function(e){if(!activates.is(e.target)&&!origin.is(e.target)&&!origin.find(e.target).length){hideDropdown();$(document).unbind('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'));}});}}});} // End else
+    origin.off('click.'+origin.attr('id'));origin.on('click.'+origin.attr('id'),function(e){if(!isFocused){if(origin[0]===e.currentTarget&&!origin.hasClass('active')&&$(e.target).closest('.dropdown-content').length===0){e.preventDefault(); // Prevents button click from moving $_GLOBAL
+    placeDropdown('click');}else if(origin.hasClass('active')){ // If origin is clicked and menu is open, close menu
+    hideDropdown();$(document).off('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'));} // If menu open, add click close handler to document
+    if(activates.hasClass('active')){$(document).on('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'),function(e){if(!activates.is(e.target)&&!origin.is(e.target)&&!origin.find(e.target).length){hideDropdown();$(document).off('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'));}});}}});} // End else
     // Listen to open and close event - useful for select component
     origin.on('open',function(e,eventType){placeDropdown(eventType);});origin.on('close',hideDropdown);});}; // End dropdown plugin
     $(document).ready(function(){$('.dropdown-button').dropdown();}); // Source: node_modules/materialize-css/js/leanModal.js
