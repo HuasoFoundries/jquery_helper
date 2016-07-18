@@ -17,6 +17,12 @@ function hammerify(el, options) {
     }
 }
 
+$.fn.stop = function () {
+    return this.each(function () {
+        $(this).velocity('stop');
+    });
+};
+
 $.fn.hammer = function (options) {
     return this.each(function () {
         hammerify(this, options);
@@ -235,6 +241,3 @@ $.fn.material_select = function (callback) {
         $newSelect.on('keydown', onKeyDown);
     });
 };
-
-
-

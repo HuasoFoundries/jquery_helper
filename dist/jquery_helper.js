@@ -2527,7 +2527,7 @@
     });
 
     var $_GLOBAL=typeof $_GLOBAL!=='undefined'?$_GLOBAL:typeof global!=='undefined'?global:Function('return this')();var Materialize={};
-    function hammerify(el,options){var $el=$(el);if(!$el.data("hammer")){$el.data("hammer",new Hammer($el[0],options));}}$.fn.hammer=function(options){return this.each(function(){hammerify(this,options);});}; // extend the emit method to also trigger jQuery events
+    function hammerify(el,options){var $el=$(el);if(!$el.data("hammer")){$el.data("hammer",new Hammer($el[0],options));}}$.fn.stop=function(){return this.each(function(){$(this).velocity('stop');});};$.fn.hammer=function(options){return this.each(function(){hammerify(this,options);});}; // extend the emit method to also trigger jQuery events
     Hammer.Manager.prototype.emit=function(originalEmit){return function(type,data){originalEmit.call(this,type,data);$(this.element).trigger({type:type,gesture:data});};}(Hammer.Manager.prototype.emit);$.fn.material_select=function(callback){ // Make option as selected and scroll to selected position
     var activateOption=function activateOption(collection,newOption){collection.find('li.active').removeClass('active');$(newOption).addClass('active');collection.scrollTo(newOption);};$(this).each(function(){var $select=$(this);if($select.hasClass('browser-default')){return; // Continue to next (return false breaks out of entire loop)
     } // Tear down structure if Select needs to be rebuilt
@@ -2608,14 +2608,14 @@
     origin.off('click.'+origin.attr('id'));origin.on('click.'+origin.attr('id'),function(e){if(!isFocused){if(origin[0]===e.currentTarget&&!origin.hasClass('active')&&$(e.target).closest('.dropdown-content').length===0){e.preventDefault(); // Prevents button click from moving $_GLOBAL
     placeDropdown('click');}else if(origin.hasClass('active')){ // If origin is clicked and menu is open, close menu
     hideDropdown();$(document).off('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'));} // If menu open, add click close handler to document
-    if(activates.hasClass('active')){$(document).on('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'),function(e){if(!activates.is(e.target)&&!origin.is(e.target)&&!origin.find(e.target).length){hideDropdown();$(document).off('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'));}});}}});} // End else
+    if(activates.hasClass('active')){$(document).on('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'),function(ev2){if(!activates.is(ev2.target)&&!origin.is(ev2.target)&&!origin.find(ev2.target).length){hideDropdown();$(document).off('click.'+activates.attr('id')+' touchstart.'+activates.attr('id'));}});}}});} // End else
     // Listen to open and close event - useful for select component
     origin.on('open',function(e,eventType){placeDropdown(eventType);});origin.on('close',hideDropdown);});}; // End dropdown plugin
-    $(document).ready(function(){$('.dropdown-button').dropdown();}); // Source: node_modules/materialize-css/js/leanModal.js
+    $(document).ready(function(){$('.dropdown-button').dropdown();}); // Source: src/helpers/leanModal.js
     var _stack=0;
     var _lastID=0;
     var _generateID=function _generateID(){_lastID++;return 'materialize-lean-overlay-'+_lastID;};
-    $.fn.extend({openModal:function openModal(options){var $body=$('body');var oldWidth=$body.innerWidth();$body.css('overflow','hidden');$body.width(oldWidth);var defaults={opacity:0.5,in_duration:350,out_duration:250,ready:undefined,complete:undefined,dismissible:true,starting_top:'4%'},$modal=$(this);if($modal.hasClass('open')){return;}overlayID=_generateID();$overlay=$('<div class="lean-overlay"></div>');lStack=++_stack; // Store a reference of the overlay
+    $.fn.extend({openModal:function openModal(options){var $body=$('body');var oldWidth=$body.innerWidth();$body.css('overflow','hidden');$body.width(oldWidth);var defaults={opacity:0.5,in_duration:350,out_duration:250,ready:undefined,complete:undefined,dismissible:true,starting_top:'4%'},$modal=$(this);if($modal.hasClass('open')){return;}var overlayID=_generateID(),$overlay=$('<div class="lean-overlay"></div>'),lStack=++_stack; // Store a reference of the overlay
     $overlay.attr('id',overlayID).css('z-index',1000+lStack*2);$modal.data('overlay-id',overlayID).css('z-index',1000+lStack*2+1);$modal.addClass('open');$("body").append($overlay); // Override defaults
     options=$.extend(defaults,options);if(options.dismissible){$overlay.click(function(){$modal.closeModal(options);}); // Return on ESC
     $(document).on('keyup.leanModal'+overlayID,function(e){if(e.keyCode===27){ // ESC key

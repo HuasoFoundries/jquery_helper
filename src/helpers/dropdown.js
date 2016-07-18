@@ -215,8 +215,8 @@
             }
             // If menu open, add click close handler to document
             if (activates.hasClass('active')) {
-              $(document).on('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'), function (e) {
-                if (!activates.is(e.target) && !origin.is(e.target) && (!origin.find(e.target).length)) {
+              $(document).on('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'), function (ev2) {
+                if (!activates.is(ev2.target) && !origin.is(ev2.target) && (!origin.find(ev2.target).length)) {
                   hideDropdown();
                   $(document).off('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'));
                 }

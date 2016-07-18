@@ -18,6 +18,12 @@ function hammerify(el, options) {
     }
 }
 
+$.fn.stop = function () {
+    return this.each(function () {
+        $(this).velocity('stop');
+    });
+};
+
 $.fn.hammer = function (options) {
     return this.each(function () {
         hammerify(this, options);
@@ -236,9 +242,6 @@ $.fn.material_select = function (callback) {
         $newSelect.on('keydown', onKeyDown);
     });
 };
-
-
-
 
 // Source: src/helpers/collapsible.js
 
@@ -581,8 +584,8 @@ $.fn.material_select = function (callback) {
             }
             // If menu open, add click close handler to document
             if (activates.hasClass('active')) {
-              $(document).on('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'), function (e) {
-                if (!activates.is(e.target) && !origin.is(e.target) && (!origin.find(e.target).length)) {
+              $(document).on('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'), function (ev2) {
+                if (!activates.is(ev2.target) && !origin.is(ev2.target) && (!origin.find(ev2.target).length)) {
                   hideDropdown();
                   $(document).off('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'));
                 }
@@ -608,17 +611,17 @@ $.fn.material_select = function (callback) {
   });
 
 
-// Source: node_modules/materialize-css/js/leanModal.js
+// Source: src/helpers/leanModal.js
 
-    var _stack = 0,
+  var _stack = 0,
     _lastID = 0,
-    _generateID = function() {
+    _generateID = function () {
       _lastID++;
       return 'materialize-lean-overlay-' + _lastID;
     };
 
   $.fn.extend({
-    openModal: function(options) {
+    openModal: function (options) {
 
       var $body = $('body');
       var oldWidth = $body.innerWidth();
@@ -626,23 +629,23 @@ $.fn.material_select = function (callback) {
       $body.width(oldWidth);
 
       var defaults = {
-        opacity: 0.5,
-        in_duration: 350,
-        out_duration: 250,
-        ready: undefined,
-        complete: undefined,
-        dismissible: true,
-        starting_top: '4%'
-      },
-      $modal = $(this);
+          opacity: 0.5,
+          in_duration: 350,
+          out_duration: 250,
+          ready: undefined,
+          complete: undefined,
+          dismissible: true,
+          starting_top: '4%'
+        },
+        $modal = $(this);
 
       if ($modal.hasClass('open')) {
         return;
       }
 
-      overlayID = _generateID();
-      $overlay = $('<div class="lean-overlay"></div>');
-      lStack = (++_stack);
+      var overlayID = _generateID(),
+        $overlay = $('<div class="lean-overlay"></div>'),
+        lStack = (++_stack);
 
       // Store a reference of the overlay
       $overlay.attr('id', overlayID).css('z-index', 1000 + lStack * 2);
@@ -655,55 +658,72 @@ $.fn.material_select = function (callback) {
       options = $.extend(defaults, options);
 
       if (options.dismissible) {
-        $overlay.click(function() {
+        $overlay.click(function () {
           $modal.closeModal(options);
         });
         // Return on ESC
-        $(document).on('keyup.leanModal' + overlayID, function(e) {
-          if (e.keyCode === 27) {   // ESC key
+        $(document).on('keyup.leanModal' + overlayID, function (e) {
+          if (e.keyCode === 27) { // ESC key
             $modal.closeModal(options);
           }
         });
       }
 
-      $modal.find(".modal-close").on('click.close', function(e) {
+      $modal.find(".modal-close").on('click.close', function (e) {
         $modal.closeModal(options);
       });
 
-      $overlay.css({ display : "block", opacity : 0 });
-
-      $modal.css({
-        display : "block",
+      $overlay.css({
+        display: "block",
         opacity: 0
       });
 
-      $overlay.velocity({opacity: options.opacity}, {duration: options.in_duration, queue: false, ease: "easeOutCubic"});
+      $modal.css({
+        display: "block",
+        opacity: 0
+      });
+
+      $overlay.velocity({
+        opacity: options.opacity
+      }, {
+        duration: options.in_duration,
+        queue: false,
+        ease: "easeOutCubic"
+      });
       $modal.data('associated-overlay', $overlay[0]);
 
       // Define Bottom Sheet animation
       if ($modal.hasClass('bottom-sheet')) {
-        $modal.velocity({bottom: "0", opacity: 1}, {
+        $modal.velocity({
+          bottom: "0",
+          opacity: 1
+        }, {
           duration: options.in_duration,
           queue: false,
           ease: "easeOutCubic",
           // Handle modal ready callback
-          complete: function() {
-            if (typeof(options.ready) === "function") {
+          complete: function () {
+            if (typeof (options.ready) === "function") {
               options.ready();
             }
           }
         });
-      }
-      else {
+      } else {
         $.Velocity.hook($modal, "scaleX", 0.7);
-        $modal.css({ top: options.starting_top });
-        $modal.velocity({top: "10%", opacity: 1, scaleX: '1'}, {
+        $modal.css({
+          top: options.starting_top
+        });
+        $modal.velocity({
+          top: "10%",
+          opacity: 1,
+          scaleX: '1'
+        }, {
           duration: options.in_duration,
           queue: false,
           ease: "easeOutCubic",
           // Handle modal ready callback
-          complete: function() {
-            if (typeof(options.ready) === "function") {
+          complete: function () {
+            if (typeof (options.ready) === "function") {
               options.ready();
             }
           }
@@ -715,14 +735,14 @@ $.fn.material_select = function (callback) {
   });
 
   $.fn.extend({
-    closeModal: function(options) {
+    closeModal: function (options) {
       var defaults = {
-        out_duration: 250,
-        complete: undefined
-      },
-      $modal = $(this),
-      overlayID = $modal.data('overlay-id'),
-      $overlay = $('#' + overlayID);
+          out_duration: 250,
+          complete: undefined
+        },
+        $modal = $(this),
+        overlayID = $modal.data('overlay-id'),
+        $overlay = $('#' + overlayID);
       $modal.removeClass('open');
 
       options = $.extend(defaults, options);
@@ -736,21 +756,50 @@ $.fn.material_select = function (callback) {
       $modal.find('.modal-close').off('click.close');
       $(document).off('keyup.leanModal' + overlayID);
 
-      $overlay.velocity( { opacity: 0}, {duration: options.out_duration, queue: false, ease: "easeOutQuart"});
+      $overlay.velocity({
+        opacity: 0
+      }, {
+        duration: options.out_duration,
+        queue: false,
+        ease: "easeOutQuart"
+      });
 
 
       // Define Bottom Sheet animation
       if ($modal.hasClass('bottom-sheet')) {
-        $modal.velocity({bottom: "-100%", opacity: 0}, {
+        $modal.velocity({
+          bottom: "-100%",
+          opacity: 0
+        }, {
           duration: options.out_duration,
           queue: false,
           ease: "easeOutCubic",
           // Handle modal ready callback
-          complete: function() {
-            $overlay.css({display:"none"});
+          complete: function () {
+            $overlay.css({
+              display: "none"
+            });
 
             // Call complete callback
-            if (typeof(options.complete) === "function") {
+            if (typeof (options.complete) === "function") {
+              options.complete();
+            }
+            $overlay.remove();
+            _stack--;
+          }
+        });
+      } else {
+        $modal.velocity({
+          top: options.starting_top,
+          opacity: 0,
+          scaleX: 0.7
+        }, {
+          duration: options.out_duration,
+          complete: function () {
+
+            $(this).css('display', 'none');
+            // Call complete callback
+            if (typeof (options.complete) === "function") {
               options.complete();
             }
             $overlay.remove();
@@ -758,40 +807,22 @@ $.fn.material_select = function (callback) {
           }
         });
       }
-      else {
-        $modal.velocity(
-          { top: options.starting_top, opacity: 0, scaleX: 0.7}, {
-          duration: options.out_duration,
-          complete:
-            function() {
-
-              $(this).css('display', 'none');
-              // Call complete callback
-              if (typeof(options.complete) === "function") {
-                options.complete();
-              }
-              $overlay.remove();
-              _stack--;
-            }
-          }
-        );
-      }
     }
   });
 
   $.fn.extend({
-    leanModal: function(option) {
-      return this.each(function() {
+    leanModal: function (option) {
+      return this.each(function () {
 
         var defaults = {
-          starting_top: '4%'
-        },
-        // Override defaults
-        options = $.extend(defaults, option);
+            starting_top: '4%'
+          },
+          // Override defaults
+          options = $.extend(defaults, option);
 
         // Close Handlers
-        $(this).click(function(e) {
-          options.starting_top = ($(this).offset().top - $($_GLOBAL).scrollTop()) /1.15;
+        $(this).click(function (e) {
+          options.starting_top = ($(this).offset().top - $($_GLOBAL).scrollTop()) / 1.15;
           var modal_id = $(this).attr("href") || '#' + $(this).data('target');
           $(modal_id).openModal(options);
           e.preventDefault();

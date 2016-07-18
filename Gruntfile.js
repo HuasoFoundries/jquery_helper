@@ -500,7 +500,8 @@ module.exports = function (grunt) {
 						var intercept_return_final = modified_src[0].replace('return Velocity;', '').split('var DURATION_DEFAULT'),
 							intercept_return_begin = intercept_return_final[0].split('if (IE <= 8 && !isJQuery) {');
 
-						var src_con_comentarios = "define(['./jquery.slim.js'],function(global) {"+'\n'+intercept_return_begin[0] + '\n' +'\n'+" var DURATION_DEFAULT" + intercept_return_final[1];
+						var src_con_comentarios = "define(['./jquery.slim.js'],function(global) {" + '\n' + intercept_return_begin[0] + '\n' + '\n' + " var DURATION_DEFAULT" +
+							intercept_return_final[1];
 
 						return src_con_comentarios;
 
@@ -548,7 +549,7 @@ module.exports = function (grunt) {
 				"src/helpers/initial.js",
 				"src/helpers/collapsible.js",
 				"src/helpers/dropdown.js",
-				"node_modules/materialize-css/js/leanModal.js",
+				"src/helpers/leanModal.js",
 				"node_modules/materialize-css/js/materialbox.js",
 				"node_modules/materialize-css/js/tooltip.js",
 				"node_modules/materialize-css/js/sideNav.js",
