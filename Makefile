@@ -16,9 +16,9 @@ concat_jquery:
 
 
 build_jquery:
-	jspm build jquery_shim dist/jquery.js  --skip-source-maps --skip-encode-names 
 	jspm build jquery_shim dist/jquery.js --format esm --skip-source-maps --skip-encode-names 
-	jspm build jquery_shim dist/jquery.min.js  -m
+	jspm build libs/jquery.es6.js dist/jquery.js  --skip-source-maps --skip-encode-names --global-name jQuery
+	jspm build libs/jquery.es6.js dist/jquery.min.js  -m --global-name jQuery
 
 build: concat_jquery build_jquery
 

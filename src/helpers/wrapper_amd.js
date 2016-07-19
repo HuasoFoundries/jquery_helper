@@ -7,4 +7,5 @@
 	"use strict";
 
 	// @CODE
-return jQuery;}));
+	return jQuery;
+}));

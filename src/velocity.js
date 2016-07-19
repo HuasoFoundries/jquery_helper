@@ -1,9 +1,9 @@
-import global from 'jquery';
+import root from 'jquery';
 
 const requestAnimationFrame = function (callback, element) {
         var currTime = new Date().getTime();
         var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-        var id = root.setTimeout(function () {
+        var id = window.setTimeout(function () {
                 callback(currTime + timeToCall);
             },
             timeToCall);
@@ -15,19 +15,19 @@ const requestAnimationFrame = function (callback, element) {
     };
 
 
-((root, raf, caf) => {
+((self, raf, caf) => {
 
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
-    for (var x = 0; x < vendors.length && !root.requestAnimationFrame; ++x) {
-        root.requestAnimationFrame = root[vendors[x] + 'RequestAnimationFrame'];
-        root.cancelAnimationFrame = root[vendors[x] + 'CancelAnimationFrame'] || root[vendors[x] + 'CancelRequestAnimationFrame'];
+    for (var x = 0; x < vendors.length && !self.requestAnimationFrame; ++x) {
+        self.requestAnimationFrame = self[vendors[x] + 'RequestAnimationFrame'];
+        self.cancelAnimationFrame = self[vendors[x] + 'CancelAnimationFrame'] || self[vendors[x] + 'CancelRequestAnimationFrame'];
     }
 
-    if (!root.requestAnimationFrame)
-        root.requestAnimationFrame = raf;
-    if (!root.cancelAnimationFrame)
-        root.cancelAnimationFrame = caf;
+    if (!self.requestAnimationFrame)
+        self.requestAnimationFrame = raf;
+    if (!self.cancelAnimationFrame)
+        self.cancelAnimationFrame = caf;
 })(window, requestAnimationFrame, cancelAnimationFrame);
 
 export {
@@ -53,7 +53,7 @@ export {
   - Pre-Queueing: Prepare the element for animation by instantiating its data cache and processing the call's options.
   - Queueing: The logic that runs once the call has reached its point of execution in the element's $.queue() stack.
               Most logic is placed here to avoid risking it becoming stale (if the element's properties have changed).
-  - Pushing: Consolidation of the tween data followed by its push onto the global in-progress calls container.
+  - Pushing: Consolidation of the tween data followed by its push onto the root in-progress calls container.
 - tick(): The single requestAnimationFrame loop responsible for tweening all in-progress calls.
 - completeCall(): Handles the cleanup process for each Velocity call.
 */
@@ -157,7 +157,7 @@ var Type = {
 *****************/
 
 var isJQuery = true,
-    $ = global;
+    $ = root;
 
 /*****************
     Constants
@@ -195,7 +195,7 @@ var DURATION_DEFAULT  = 400,
             /* Container for every in-progress call to Velocity. */
             calls: []
         },
-        /* Velocity's custom CSS stack. Made global for unit testing. */
+        /* Velocity's custom CSS stack. Made root for unit testing. */
         CSS: { /* Defined below. */ },
         /* A shim of the jQuery utility functions used by Velocity -- provided by Velocity's optional jQuery shim. */
         Utilities: $,
@@ -1954,7 +1954,7 @@ var DURATION_DEFAULT  = 400,
         /* Element processing consists of three parts -- data processing that cannot go stale and data processing that *can* go stale (i.e. third-party style modifications):
            1) Pre-Queueing: Element-wide variables, including the element's data storage, are instantiated. Call options are prepared. If triggered, the Stop action is executed.
            2) Queueing: The logic that runs once this call has reached its point of execution in the element's $.queue() stack. Most logic is placed here to avoid risking it becoming stale.
-           3) Pushing: Consolidation of the tween data followed by its push onto the global in-progress calls container.
+           3) Pushing: Consolidation of the tween data followed by its push onto the root in-progress calls container.
         */
 
         function processElement () {
@@ -2784,7 +2784,7 @@ var DURATION_DEFAULT  = 400,
                     /* Once the final element in this call's element set has been processed, push the call array onto
                        Velocity.State.calls for the animation tick to immediately begin processing. */
                     if (elementsIndex === elementsLength - 1) {
-                        /* Add the current call plus its associated metadata (the element set and the call's options) onto the global call container.
+                        /* Add the current call plus its associated metadata (the element set and the call's options) onto the root call container.
                            Anything on this call container is subjected to tick() processing. */
                         Velocity.State.calls.push([ call, elements, opts, null, promiseData.resolver ]);
 
@@ -2929,7 +2929,7 @@ var DURATION_DEFAULT  = 400,
     /* Note: Tab focus detection doesn't work on older versions of IE, but that's okay since they don't support rAF to begin with. */
     if (!Velocity.State.isMobile && document.hidden !== undefined) {
         document.addEventListener("visibilitychange", function() {
-            /* Reassign the rAF function (which the global tick() function uses) based on the tab's focus state. */
+            /* Reassign the rAF function (which the root tick() function uses) based on the tab's focus state. */
             if (document.hidden) {
                 ticker = function(callback) {
                     /* The tick function needs a truthy first argument in order to pass its internal timestamp check. */
@@ -3242,7 +3242,7 @@ var DURATION_DEFAULT  = 400,
                a non-Velocity-initiated entry, turn off the isAnimating flag. A non-Velocity-initiatied queue entry's logic might alter
                an element's CSS values and thereby cause Velocity's cached value data to go stale. To detect if a queue entry was initiated by Velocity,
                we check for the existence of our special Velocity.queueEntryFlag declaration, which minifiers won't rename since the flag
-               is assigned to jQuery's global $ object and thus exists out of Velocity's own scope. */
+               is assigned to jQuery's root $ object and thus exists out of Velocity's own scope. */
             if (opts.loop !== true && ($.queue(element)[1] === undefined || !/\.velocityQueueEntryFlag/i.test($.queue(element)[1]))) {
                 /* The element may have been deleted. Ensure that its data cache still exists before acting on it. */
                 if (Data(element)) {
@@ -3371,16 +3371,16 @@ var DURATION_DEFAULT  = 400,
 
     /* Both jQuery and Zepto allow their $.fn object to be extended to allow wrapped elements to be subjected to plugin calls.
        If either framework is loaded, register a "velocity" extension pointing to Velocity's core animate() method.  Velocity
-       also registers itself onto a global container (window.jQuery || window.Zepto || window) so that certain features are
+       also registers itself onto a root container (window.jQuery || window.Zepto || window) so that certain features are
        accessible beyond just a per-element scope. This master object contains an .animate() method, which is later assigned to $.fn
        (if jQuery or Zepto are present). Accordingly, Velocity can both act on wrapped DOM elements and stand alone for targeting raw DOM elements. */
-    global.Velocity = Velocity;
+    root.Velocity = Velocity;
 
-    if (global !== window) {
+    if (root !== window) {
         /* Assign the element function to Velocity's core animate() method. */
-        global.fn.velocity = animate;
-        /* Assign the object function's defaults to Velocity's global defaults object. */
-        global.fn.velocity.defaults = Velocity.defaults;
+        root.fn.velocity = animate;
+        /* Assign the object function's defaults to Velocity's root defaults object. */
+        root.fn.velocity.defaults = Velocity.defaults;
     }
 
     /***********************

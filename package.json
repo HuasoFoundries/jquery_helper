@@ -17,6 +17,8 @@
     "jquery-ui": "^1.12.0",
     "jspm": "^0.17.0-beta.22",
     "materialize-css": "^0.97.6",
+    "requirejs": "^2.2.0",
+    "uglify-js": "^2.7.0",
     "velocity-animate": "^1.2.3"
   },
   "scripts": {

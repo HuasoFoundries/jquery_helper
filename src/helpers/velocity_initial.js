@@ -1,10 +1,10 @@
 /*! VelocityJS.org (1.2.3). (C) 2014 Julian Shapiro. MIT @license: en.wikipedia.org/wiki/MIT_License */
-import global from 'jquery';
+import root from 'jquery';
 
 const requestAnimationFrame = function (callback, element) {
         var currTime = new Date().getTime();
         var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-        var id = root.setTimeout(function () {
+        var id = window.setTimeout(function () {
                 callback(currTime + timeToCall);
             },
             timeToCall);
@@ -16,19 +16,19 @@ const requestAnimationFrame = function (callback, element) {
     };
 
 
-((root, raf, caf) => {
+((self, raf, caf) => {
 
     var lastTime = 0;
     var vendors = ['ms', 'moz', 'webkit', 'o'];
-    for (var x = 0; x < vendors.length && !root.requestAnimationFrame; ++x) {
-        root.requestAnimationFrame = root[vendors[x] + 'RequestAnimationFrame'];
-        root.cancelAnimationFrame = root[vendors[x] + 'CancelAnimationFrame'] || root[vendors[x] + 'CancelRequestAnimationFrame'];
+    for (var x = 0; x < vendors.length && !self.requestAnimationFrame; ++x) {
+        self.requestAnimationFrame = self[vendors[x] + 'RequestAnimationFrame'];
+        self.cancelAnimationFrame = self[vendors[x] + 'CancelAnimationFrame'] || self[vendors[x] + 'CancelRequestAnimationFrame'];
     }
 
-    if (!root.requestAnimationFrame)
-        root.requestAnimationFrame = raf;
-    if (!root.cancelAnimationFrame)
-        root.cancelAnimationFrame = caf;
+    if (!self.requestAnimationFrame)
+        self.requestAnimationFrame = raf;
+    if (!self.cancelAnimationFrame)
+        self.cancelAnimationFrame = caf;
 })(window, requestAnimationFrame, cancelAnimationFrame);
 
 export {
@@ -54,7 +54,7 @@ export {
   - Pre-Queueing: Prepare the element for animation by instantiating its data cache and processing the call's options.
   - Queueing: The logic that runs once the call has reached its point of execution in the element's $.queue() stack.
               Most logic is placed here to avoid risking it becoming stale (if the element's properties have changed).
-  - Pushing: Consolidation of the tween data followed by its push onto the global in-progress calls container.
+  - Pushing: Consolidation of the tween data followed by its push onto the root in-progress calls container.
 - tick(): The single requestAnimationFrame loop responsible for tweening all in-progress calls.
 - completeCall(): Handles the cleanup process for each Velocity call.
 */
@@ -158,7 +158,7 @@ var Type = {
 *****************/
 
 var isJQuery = true,
-    $ = global;
+    $ = root;
 
 /*****************
     Constants
