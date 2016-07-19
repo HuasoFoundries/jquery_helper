@@ -1,5 +1,7 @@
 module.exports = function (grunt) {
 
+	grunt.loadNpmTasks('grunt-contrib-connect');
+
 	grunt.config('connect', {
 
 		temporary: {
@@ -44,5 +46,5 @@ module.exports = function (grunt) {
 
 	});
 
-	grunt.loadNpmTasks('grunt-contrib-connect');
+
 };

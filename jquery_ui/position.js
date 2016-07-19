@@ -1,6 +1,7 @@
 import {
 	$
-} from 'src/velocity.js';
+} from './index.js';
+
 
 var ui = {
 	version: "1.12.0",

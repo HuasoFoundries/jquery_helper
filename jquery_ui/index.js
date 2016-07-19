@@ -1,6 +1,6 @@
 import {
 	$
-} from './position.js';
+} from 'src/velocity.js';
 import {
 	Materialize
 } from 'src/material_helper.js';
@@ -16,13 +16,6 @@ import './widgets/selectable.js';
 import './widgets/sortable.js';
 import './widgets/progressbar.js';
 import './widgets/colorpicker.js';
-
-/*import	'./plugins/jquery.ajax.progress.js';
-import	'./plugins/jquery.hotkeys.js';
-import	'jquery.cookie';
-import	'jquery.waitforChild';
-import	'jquery-serializejson';*/
-
 
 
 

@@ -9,6 +9,44 @@
  * Date: 2016-01-04
  */
 
+/*
+ * jQuery Hotkeys Plugin
+ * Copyright 2010, John Resig
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ *
+ * Based upon the plugin by Tzury Bar Yochay:
+ * http://github.com/tzuryby/hotkeys
+ *
+ * Original idea by:
+ * Binny V A, http://www.openjs.com/scripts/events/keyboard_shortcuts/
+ */
+
+/*!
+ * jQuery Cookie Plugin v1.4.1
+ * https://github.com/carhartl/jquery-cookie
+ *
+ * Copyright 2013 Klaus Hartl
+ * Released under the MIT license
+ */
+
+/*!
+ * jQuery waitforChild Plugin v0.0.1
+ * https://github.com/amenadiel/jquery.waitforChild
+ *
+ * Copyright 2015 Felipe Figueroa
+ * Released under the MIT license
+ */
+
+/*!
+  SerializeJSON jQuery plugin.
+  https://github.com/marioizquierdo/jquery.serializeJSON
+  version 2.7.2 (Dec, 2015)
+
+  Copyright (c) 2012, 2015 Mario Izquierdo
+  Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
+  and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
+*/
+
 !function(global, factory) {
     "object" == typeof exports && "undefined" != typeof module ? module.exports = factory() : "function" == typeof define && define.amd ? define(factory) : global.jQuery = factory();
 }(this, function() {
@@ -246,6 +284,116 @@
         }
         return val + augmentWidthOrHeight(elem, name, extra || (isBorderBox ? "border" : "content"), valueIsBorderBox, styles) + "px";
     }
+    function Tween(elem, options, prop, end, easing) {
+        return new Tween.prototype.init(elem, options, prop, end, easing);
+    }
+    function raf() {
+        timerId && (window.requestAnimationFrame(raf), jQuery.fx.tick());
+    }
+    function createFxNow() {
+        return window.setTimeout(function() {
+            fxNow = void 0;
+        }), fxNow = jQuery.now();
+    }
+    function genFx(type, includeWidth) {
+        var which, i = 0, attrs = {
+            height: type
+        };
+        for (includeWidth = includeWidth ? 1 : 0; 4 > i; i += 2 - includeWidth) which = cssExpand[i], 
+        attrs["margin" + which] = attrs["padding" + which] = type;
+        return includeWidth && (attrs.opacity = attrs.width = type), attrs;
+    }
+    function createTween(value, prop, animation) {
+        for (var tween, collection = (Animation.tweeners[prop] || []).concat(Animation.tweeners["*"]), index = 0, length = collection.length; length > index; index++) if (tween = collection[index].call(animation, prop, value)) return tween;
+    }
+    function defaultPrefilter(elem, props, opts) {
+        var prop, value, toggle, hooks, oldfire, propTween, restoreDisplay, display, isBox = "width" in props || "height" in props, anim = this, orig = {}, style = elem.style, hidden = elem.nodeType && isHiddenWithinTree(elem), dataShow = dataPriv.get(elem, "fxshow");
+        opts.queue || (hooks = jQuery._queueHooks(elem, "fx"), null == hooks.unqueued && (hooks.unqueued = 0, 
+        oldfire = hooks.empty.fire, hooks.empty.fire = function() {
+            hooks.unqueued || oldfire();
+        }), hooks.unqueued++, anim.always(function() {
+            anim.always(function() {
+                hooks.unqueued--, jQuery.queue(elem, "fx").length || hooks.empty.fire();
+            });
+        }));
+        for (prop in props) if (value = props[prop], rfxtypes.test(value)) {
+            if (delete props[prop], toggle = toggle || "toggle" === value, value === (hidden ? "hide" : "show")) {
+                if ("show" !== value || !dataShow || void 0 === dataShow[prop]) continue;
+                hidden = !0;
+            }
+            orig[prop] = dataShow && dataShow[prop] || jQuery.style(elem, prop);
+        }
+        if (propTween = !jQuery.isEmptyObject(props), propTween || !jQuery.isEmptyObject(orig)) {
+            isBox && 1 === elem.nodeType && (opts.overflow = [ style.overflow, style.overflowX, style.overflowY ], 
+            restoreDisplay = dataShow && dataShow.display, null == restoreDisplay && (restoreDisplay = dataPriv.get(elem, "display")), 
+            display = jQuery.css(elem, "display"), "none" === display && (restoreDisplay ? display = restoreDisplay : (showHide([ elem ], !0), 
+            restoreDisplay = elem.style.display || restoreDisplay, display = jQuery.css(elem, "display"), 
+            showHide([ elem ]))), ("inline" === display || "inline-block" === display && null != restoreDisplay) && "none" === jQuery.css(elem, "float") && (propTween || (anim.done(function() {
+                style.display = restoreDisplay;
+            }), null == restoreDisplay && (display = style.display, restoreDisplay = "none" === display ? "" : display)), 
+            style.display = "inline-block")), opts.overflow && (style.overflow = "hidden", anim.always(function() {
+                style.overflow = opts.overflow[0], style.overflowX = opts.overflow[1], style.overflowY = opts.overflow[2];
+            })), propTween = !1;
+            for (prop in orig) propTween || (dataShow ? "hidden" in dataShow && (hidden = dataShow.hidden) : dataShow = dataPriv.access(elem, "fxshow", {
+                display: restoreDisplay
+            }), toggle && (dataShow.hidden = !hidden), hidden && showHide([ elem ], !0), anim.done(function() {
+                hidden || showHide([ elem ]), dataPriv.remove(elem, "fxshow");
+                for (prop in orig) jQuery.style(elem, prop, orig[prop]);
+            })), propTween = createTween(hidden ? dataShow[prop] : 0, prop, anim), prop in dataShow || (dataShow[prop] = propTween.start, 
+            hidden && (propTween.end = propTween.start, propTween.start = 0));
+        }
+    }
+    function propFilter(props, specialEasing) {
+        var index, name, easing, value, hooks;
+        for (index in props) if (name = jQuery.camelCase(index), easing = specialEasing[name], 
+        value = props[index], jQuery.isArray(value) && (easing = value[1], value = props[index] = value[0]), 
+        index !== name && (props[name] = value, delete props[index]), hooks = jQuery.cssHooks[name], 
+        hooks && "expand" in hooks) {
+            value = hooks.expand(value), delete props[name];
+            for (index in value) index in props || (props[index] = value[index], specialEasing[index] = easing);
+        } else specialEasing[name] = easing;
+    }
+    function Animation(elem, properties, options) {
+        var result, stopped, index = 0, length = Animation.prefilters.length, deferred = jQuery.Deferred().always(function() {
+            delete tick.elem;
+        }), tick = function() {
+            if (stopped) return !1;
+            for (var currentTime = fxNow || createFxNow(), remaining = Math.max(0, animation.startTime + animation.duration - currentTime), temp = remaining / animation.duration || 0, percent = 1 - temp, index = 0, length = animation.tweens.length; length > index; index++) animation.tweens[index].run(percent);
+            return deferred.notifyWith(elem, [ animation, percent, remaining ]), 1 > percent && length ? remaining : (deferred.resolveWith(elem, [ animation ]), 
+            !1);
+        }, animation = deferred.promise({
+            elem: elem,
+            props: jQuery.extend({}, properties),
+            opts: jQuery.extend(!0, {
+                specialEasing: {},
+                easing: jQuery.easing._default
+            }, options),
+            originalProperties: properties,
+            originalOptions: options,
+            startTime: fxNow || createFxNow(),
+            duration: options.duration,
+            tweens: [],
+            createTween: function(prop, end) {
+                var tween = jQuery.Tween(elem, animation.opts, prop, end, animation.opts.specialEasing[prop] || animation.opts.easing);
+                return animation.tweens.push(tween), tween;
+            },
+            stop: function(gotoEnd) {
+                var index = 0, length = gotoEnd ? animation.tweens.length : 0;
+                if (stopped) return this;
+                for (stopped = !0; length > index; index++) animation.tweens[index].run(1);
+                return gotoEnd ? (deferred.notifyWith(elem, [ animation, 1, 0 ]), deferred.resolveWith(elem, [ animation, gotoEnd ])) : deferred.rejectWith(elem, [ animation, gotoEnd ]), 
+                this;
+            }
+        }), props = animation.props;
+        for (propFilter(props, animation.opts.specialEasing); length > index; index++) if (result = Animation.prefilters[index].call(animation, elem, props, animation.opts)) return jQuery.isFunction(result.stop) && (jQuery._queueHooks(animation.elem, animation.opts.queue).stop = jQuery.proxy(result.stop, result)), 
+        result;
+        return jQuery.map(props, createTween, animation), jQuery.isFunction(animation.opts.start) && animation.opts.start.call(elem, animation), 
+        jQuery.fx.timer(jQuery.extend(tick, {
+            elem: elem,
+            anim: animation,
+            queue: animation.opts.queue
+        })), animation.progress(animation.opts.progress).done(animation.opts.done, animation.opts.complete).fail(animation.opts.fail).always(animation.opts.always);
+    }
     function getClass(elem) {
         return elem.getAttribute && elem.getAttribute("class") || "";
     }
@@ -328,6 +476,40 @@
     }
     function getWindow(elem) {
         return jQuery.isWindow(elem) ? elem : 9 === elem.nodeType && elem.defaultView;
+    }
+    function keyHandler(handleObj) {
+        if ("string" == typeof handleObj.data) {
+            var origHandler = handleObj.handler, keys = handleObj.data.toLowerCase().split(" "), textAcceptingInputTypes = [ "text", "password", "number", "email", "url", "range", "date", "month", "week", "time", "datetime", "datetime-local", "search", "color" ];
+            handleObj.handler = function(event) {
+                if (this === event.target || !(/textarea|select/i.test(event.target.nodeName) || jQuery.inArray(event.target.type, textAcceptingInputTypes) > -1)) {
+                    var special = "keypress" !== event.type && jQuery.hotkeys.specialKeys[event.which], character = String.fromCharCode(event.which).toLowerCase(), modif = "", possible = {};
+                    event.altKey && "alt" !== special && (modif += "alt+"), event.ctrlKey && "ctrl" !== special && (modif += "ctrl+"), 
+                    event.metaKey && !event.ctrlKey && "meta" !== special && (modif += "meta+"), event.shiftKey && "shift" !== special && (modif += "shift+"), 
+                    special ? possible[modif + special] = !0 : (possible[modif + character] = !0, possible[modif + jQuery.hotkeys.shiftNums[character]] = !0, 
+                    "shift+" === modif && (possible[jQuery.hotkeys.shiftNums[character]] = !0));
+                    for (var i = 0, l = keys.length; l > i; i++) if (possible[keys[i]]) return origHandler.apply(this, arguments);
+                }
+            };
+        }
+    }
+    function encode(s) {
+        return config.raw ? s : encodeURIComponent(s);
+    }
+    function decode(s) {
+        return config.raw ? s : decodeURIComponent(s);
+    }
+    function stringifyCookieValue(value) {
+        return encode(config.json ? JSON.stringify(value) : String(value));
+    }
+    function parseCookieValue(s) {
+        0 === s.indexOf('"') && (s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, "\\"));
+        try {
+            return s = decodeURIComponent(s.replace(pluses, " ")), config.json ? JSON.parse(s) : s;
+        } catch (e) {}
+    }
+    function read(s, converter) {
+        var value = config.raw ? s : parseCookieValue(s);
+        return $.isFunction(converter) ? converter(value) : value;
     }
     var arr = [], document = window.document, getProto = Object.getPrototypeOf, slice = arr.slice, concat = arr.concat, push = arr.push, indexOf = arr.indexOf, class2type = {}, toString = class2type.toString, hasOwn = class2type.hasOwnProperty, fnToString = hasOwn.toString, ObjectFunctionString = fnToString.call(Object), support = {}, version = "3.1.0", jQuery = function(selector, context) {
         return new jQuery.fn.init(selector, context);
@@ -2018,7 +2200,149 @@
                 return void 0 !== value ? jQuery.style(elem, name, value) : jQuery.css(elem, name);
             }, name, value, arguments.length > 1);
         }
-    }), jQuery.fn.delay = function(time, type) {
+    }), jQuery.Tween = Tween, Tween.prototype = {
+        constructor: Tween,
+        init: function(elem, options, prop, end, easing, unit) {
+            this.elem = elem, this.prop = prop, this.easing = easing || jQuery.easing._default, 
+            this.options = options, this.start = this.now = this.cur(), this.end = end, this.unit = unit || (jQuery.cssNumber[prop] ? "" : "px");
+        },
+        cur: function() {
+            var hooks = Tween.propHooks[this.prop];
+            return hooks && hooks.get ? hooks.get(this) : Tween.propHooks._default.get(this);
+        },
+        run: function(percent) {
+            var eased, hooks = Tween.propHooks[this.prop];
+            return this.options.duration ? this.pos = eased = jQuery.easing[this.easing](percent, this.options.duration * percent, 0, 1, this.options.duration) : this.pos = eased = percent, 
+            this.now = (this.end - this.start) * eased + this.start, this.options.step && this.options.step.call(this.elem, this.now, this), 
+            hooks && hooks.set ? hooks.set(this) : Tween.propHooks._default.set(this), this;
+        }
+    }, Tween.prototype.init.prototype = Tween.prototype, Tween.propHooks = {
+        _default: {
+            get: function(tween) {
+                var result;
+                return 1 !== tween.elem.nodeType || null != tween.elem[tween.prop] && null == tween.elem.style[tween.prop] ? tween.elem[tween.prop] : (result = jQuery.css(tween.elem, tween.prop, ""), 
+                result && "auto" !== result ? result : 0);
+            },
+            set: function(tween) {
+                jQuery.fx.step[tween.prop] ? jQuery.fx.step[tween.prop](tween) : 1 !== tween.elem.nodeType || null == tween.elem.style[jQuery.cssProps[tween.prop]] && !jQuery.cssHooks[tween.prop] ? tween.elem[tween.prop] = tween.now : jQuery.style(tween.elem, tween.prop, tween.now + tween.unit);
+            }
+        }
+    }, Tween.propHooks.scrollTop = Tween.propHooks.scrollLeft = {
+        set: function(tween) {
+            tween.elem.nodeType && tween.elem.parentNode && (tween.elem[tween.prop] = tween.now);
+        }
+    }, jQuery.easing = {
+        linear: function(p) {
+            return p;
+        },
+        swing: function(p) {
+            return .5 - Math.cos(p * Math.PI) / 2;
+        },
+        _default: "swing"
+    }, jQuery.fx = Tween.prototype.init, jQuery.fx.step = {};
+    var fxNow, timerId, rfxtypes = /^(?:toggle|show|hide)$/, rrun = /queueHooks$/;
+    jQuery.Animation = jQuery.extend(Animation, {
+        tweeners: {
+            "*": [ function(prop, value) {
+                var tween = this.createTween(prop, value);
+                return adjustCSS(tween.elem, prop, rcssNum.exec(value), tween), tween;
+            } ]
+        },
+        tweener: function(props, callback) {
+            jQuery.isFunction(props) ? (callback = props, props = [ "*" ]) : props = props.match(rnotwhite);
+            for (var prop, index = 0, length = props.length; length > index; index++) prop = props[index], 
+            Animation.tweeners[prop] = Animation.tweeners[prop] || [], Animation.tweeners[prop].unshift(callback);
+        },
+        prefilters: [ defaultPrefilter ],
+        prefilter: function(callback, prepend) {
+            prepend ? Animation.prefilters.unshift(callback) : Animation.prefilters.push(callback);
+        }
+    }), jQuery.speed = function(speed, easing, fn) {
+        var opt = speed && "object" == typeof speed ? jQuery.extend({}, speed) : {
+            complete: fn || !fn && easing || jQuery.isFunction(speed) && speed,
+            duration: speed,
+            easing: fn && easing || easing && !jQuery.isFunction(easing) && easing
+        };
+        return jQuery.fx.off || document.hidden ? opt.duration = 0 : opt.duration = "number" == typeof opt.duration ? opt.duration : opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[opt.duration] : jQuery.fx.speeds._default, 
+        (null == opt.queue || opt.queue === !0) && (opt.queue = "fx"), opt.old = opt.complete, 
+        opt.complete = function() {
+            jQuery.isFunction(opt.old) && opt.old.call(this), opt.queue && jQuery.dequeue(this, opt.queue);
+        }, opt;
+    }, jQuery.fn.extend({
+        fadeTo: function(speed, to, easing, callback) {
+            return this.filter(isHiddenWithinTree).css("opacity", 0).show().end().animate({
+                opacity: to
+            }, speed, easing, callback);
+        },
+        animate: function(prop, speed, easing, callback) {
+            var empty = jQuery.isEmptyObject(prop), optall = jQuery.speed(speed, easing, callback), doAnimation = function() {
+                var anim = Animation(this, jQuery.extend({}, prop), optall);
+                (empty || dataPriv.get(this, "finish")) && anim.stop(!0);
+            };
+            return doAnimation.finish = doAnimation, empty || optall.queue === !1 ? this.each(doAnimation) : this.queue(optall.queue, doAnimation);
+        },
+        stop: function(type, clearQueue, gotoEnd) {
+            var stopQueue = function(hooks) {
+                var stop = hooks.stop;
+                delete hooks.stop, stop(gotoEnd);
+            };
+            return "string" != typeof type && (gotoEnd = clearQueue, clearQueue = type, type = void 0), 
+            clearQueue && type !== !1 && this.queue(type || "fx", []), this.each(function() {
+                var dequeue = !0, index = null != type && type + "queueHooks", timers = jQuery.timers, data = dataPriv.get(this);
+                if (index) data[index] && data[index].stop && stopQueue(data[index]); else for (index in data) data[index] && data[index].stop && rrun.test(index) && stopQueue(data[index]);
+                for (index = timers.length; index--; ) timers[index].elem !== this || null != type && timers[index].queue !== type || (timers[index].anim.stop(gotoEnd), 
+                dequeue = !1, timers.splice(index, 1));
+                (dequeue || !gotoEnd) && jQuery.dequeue(this, type);
+            });
+        },
+        finish: function(type) {
+            return type !== !1 && (type = type || "fx"), this.each(function() {
+                var index, data = dataPriv.get(this), queue = data[type + "queue"], hooks = data[type + "queueHooks"], timers = jQuery.timers, length = queue ? queue.length : 0;
+                for (data.finish = !0, jQuery.queue(this, type, []), hooks && hooks.stop && hooks.stop.call(this, !0), 
+                index = timers.length; index--; ) timers[index].elem === this && timers[index].queue === type && (timers[index].anim.stop(!0), 
+                timers.splice(index, 1));
+                for (index = 0; length > index; index++) queue[index] && queue[index].finish && queue[index].finish.call(this);
+                delete data.finish;
+            });
+        }
+    }), jQuery.each([ "toggle", "show", "hide" ], function(i, name) {
+        var cssFn = jQuery.fn[name];
+        jQuery.fn[name] = function(speed, easing, callback) {
+            return null == speed || "boolean" == typeof speed ? cssFn.apply(this, arguments) : this.animate(genFx(name, !0), speed, easing, callback);
+        };
+    }), jQuery.each({
+        slideDown: genFx("show"),
+        slideUp: genFx("hide"),
+        slideToggle: genFx("toggle"),
+        fadeIn: {
+            opacity: "show"
+        },
+        fadeOut: {
+            opacity: "hide"
+        },
+        fadeToggle: {
+            opacity: "toggle"
+        }
+    }, function(name, props) {
+        jQuery.fn[name] = function(speed, easing, callback) {
+            return this.animate(props, speed, easing, callback);
+        };
+    }), jQuery.timers = [], jQuery.fx.tick = function() {
+        var timer, i = 0, timers = jQuery.timers;
+        for (fxNow = jQuery.now(); i < timers.length; i++) timer = timers[i], timer() || timers[i] !== timer || timers.splice(i--, 1);
+        timers.length || jQuery.fx.stop(), fxNow = void 0;
+    }, jQuery.fx.timer = function(timer) {
+        jQuery.timers.push(timer), timer() ? jQuery.fx.start() : jQuery.timers.pop();
+    }, jQuery.fx.interval = 13, jQuery.fx.start = function() {
+        timerId || (timerId = window.requestAnimationFrame ? window.requestAnimationFrame(raf) : window.setInterval(jQuery.fx.tick, jQuery.fx.interval));
+    }, jQuery.fx.stop = function() {
+        window.cancelAnimationFrame ? window.cancelAnimationFrame(timerId) : window.clearInterval(timerId), 
+        timerId = null;
+    }, jQuery.fx.speeds = {
+        slow: 600,
+        fast: 200,
+        _default: 400
+    }, jQuery.fn.delay = function(time, type) {
         return time = jQuery.fx ? jQuery.fx.speeds[time] || time : time, type = type || "fx", 
         this.queue(type, function(next, hooks) {
             var timeout = window.setTimeout(next, time);
@@ -2281,6 +2605,18 @@
             }
         };
     });
+    var location = window.location, nonce = jQuery.now(), rquery = /\?/;
+    jQuery.parseXML = function(data) {
+        var xml;
+        if (!data || "string" != typeof data) return null;
+        try {
+            xml = new window.DOMParser().parseFromString(data, "text/xml");
+        } catch (e) {
+            xml = void 0;
+        }
+        return (!xml || xml.getElementsByTagName("parsererror").length) && jQuery.error("Invalid XML: " + data), 
+        xml;
+    };
     var rbracket = /\[\]$/, rCRLF = /\r?\n/g, rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i, rsubmittable = /^(?:input|select|textarea|keygen)/i;
     jQuery.param = function(a, traditional) {
         var prefix, s = [], add = function(key, valueOrFunction) {
@@ -2466,7 +2802,17 @@
                 success: callback
             }, jQuery.isPlainObject(url) && url));
         };
-    }), jQuery.fn.extend({
+    }), jQuery._evalUrl = function(url) {
+        return jQuery.ajax({
+            url: url,
+            type: "GET",
+            dataType: "script",
+            cache: !0,
+            async: !1,
+            global: !1,
+            "throws": !0
+        });
+    }, jQuery.fn.extend({
         wrapAll: function(html) {
             var wrap;
             return this[0] && (jQuery.isFunction(html) && (html = html.call(this[0])), wrap = jQuery(html, this[0].ownerDocument).eq(0).clone(!0), 
@@ -2507,7 +2853,7 @@
         0: 200,
         1223: 204
     }, xhrSupported = jQuery.ajaxSettings.xhr();
-    return support.cors = !!xhrSupported && "withCredentials" in xhrSupported, support.ajax = xhrSupported = !!xhrSupported, 
+    support.cors = !!xhrSupported && "withCredentials" in xhrSupported, support.ajax = xhrSupported = !!xhrSupported, 
     jQuery.ajaxTransport(function(options) {
         var callback, errorCallback;
         return support.cors || xhrSupported && !options.crossDomain ? {
@@ -2542,6 +2888,61 @@
                 callback && callback();
             }
         } : void 0;
+    }), jQuery.ajaxPrefilter(function(s) {
+        s.crossDomain && (s.contents.script = !1);
+    }), jQuery.ajaxSetup({
+        accepts: {
+            script: "text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"
+        },
+        contents: {
+            script: /\b(?:java|ecma)script\b/
+        },
+        converters: {
+            "text script": function(text) {
+                return jQuery.globalEval(text), text;
+            }
+        }
+    }), jQuery.ajaxPrefilter("script", function(s) {
+        void 0 === s.cache && (s.cache = !1), s.crossDomain && (s.type = "GET");
+    }), jQuery.ajaxTransport("script", function(s) {
+        if (s.crossDomain) {
+            var script, callback;
+            return {
+                send: function(_, complete) {
+                    script = jQuery("<script>").prop({
+                        charset: s.scriptCharset,
+                        src: s.url
+                    }).on("load error", callback = function(evt) {
+                        script.remove(), callback = null, evt && complete("error" === evt.type ? 404 : 200, evt.type);
+                    }), document.head.appendChild(script[0]);
+                },
+                abort: function() {
+                    callback && callback();
+                }
+            };
+        }
+    });
+    var oldCallbacks = [], rjsonp = /(=)\?(?=&|$)|\?\?/;
+    jQuery.ajaxSetup({
+        jsonp: "callback",
+        jsonpCallback: function() {
+            var callback = oldCallbacks.pop() || jQuery.expando + "_" + nonce++;
+            return this[callback] = !0, callback;
+        }
+    }), jQuery.ajaxPrefilter("json jsonp", function(s, originalSettings, jqXHR) {
+        var callbackName, overwritten, responseContainer, jsonProp = s.jsonp !== !1 && (rjsonp.test(s.url) ? "url" : "string" == typeof s.data && 0 === (s.contentType || "").indexOf("application/x-www-form-urlencoded") && rjsonp.test(s.data) && "data");
+        return jsonProp || "jsonp" === s.dataTypes[0] ? (callbackName = s.jsonpCallback = jQuery.isFunction(s.jsonpCallback) ? s.jsonpCallback() : s.jsonpCallback, 
+        jsonProp ? s[jsonProp] = s[jsonProp].replace(rjsonp, "$1" + callbackName) : s.jsonp !== !1 && (s.url += (rquery.test(s.url) ? "&" : "?") + s.jsonp + "=" + callbackName), 
+        s.converters["script json"] = function() {
+            return responseContainer || jQuery.error(callbackName + " was not called"), responseContainer[0];
+        }, s.dataTypes[0] = "json", overwritten = window[callbackName], window[callbackName] = function() {
+            responseContainer = arguments;
+        }, jqXHR.always(function() {
+            void 0 === overwritten ? jQuery(window).removeProp(callbackName) : window[callbackName] = overwritten, 
+            s[callbackName] && (s.jsonpCallback = originalSettings.jsonpCallback, oldCallbacks.push(callbackName)), 
+            responseContainer && jQuery.isFunction(overwritten) && overwritten(responseContainer[0]), 
+            responseContainer = overwritten = void 0;
+        }), "script") : void 0;
     }), support.createHTMLDocument = function() {
         var body = document.implementation.createHTMLDocument("").body;
         return body.innerHTML = "<form></form><form></form>", 2 === body.childNodes.length;
@@ -2553,6 +2954,30 @@
         base = context.createElement("base"), base.href = document.location.href, context.head.appendChild(base)) : context = document), 
         parsed = rsingleTag.exec(data), scripts = !keepScripts && [], parsed ? [ context.createElement(parsed[1]) ] : (parsed = buildFragment([ data ], context, scripts), 
         scripts && scripts.length && jQuery(scripts).remove(), jQuery.merge([], parsed.childNodes));
+    }, jQuery.fn.load = function(url, params, callback) {
+        var selector, type, response, self = this, off = url.indexOf(" ");
+        return off > -1 && (selector = jQuery.trim(url.slice(off)), url = url.slice(0, off)), 
+        jQuery.isFunction(params) ? (callback = params, params = void 0) : params && "object" == typeof params && (type = "POST"), 
+        self.length > 0 && jQuery.ajax({
+            url: url,
+            type: type || "GET",
+            dataType: "html",
+            data: params
+        }).done(function(responseText) {
+            response = arguments, self.html(selector ? jQuery("<div>").append(jQuery.parseHTML(responseText)).find(selector) : responseText);
+        }).always(callback && function(jqXHR, status) {
+            self.each(function() {
+                callback.apply(this, response || [ jqXHR.responseText, status, jqXHR ]);
+            });
+        }), this;
+    }, jQuery.each([ "ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend" ], function(i, type) {
+        jQuery.fn[type] = function(fn) {
+            return this.on(type, fn);
+        };
+    }), jQuery.expr.pseudos.animated = function(elem) {
+        return jQuery.grep(jQuery.timers, function(fn) {
+            return elem === fn.elem;
+        }).length;
     }, jQuery.offset = {
         setOffset: function(elem, options, i) {
             var curPosition, curLeft, curCSSTop, curTop, curOffset, curCSSLeft, calculatePosition, position = jQuery.css(elem, "position"), curElem = jQuery(elem), props = {};
@@ -2636,5 +3061,311 @@
                 }, type, chainable ? margin : void 0, chainable);
             };
         });
-    }), jQuery.noConflict = function() {}, jQuery;
+    }), jQuery.fn.extend({
+        bind: function(types, data, fn) {
+            return this.on(types, null, data, fn);
+        },
+        unbind: function(types, fn) {
+            return this.off(types, null, fn);
+        },
+        delegate: function(selector, types, data, fn) {
+            return this.on(types, selector, data, fn);
+        },
+        undelegate: function(selector, types, fn) {
+            return 1 === arguments.length ? this.off(selector, "**") : this.off(types, selector || "**", fn);
+        }
+    }), jQuery.parseJSON = JSON.parse, "function" == typeof define && define.amd && define("jquery", [], function() {
+        return jQuery;
+    });
+    var $ = jQuery;
+    jQuery.hotkeys = {
+        version: "0.8",
+        specialKeys: {
+            8: "backspace",
+            9: "tab",
+            13: "return",
+            16: "shift",
+            17: "ctrl",
+            18: "alt",
+            19: "pause",
+            20: "capslock",
+            27: "esc",
+            32: "space",
+            33: "pageup",
+            34: "pagedown",
+            35: "end",
+            36: "home",
+            37: "left",
+            38: "up",
+            39: "right",
+            40: "down",
+            45: "insert",
+            46: "del",
+            96: "0",
+            97: "1",
+            98: "2",
+            99: "3",
+            100: "4",
+            101: "5",
+            102: "6",
+            103: "7",
+            104: "8",
+            105: "9",
+            106: "*",
+            107: "+",
+            109: "-",
+            110: ".",
+            111: "/",
+            112: "f1",
+            113: "f2",
+            114: "f3",
+            115: "f4",
+            116: "f5",
+            117: "f6",
+            118: "f7",
+            119: "f8",
+            120: "f9",
+            121: "f10",
+            122: "f11",
+            123: "f12",
+            144: "numlock",
+            145: "scroll",
+            191: "/",
+            224: "meta"
+        },
+        shiftNums: {
+            "`": "~",
+            "1": "!",
+            "2": "@",
+            "3": "#",
+            "4": "$",
+            "5": "%",
+            "6": "^",
+            "7": "&",
+            "8": "*",
+            "9": "(",
+            "0": ")",
+            "-": "_",
+            "=": "+",
+            ";": ": ",
+            "'": '"',
+            ",": "<",
+            ".": ">",
+            "/": "?",
+            "\\": "|"
+        }
+    }, jQuery.each([ "keydown", "keyup", "keypress" ], function() {
+        jQuery.event.special[this] = {
+            add: keyHandler
+        };
+    });
+    var $ = jQuery, pluses = /\+/g, config = $.cookie = function(key, value, options) {
+        if (void 0 !== value && !$.isFunction(value)) {
+            if (options = $.extend({}, config.defaults, options), "number" == typeof options.expires) {
+                var days = options.expires, t = options.expires = new Date();
+                t.setTime(+t + 864e5 * days);
+            }
+            return document.cookie = [ encode(key), "=", stringifyCookieValue(value), options.expires ? "; expires=" + options.expires.toUTCString() : "", options.path ? "; path=" + options.path : "", options.domain ? "; domain=" + options.domain : "", options.secure ? "; secure" : "" ].join("");
+        }
+        for (var result = key ? void 0 : {}, cookies = document.cookie ? document.cookie.split("; ") : [], i = 0, l = cookies.length; l > i; i++) {
+            var parts = cookies[i].split("="), name = decode(parts.shift()), cookie = parts.join("=");
+            if (key && key === name) {
+                result = read(cookie, value);
+                break;
+            }
+            key || void 0 === (cookie = read(cookie)) || (result[name] = cookie);
+        }
+        return result;
+    };
+    config.defaults = {}, $.removeCookie = function(key, options) {
+        return void 0 === $.cookie(key) ? !1 : ($.cookie(key, "", $.extend({}, options, {
+            expires: -1
+        })), !$.cookie(key));
+    };
+    var $ = jQuery;
+    $.fn.waitforChild = function(onFound, querySelector, once) {
+        "object" == typeof arguments[0] && (once = arguments[0].once || !1, querySelector = arguments[0].querySelector || null, 
+        onFound = arguments[0].onFound), onFound || (onFound = function() {});
+        var $this = this;
+        if (!querySelector && $this.children().length) once ? onFound($this.children().first()) : $this.children().each(function(key, element) {
+            onFound($(element));
+        }); else if (0 !== $this.find(querySelector).length) once ? onFound($this.find(querySelector).first()) : $this.find(querySelector).each(function(key, element) {
+            onFound($(element));
+        }); else if (0 === $this.length) console.warn("Can't attach an observer to a null node", $this); else {
+            var observer = new MutationObserver(function(mutations) {
+                var _this = this;
+                mutations.forEach(function(mutation) {
+                    if (mutation.addedNodes) if (querySelector) for (var i = 0; i < mutation.addedNodes.length; ++i) {
+                        var addedNode = mutation.addedNodes[i];
+                        if ($(addedNode).is(querySelector) && (onFound($(addedNode)), once)) {
+                            _this.disconnect();
+                            break;
+                        }
+                    } else onFound($(mutation.addedNodes[0])), once && _this.disconnect();
+                });
+            });
+            observer.observe($this[0], {
+                childList: !0,
+                subtree: !0,
+                attributes: !1,
+                characterData: !1
+            });
+        }
+        return $this;
+    };
+    var $ = jQuery;
+    return $.fn.serializeJSON = function(options) {
+        var f, $form, opts, formAsArray, serializedObject, name, value, _obj, nameWithNoType, type, keys;
+        return f = $.serializeJSON, $form = this, opts = f.setupOpts(options), formAsArray = $form.serializeArray(), 
+        f.readCheckboxUncheckedValues(formAsArray, opts, $form), serializedObject = {}, 
+        $.each(formAsArray, function(i, obj) {
+            name = obj.name, value = obj.value, _obj = f.extractTypeAndNameWithNoType(name), 
+            nameWithNoType = _obj.nameWithNoType, type = _obj.type, type || (type = f.tryToFindTypeFromDataAttr(name, $form)), 
+            f.validateType(name, type, opts), "skip" !== type && (keys = f.splitInputNameIntoKeysArray(nameWithNoType), 
+            value = f.parseValue(value, name, type, opts), f.deepSet(serializedObject, keys, value, opts));
+        }), serializedObject;
+    }, $.serializeJSON = {
+        defaultOptions: {
+            checkboxUncheckedValue: void 0,
+            parseNumbers: !1,
+            parseBooleans: !1,
+            parseNulls: !1,
+            parseAll: !1,
+            parseWithFunction: null,
+            customTypes: {},
+            defaultTypes: {
+                string: function(str) {
+                    return String(str);
+                },
+                number: function(str) {
+                    return Number(str);
+                },
+                "boolean": function(str) {
+                    var falses = [ "false", "null", "undefined", "", "0" ];
+                    return -1 === falses.indexOf(str);
+                },
+                "null": function(str) {
+                    var falses = [ "false", "null", "undefined", "", "0" ];
+                    return -1 === falses.indexOf(str) ? str : null;
+                },
+                array: function(str) {
+                    return JSON.parse(str);
+                },
+                object: function(str) {
+                    return JSON.parse(str);
+                },
+                auto: function(str) {
+                    return $.serializeJSON.parseValue(str, null, null, {
+                        parseNumbers: !0,
+                        parseBooleans: !0,
+                        parseNulls: !0
+                    });
+                },
+                skip: null
+            },
+            useIntKeysAsArrayIndex: !1
+        },
+        setupOpts: function(options) {
+            var opt, validOpts, defaultOptions, optWithDefault, parseAll, f;
+            f = $.serializeJSON, null == options && (options = {}), defaultOptions = f.defaultOptions || {}, 
+            validOpts = [ "checkboxUncheckedValue", "parseNumbers", "parseBooleans", "parseNulls", "parseAll", "parseWithFunction", "customTypes", "defaultTypes", "useIntKeysAsArrayIndex" ];
+            for (opt in options) if (-1 === validOpts.indexOf(opt)) throw new Error("serializeJSON ERROR: invalid option '" + opt + "'. Please use one of " + validOpts.join(", "));
+            return optWithDefault = function(key) {
+                return options[key] !== !1 && "" !== options[key] && (options[key] || defaultOptions[key]);
+            }, parseAll = optWithDefault("parseAll"), {
+                checkboxUncheckedValue: optWithDefault("checkboxUncheckedValue"),
+                parseNumbers: parseAll || optWithDefault("parseNumbers"),
+                parseBooleans: parseAll || optWithDefault("parseBooleans"),
+                parseNulls: parseAll || optWithDefault("parseNulls"),
+                parseWithFunction: optWithDefault("parseWithFunction"),
+                typeFunctions: $.extend({}, optWithDefault("defaultTypes"), optWithDefault("customTypes")),
+                useIntKeysAsArrayIndex: optWithDefault("useIntKeysAsArrayIndex")
+            };
+        },
+        parseValue: function(valStr, inputName, type, opts) {
+            var f, parsedVal;
+            return f = $.serializeJSON, parsedVal = valStr, opts.typeFunctions && type && opts.typeFunctions[type] ? parsedVal = opts.typeFunctions[type](valStr) : opts.parseNumbers && f.isNumeric(valStr) ? parsedVal = Number(valStr) : !opts.parseBooleans || "true" !== valStr && "false" !== valStr ? opts.parseNulls && "null" == valStr && (parsedVal = null) : parsedVal = "true" === valStr, 
+            opts.parseWithFunction && !type && (parsedVal = opts.parseWithFunction(parsedVal, inputName)), 
+            parsedVal;
+        },
+        isObject: function(obj) {
+            return obj === Object(obj);
+        },
+        isUndefined: function(obj) {
+            return void 0 === obj;
+        },
+        isValidArrayIndex: function(val) {
+            return /^[0-9]+$/.test(String(val));
+        },
+        isNumeric: function(obj) {
+            return obj - parseFloat(obj) >= 0;
+        },
+        optionKeys: function(obj) {
+            if (Object.keys) return Object.keys(obj);
+            var key, keys = [];
+            for (key in obj) keys.push(key);
+            return keys;
+        },
+        readCheckboxUncheckedValues: function(formAsArray, opts, $form) {
+            var selector, $uncheckedCheckboxes, $el, dataUncheckedValue, f;
+            null == opts && (opts = {}), f = $.serializeJSON, selector = "input[type=checkbox][name]:not(:checked):not([disabled])", 
+            $uncheckedCheckboxes = $form.find(selector).add($form.filter(selector)), $uncheckedCheckboxes.each(function(i, el) {
+                $el = $(el), dataUncheckedValue = $el.attr("data-unchecked-value"), dataUncheckedValue ? formAsArray.push({
+                    name: el.name,
+                    value: dataUncheckedValue
+                }) : f.isUndefined(opts.checkboxUncheckedValue) || formAsArray.push({
+                    name: el.name,
+                    value: opts.checkboxUncheckedValue
+                });
+            });
+        },
+        extractTypeAndNameWithNoType: function(name) {
+            var match;
+            return (match = name.match(/(.*):([^:]+)$/)) ? {
+                nameWithNoType: match[1],
+                type: match[2]
+            } : {
+                nameWithNoType: name,
+                type: null
+            };
+        },
+        tryToFindTypeFromDataAttr: function(name, $form) {
+            var escapedName, selector, $input, typeFromDataAttr;
+            return escapedName = name.replace(/(:|\.|\[|\]|\s)/g, "\\$1"), selector = '[name="' + escapedName + '"]', 
+            $input = $form.find(selector).add($form.filter(selector)), typeFromDataAttr = $input.attr("data-value-type"), 
+            typeFromDataAttr || null;
+        },
+        validateType: function(name, type, opts) {
+            var validTypes, f;
+            if (f = $.serializeJSON, validTypes = f.optionKeys(opts ? opts.typeFunctions : f.defaultOptions.defaultTypes), 
+            type && -1 === validTypes.indexOf(type)) throw new Error("serializeJSON ERROR: Invalid type " + type + " found in input name '" + name + "', please use one of " + validTypes.join(", "));
+            return !0;
+        },
+        splitInputNameIntoKeysArray: function(nameWithNoType) {
+            var keys, f;
+            return f = $.serializeJSON, keys = nameWithNoType.split("["), keys = $.map(keys, function(key) {
+                return key.replace(/\]/g, "");
+            }), "" === keys[0] && keys.shift(), keys;
+        },
+        deepSet: function(o, keys, value, opts) {
+            var key, nextKey, tail, lastIdx, lastVal, f;
+            if (null == opts && (opts = {}), f = $.serializeJSON, f.isUndefined(o)) throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");
+            if (!keys || 0 === keys.length) throw new Error("ArgumentError: param 'keys' expected to be an array with least one element");
+            key = keys[0], 1 === keys.length ? "" === key ? o.push(value) : o[key] = value : (nextKey = keys[1], 
+            "" === key && (lastIdx = o.length - 1, lastVal = o[lastIdx], key = f.isObject(lastVal) && (f.isUndefined(lastVal[nextKey]) || keys.length > 2) ? lastIdx : lastIdx + 1), 
+            "" === nextKey ? (f.isUndefined(o[key]) || !$.isArray(o[key])) && (o[key] = []) : opts.useIntKeysAsArrayIndex && f.isValidArrayIndex(nextKey) ? (f.isUndefined(o[key]) || !$.isArray(o[key])) && (o[key] = []) : (f.isUndefined(o[key]) || !f.isObject(o[key])) && (o[key] = {}), 
+            tail = keys.slice(1), f.deepSet(o[key], tail, value, opts));
+        }
+    }, function($) {
+        var originalXhr = $.ajaxSettings.xhr;
+        $.ajaxSetup({
+            progress: function(e) {},
+            xhr: function() {
+                var req = originalXhr(), _this = this;
+                return req && "function" == typeof req.addEventListener && req.addEventListener("progress", function(evt) {
+                    _this.progress && _this.progress(evt);
+                }, !1), req;
+            }
+        });
+    }(jQuery), jQuery.noConflict = function() {}, jQuery;
 });

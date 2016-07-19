@@ -14,7 +14,7 @@ module.exports = function (grunt) {
 			minify: true,
 			sourceMaps: true,
 			externals: ['jquery'],
-			globalName: 'Materialize',
+			globalName: 'jq_material',
 			globalDeps: {
 				'jquery': 'jQuery'
 			}
@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 
 
 		return builder.buildStatic(
-				'src/material_helper.js',
+				'jquery_ui',
 				'dist/jquery_helper.min.js',
 				builderOpts)
 			.then(function (output) {
@@ -36,7 +36,7 @@ module.exports = function (grunt) {
 					sourceMaps: false,
 					externals: ['jquery'],
 					format: 'umd',
-					globalName: 'Materialize',
+					globalName: 'jq_material',
 					globalDeps: {
 						'jquery': 'jQuery'
 					}
@@ -45,7 +45,7 @@ module.exports = function (grunt) {
 
 
 				return builder.buildStatic(
-					'src/material_helper.js',
+					'jquery_ui',
 					'dist/jquery_helper.js',
 					builderOptsAMD);
 
@@ -57,7 +57,7 @@ module.exports = function (grunt) {
 					minify: false,
 					sourceMaps: false,
 					format: 'esm',
-					globalName: 'Materialize',
+					globalName: 'jq_material',
 					externals: ['jquery'],
 					globalDeps: {
 						'jquery': 'jQuery'
@@ -65,9 +65,8 @@ module.exports = function (grunt) {
 
 				};
 
-
 				return builder.buildStatic(
-					'src/material_helper.js',
+					'jquery_ui',
 					'dist/jquery_helper.esm.js',
 					builderOptsESM);
 

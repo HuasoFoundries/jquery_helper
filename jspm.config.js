@@ -3,7 +3,8 @@ SystemJS.config({
     "paths": {
       "github:": "jspm_packages/github/",
       "npm:": "jspm_packages/npm/",
-      "jquery": "dist/jquery.js"
+      "jquery": "dist/jquery.js",
+      "jquery_helper/": "dist/"
     }
   },
   transpiler: "plugin-babel",
@@ -15,23 +16,16 @@ SystemJS.config({
   },
   devConfig: {
     "map": {
-      "jquery-csv": "github:evanplaice/jquery-csv@0.8.2",
-      "jquery-serializejson": "github:marioizquierdo/jquery.serializeJSON@2.7.2",
       "jquery-ui": "github:components/jqueryui@1.12.0",
-      "jquery.cookie": "github:carhartl/jquery-cookie@1.4.1",
-      "jquery.waitforChild": "github:huasofoundries/jquery.waitforChild@1.1.0",
-      "plugin-babel": "npm:systemjs-plugin-babel@0.0.12",
-      "css": "github:systemjs/plugin-css@0.1.23"
+      "plugin-babel": "npm:systemjs-plugin-babel@0.0.12"
     }
   },
-
   meta: {
     "*.js": {
       "babelOptions": {
         "stage1": true
       }
     },
-
     "dist/jquery.js": {
       "build": false
     }
@@ -51,7 +45,6 @@ SystemJS.config({
       "main": "index.js",
       "format": "esm"
     },
-
     "src": {
       "main": "./material_helper.js",
       "defaultExtension": "js",
@@ -62,7 +55,7 @@ SystemJS.config({
     }
   },
   map: {
-    "jquery": "libs/jquery.js",
+    "jquery": "dist/jquery.js",
     "hammerjs": "libs/hammer.es6.js"
   }
 });

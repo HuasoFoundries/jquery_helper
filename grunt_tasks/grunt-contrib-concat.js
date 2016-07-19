@@ -48,83 +48,6 @@ module.exports = function (grunt) {
 			dest: 'libs/hammer.es6.js'
 
 		},
-
-		velocityes6: {
-			options: {
-
-				stripBanners: {
-					block: true
-				},
-				process: function (src, filepath) {
-
-					var modified_src = (src.split('return function (global, window, document, undefined) {')[1])
-						.replace(/global/g, 'jQuery')
-						.replace(/window/g, '$_GLOBAL')
-						.split('}(($_GLOBAL.jQuery || $_GLOBAL.Zepto || $_GLOBAL), $_GLOBAL, document);');
-
-					if (filepath.indexOf('velocity.js') !== -1) {
-
-						var modified_head = "import jQuery from 'jquery';";
-						modified_head = modified_head + '\n' + "'use strict';";
-						modified_head = modified_head + '\n' +
-							"var $_GLOBAL = typeof window !== 'undefined' ? window :    typeof global !== 'undefined' ? global :    Function('return this')();";
-						modified_head = modified_head + '\n' + "var document = $_GLOBAL.document;";
-
-						var intercept_return_final = modified_src[0].replace('return Velocity;', '').split('var DURATION_DEFAULT'),
-							intercept_return_begin = intercept_return_final[0].split('if (IE <= 8 && !isJQuery) {');
-
-						modified_head = modified_head + '\n' + intercept_return_begin[0] + '\n' + "var DURATION_DEFAULT" + intercept_return_final[1];
-
-
-						return modified_head;
-
-					} else if (filepath.indexOf('velocity.ui.js') !== -1) {
-						var modified_footer = modified_src[0].split('var velocityVersion');
-						return 'var velocityVersion' + modified_footer[1] + '\n' + "export {Velocity};" + '\n' + "export default Velocity;";
-					}
-				}
-			},
-			src: [
-				'node_modules/velocity-animate/velocity.js',
-				'node_modules/velocity-animate/velocity.ui.js'
-			],
-			dest: 'libs/velocity.es6.js'
-		},
-
-
-		velocity: {
-
-			options: {
-				stripBanners: {
-					block: true
-				},
-				process: function (src, filepath) {
-
-
-					if (filepath.indexOf('velocity.js') !== -1) {
-
-						grunt.log.writeln('Generating ', 'src/velocity.js');
-
-						var modified_src = (src.split('return function (global, window, document, undefined) {')[1])
-							.split('}((window.jQuery || window.Zepto || window), window, document);');
-
-
-						var intercept_return_final = modified_src[0].replace('return Velocity;', '').split('var DURATION_DEFAULT');
-
-						return '\n' + "var DURATION_DEFAULT " + intercept_return_final[1].replace(/global/g, 'root');
-
-					} else {
-						return src;
-					}
-				}
-			},
-			src: [
-				'src/helpers/velocity_initial.js',
-				'node_modules/velocity-animate/velocity.js',
-				'src/helpers/animation_shim.js'
-			],
-			dest: 'src/velocity.js'
-		},
 		hammer_effects: {
 			options: {
 				stripBanners: {
@@ -163,6 +86,42 @@ module.exports = function (grunt) {
 			// the location of the resulting JS file
 			dest: 'src/hammer_helper.js'
 		},
+
+
+		velocity: {
+
+			options: {
+				stripBanners: {
+					block: true
+				},
+				process: function (src, filepath) {
+
+
+					if (filepath.indexOf('velocity.js') !== -1) {
+
+						grunt.log.writeln('Generating ', 'src/velocity.js');
+
+						var modified_src = (src.split('return function (global, window, document, undefined) {')[1])
+							.split('}((window.jQuery || window.Zepto || window), window, document);');
+
+
+						var intercept_return_final = modified_src[0].replace('return Velocity;', '').split('var DURATION_DEFAULT');
+
+						return '\n' + "var DURATION_DEFAULT " + intercept_return_final[1].replace(/global/g, 'jQuery');
+
+					} else {
+						return src;
+					}
+				}
+			},
+			src: [
+				'src/helpers/velocity_initial.js',
+				'node_modules/velocity-animate/velocity.js',
+				'src/helpers/animation_shim.js'
+			],
+			dest: 'src/velocity.js'
+		},
+
 		material: {
 			options: {
 				stripBanners: {

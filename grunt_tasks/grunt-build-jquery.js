@@ -8,19 +8,15 @@ module.exports = function (grunt) {
 		function () {
 
 			var fs = require("fs"),
+				assign = require("lodash.assign"),
 				// Skip jsdom-related tests in Node.js 0.10 & 0.12
 				runJsdomTests = !/^v0/.test(process.version),
 				requirejs = require("requirejs"),
 				baseFolder = __dirname + '/..',
 				jqFolder = baseFolder + "/node_modules/jquery",
-				srcFolder = jqFolder + "/src",
-				helperFolder = baseFolder + "/src/helpers";
+				srcFolder = this.data.srcFolder;
 
 
-			console.log('baseFolder', baseFolder);
-			console.log('jqFolder', jqFolder);
-			console.log('srcFolder', srcFolder);
-			console.log('helperFolder', helperFolder);
 
 
 			var rdefineEnd = /\}\s*?\);[^}\w]*$/,
@@ -28,9 +24,8 @@ module.exports = function (grunt) {
 					return grunt.file.read(srcFolder + fileName);
 				},
 				pkg = require(jqFolder + "/package.json"),
-				globals = grunt.file.read(helperFolder + "/global.js"),
-				wrapper = grunt.file.read(helperFolder + "/wrapper_amd.js").split('@CODE');
-
+				globals = this.data.globals,
+				wrapper = this.data.wrapper.split('@CODE');
 
 
 
@@ -188,15 +183,14 @@ module.exports = function (grunt) {
 				}
 			}
 
-			var config = {
+			var config = assign(this.data.rjsconfig, {
 					baseUrl: srcFolder,
 					name: "jquery",
 
 					// Allow strict mode
 					useStrict: true,
 
-					// We have multiple minify steps
-					optimize: "uglify",
+
 
 					// Include dependencies loaded with require
 					findNestedDependencies: true,
@@ -214,18 +208,10 @@ module.exports = function (grunt) {
 						) + wrapper[1]
 					},
 					rawText: {},
-					uglify: {
-						//Example of a specialized config. If you are fine
-						//with the default options, no need to specify
-						//any of these properties.
-						output: {
-							beautify: true
-						},
-						mangle: false,
-						width: 300
-					},
+
+
 					onBuildWrite: convert
-				},
+				}),
 				index,
 				done = this.async(),
 				flags = this.flags,
@@ -301,7 +287,7 @@ module.exports = function (grunt) {
 			 * Handle Final output from the optimizer
 			 * @param {String} compiled
 			 */
-			config.out = function (compiled) {
+			config.out = function (compiled, sourceMapText) {
 				compiled = compiled
 
 				// Embed Version
@@ -312,6 +298,15 @@ module.exports = function (grunt) {
 				.replace(/@DATE/g, (new Date()).toISOString().replace(/:\d+\.\d+Z$/, "Z"));
 
 
+
+				if (sourceMapText) {
+
+					var sourcemapName = name + '.map';
+
+					compiled = compiled.replace(/sourceMappingURL=.*\.map/g, 'sourceMappingURL=' + sourcemapName.replace('dist/', ''));
+
+					grunt.file.write(sourcemapName, sourceMapText);
+				}
 				// Write concatenated source to file
 				grunt.file.write(name, compiled);
 			};
@@ -328,35 +323,6 @@ module.exports = function (grunt) {
 			});
 		});
 
-
-
-
-	// Special "alias" task to make custom build creation less grawlix-y
-	// Translation example
-	//
-	//   grunt custom:+ajax,-dimensions,-effects,-offset
-	//
-	// Becomes:
-	//
-	//   grunt build:*:*:+ajax:-dimensions:-effects:-offset
-	grunt.registerTask("custom", function () {
-		var args = this.args,
-			modules = args.length ? args[0].replace(/,/g, ":") : "",
-			done = this.async();
-
-		grunt.log.writeln("Modules are", JSON.stringify(modules));
-
-		function exec() {
-			var defaultPath = ["build", "custom"];
-			grunt.task.run(["build:*:*" + (modules ? ":" + modules : "")]);
-			done();
-		}
-
-		grunt.log.writeln("Creating custom build...\n");
-
-		exec();
-
-	});
 
 
 

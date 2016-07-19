@@ -1,5 +1,5 @@
 /*! VelocityJS.org (1.2.3). (C) 2014 Julian Shapiro. MIT @license: en.wikipedia.org/wiki/MIT_License */
-import root from 'jquery';
+import jQuery from 'jquery';
 
 const requestAnimationFrame = function (callback, element) {
         var currTime = new Date().getTime();
@@ -33,35 +33,12 @@ const requestAnimationFrame = function (callback, element) {
 
 export {
     requestAnimationFrame,
-    cancelAnimationFrame
+    cancelAnimationFrame,
+    jQuery
 };
 
 
 
-/******************
-    Velocity.js
-******************/
-
-
-
-/***************
-    Summary
-***************/
-
-/*
-- CSS: CSS stack that works independently from the rest of Velocity.
-- animate(): Core animation method that iterates over the targeted elements and queues the incoming call onto each element individually.
-  - Pre-Queueing: Prepare the element for animation by instantiating its data cache and processing the call's options.
-  - Queueing: The logic that runs once the call has reached its point of execution in the element's $.queue() stack.
-              Most logic is placed here to avoid risking it becoming stale (if the element's properties have changed).
-  - Pushing: Consolidation of the tween data followed by its push onto the root in-progress calls container.
-- tick(): The single requestAnimationFrame loop responsible for tweening all in-progress calls.
-- completeCall(): Handles the cleanup process for each Velocity call.
-*/
-
-/*********************
-   Helper Functions
-*********************/
 
 /* IE detection. Gist: https://gist.github.com/julianshapiro/9098609 */
 var IE = ((docobj) => {
@@ -85,6 +62,8 @@ var IE = ((docobj) => {
 })(window.document);
 
 
+var isJQuery = true,
+    $ = jQuery;
 
 
 
@@ -152,14 +131,3 @@ var Type = {
         return true;
     }
 };
-
-/*****************
-   Dependencies
-*****************/
-
-var isJQuery = true,
-    $ = root;
-
-/*****************
-    Constants
-*****************/
