@@ -1,9 +1,9 @@
 import {
 	$
-} from 'src/velocity.js';
+} from 'libs/velocity.js';
 import {
 	Materialize
-} from 'src/material_helper.js';
+} from 'libs/materialize.js';
 
 import './widget.js';
 import './widgets/mouse.js';

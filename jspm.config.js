@@ -34,25 +34,18 @@ SystemJS.config({
     "jquery_helper": {
       "main": "jquery.js"
     },
-    "jquery_ui": {
+    "src/jquery_ui": {
       "main": "index.js",
       "format": "esm",
       "map": {
         "jquery": "dist/jquery.js"
       }
     },
-    "jquery_shim": {
+    "src/jquery_shim": {
       "main": "index.js",
       "format": "esm"
-    },
-    "src": {
-      "main": "./material_helper.js",
-      "defaultExtension": "js",
-      "format": "esm",
-      "map": {
-        "jquery": "dist/jquery.js"
-      }
     }
+
   },
   map: {
     "jquery": "dist/jquery.js",

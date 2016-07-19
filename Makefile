@@ -14,7 +14,7 @@ jquery:
 
 jquery_es6:
 	grunt build:es6:*:-effects:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-event/ajax:-effects:-effects/Tween:-effects/animatedSelector:-deprecated
-	jspm build jquery_shim dist/jquery.esm.js --format esm --skip-source-maps --skip-encode-names 
+	jspm build src/jquery_shim dist/jquery.esm.js --format esm --skip-source-maps --skip-encode-names 
 
 
 build: jquery jquery_es6 material
@@ -22,9 +22,9 @@ build: jquery jquery_es6 material
 material:	
 	grunt concat:velocity
 	#grunt jspmbuild
-	jspm build jquery_ui dist/jquery_helper.js  --skip-source-maps --skip-encode-names --global-deps '{"jquery":"jQuery"}'
-	jspm build jquery_ui dist/jquery_helper.esm.js  --format esm --skip-source-maps --skip-encode-names --global-deps '{"jquery":"jQuery"}'
-	jspm build jquery_ui dist/jquery_helper.min.js  -m --global-deps '{"jquery":"jQuery"}'
+	jspm build src/jquery_ui dist/jquery_helper.js  --skip-source-maps --skip-encode-names --global-deps '{"jquery":"jQuery"}'
+	jspm build src/jquery_ui dist/jquery_helper.esm.js  --format esm --skip-source-maps --skip-encode-names --global-deps '{"jquery":"jQuery"}'
+	jspm build src/jquery_ui dist/jquery_helper.min.js  -m --global-deps '{"jquery":"jQuery"}'
 
 
 install:

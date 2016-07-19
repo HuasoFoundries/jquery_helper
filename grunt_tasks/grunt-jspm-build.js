@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 
 
 		return builder.buildStatic(
-				'jquery_ui',
+				'src/jquery_ui',
 				'dist/jquery_helper.min.js',
 				builderOpts)
 			.then(function (output) {
@@ -45,7 +45,7 @@ module.exports = function (grunt) {
 
 
 				return builder.buildStatic(
-					'jquery_ui',
+					'src/jquery_ui',
 					'dist/jquery_helper.js',
 					builderOptsAMD);
 
@@ -66,7 +66,7 @@ module.exports = function (grunt) {
 				};
 
 				return builder.buildStatic(
-					'jquery_ui',
+					'src/jquery_ui',
 					'dist/jquery_helper.esm.js',
 					builderOptsESM);
 

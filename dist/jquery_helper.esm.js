@@ -1,9 +1,8 @@
-import jQuery$1 from 'jquery';
+import $ from 'jquery';
 
 var requestAnimationFrame=function requestAnimationFrame(callback,element){var currTime=new Date().getTime();var timeToCall=Math.max(0,16-(currTime-lastTime));var id=window.setTimeout(function(){callback(currTime+timeToCall);},timeToCall);lastTime=currTime+timeToCall;return id;};
 var cancelAnimationFrame=function cancelAnimationFrame(id){clearTimeout(id);};
-(function(self,raf,caf){var lastTime=0;var vendors=['ms','moz','webkit','o'];for(var x=0;x<vendors.length&&!self.requestAnimationFrame;++x){self.requestAnimationFrame=self[vendors[x]+'RequestAnimationFrame'];self.cancelAnimationFrame=self[vendors[x]+'CancelAnimationFrame']||self[vendors[x]+'CancelRequestAnimationFrame'];}if(!self.requestAnimationFrame)self.requestAnimationFrame=raf;if(!self.cancelAnimationFrame)self.cancelAnimationFrame=caf;})(window,requestAnimationFrame,cancelAnimationFrame);/* IE detection. Gist: https://gist.github.com/julianshapiro/9098609 */var IE=function(docobj){if(docobj.documentMode){return docobj.documentMode;}else {for(var i=7;i>4;i--){var div=docobj.createElement("div");div.innerHTML="<!--[if IE "+i+"]><span></span><![endif]-->";if(div.getElementsByTagName("span").length){div=null;return i;}}}return undefined;}(window.document);var $=jQuery$1;
-/* Array compacting. Copyright Lo-Dash. MIT License: https://github.com/lodash/lodash/blob/master/LICENSE.txt */function compactSparseArray(array){var index=-1,length=array?array.length:0,result=[];while(++index<length){var value=array[index];if(value){result.push(value);}}return result;}function sanitizeElements(elements){ /* Unwrap jQuery/Zepto objects. */if(Type.isWrapped(elements)){elements=[].slice.call(elements); /* Wrap a single element in an array so that $.each() can iterate with the element instead of its node's children. */}else if(Type.isNode(elements)){elements=[elements];}return elements;}var Type={isString:function isString(variable){return typeof variable==="string";},isArray:Array.isArray||function(variable){return Object.prototype.toString.call(variable)==="[object Array]";},isFunction:function isFunction(variable){return Object.prototype.toString.call(variable)==="[object Function]";},isNode:function isNode(variable){return variable&&variable.nodeType;}, /* Copyright Martin Bohm. MIT License: https://gist.github.com/Tomalak/818a78a226a0738eaade */isNodeList:function isNodeList(variable){return typeof variable==="object"&&/^\[object (HTMLCollection|NodeList|Object)\]$/.test(Object.prototype.toString.call(variable))&&variable.length!==undefined&&(variable.length===0||typeof variable[0]==="object"&&variable[0].nodeType>0);}, /* Determine if variable is a wrapped jQuery or Zepto element. */isWrapped:function isWrapped(variable){return variable&&(variable.jquery||window.Zepto&&window.Zepto.zepto.isZ(variable));},isSVG:function isSVG(variable){return window.SVGElement&&variable instanceof window.SVGElement;},isEmptyObject:function isEmptyObject(variable){for(var name in variable){return false;}return true;}};var DURATION_DEFAULT=400;
+(function(self,raf,caf){var lastTime=0;var vendors=['ms','moz','webkit','o'];for(var x=0;x<vendors.length&&!self.requestAnimationFrame;++x){self.requestAnimationFrame=self[vendors[x]+'RequestAnimationFrame'];self.cancelAnimationFrame=self[vendors[x]+'CancelAnimationFrame']||self[vendors[x]+'CancelRequestAnimationFrame'];}if(!self.requestAnimationFrame)self.requestAnimationFrame=raf;if(!self.cancelAnimationFrame)self.cancelAnimationFrame=caf;})(window,requestAnimationFrame,cancelAnimationFrame); /* IE detection. Gist: https://gist.github.com/julianshapiro/9098609 */var IE=function(docobj){if(docobj.documentMode){return docobj.documentMode;}else {for(var i=7;i>4;i--){var div=docobj.createElement("div");div.innerHTML="<!--[if IE "+i+"]><span></span><![endif]-->";if(div.getElementsByTagName("span").length){div=null;return i;}}}return undefined;}(window.document);/* Array compacting. Copyright Lo-Dash. MIT License: https://github.com/lodash/lodash/blob/master/LICENSE.txt */function compactSparseArray(array){var index=-1,length=array?array.length:0,result=[];while(++index<length){var value=array[index];if(value){result.push(value);}}return result;}function sanitizeElements(elements){ /* Unwrap jQuery/Zepto objects. */if(Type.isWrapped(elements)){elements=[].slice.call(elements); /* Wrap a single element in an array so that $.each() can iterate with the element instead of its node's children. */}else if(Type.isNode(elements)){elements=[elements];}return elements;}var Type={isString:function isString(variable){return typeof variable==="string";},isArray:Array.isArray||function(variable){return Object.prototype.toString.call(variable)==="[object Array]";},isFunction:function isFunction(variable){return Object.prototype.toString.call(variable)==="[object Function]";},isNode:function isNode(variable){return variable&&variable.nodeType;}, /* Copyright Martin Bohm. MIT License: https://gist.github.com/Tomalak/818a78a226a0738eaade */isNodeList:function isNodeList(variable){return typeof variable==="object"&&/^\[object (HTMLCollection|NodeList|Object)\]$/.test(Object.prototype.toString.call(variable))&&variable.length!==undefined&&(variable.length===0||typeof variable[0]==="object"&&variable[0].nodeType>0);}, /* Determine if variable is a wrapped jQuery or Zepto element. */isWrapped:function isWrapped(variable){return variable&&(variable.jquery||window.Zepto&&window.Zepto.zepto.isZ(variable));},isSVG:function isSVG(variable){return window.SVGElement&&variable instanceof window.SVGElement;},isEmptyObject:function isEmptyObject(variable){for(var name in variable){return false;}return true;}};var DURATION_DEFAULT=400;
 var EASING_DEFAULT="swing";
 /*************
         State
@@ -434,7 +433,7 @@ var EASING_DEFAULT="swing";
        If either framework is loaded, register a "velocity" extension pointing to Velocity's core animate() method.  Velocity
        also registers itself onto a jQuery container (window.jQuery || window.Zepto || window) so that certain features are
        accessible beyond just a per-element scope. This master object contains an .animate() method, which is later assigned to $.fn
-       (if jQuery or Zepto are present). Accordingly, Velocity can both act on wrapped DOM elements and stand alone for targeting raw DOM elements. */jQuery$1.Velocity=Velocity;if(jQuery$1!==window){ /* Assign the element function to Velocity's core animate() method. */jQuery$1.fn.velocity=animate; /* Assign the object function's defaults to Velocity's jQuery defaults object. */jQuery$1.fn.velocity.defaults=Velocity.defaults;} /***********************
+       (if jQuery or Zepto are present). Accordingly, Velocity can both act on wrapped DOM elements and stand alone for targeting raw DOM elements. */$.Velocity=Velocity;if($!==window){ /* Assign the element function to Velocity's core animate() method. */$.fn.velocity=animate; /* Assign the object function's defaults to Velocity's jQuery defaults object. */$.fn.velocity.defaults=Velocity.defaults;} /***********************
        Packaged Redirects
     ***********************/ /* slideUp, slideDown */$.each(["Down","Up"],function(i,direction){Velocity.Redirects["slide"+direction]=function(element,options,elementsIndex,elementsSize,elements,promiseData){var opts=$.extend({},options),begin=opts.begin,complete=opts.complete,computedValues={height:"",marginTop:"",marginBottom:"",paddingTop:"",paddingBottom:""},inlineValues={};if(opts.display===undefined){ /* Show the element before slideDown begins and hide the element after slideUp completes. */ /* Note: Inline elements cannot have dimensions animated, so they're reverted to inline-block. */opts.display=direction==="Down"?Velocity.CSS.Values.getDisplayType(element)==="inline"?"inline-block":"block":"none";}opts.begin=function(){ /* If the user passed in a begin callback, fire it now. */begin&&begin.call(elements,elements); /* Cache the elements' original vertical dimensional property values so that we can animate back to them. */for(var property in computedValues){inlineValues[property]=element.style[property]; /* For slideDown, use forcefeeding to animate all vertical properties from 0. For slideUp,
                        use forcefeeding to start from computed values and animate down to 0. */var propertyValue=Velocity.CSS.getPropertyValue(element,property);computedValues[property]=direction==="Down"?[propertyValue,0]:[0,propertyValue];} /* Force vertical overflow content to clip so that sliding works as expected. */inlineValues.overflow=element.style.overflow;element.style.overflow="hidden";};opts.complete=function(){ /* Reset element to its pre-slide inline values once its slide animation is complete. */for(var property in inlineValues){element.style[property]=inlineValues[property];} /* If the user passed in a complete callback, fire it now. */complete&&complete.call(elements,elements);promiseData&&promiseData.resolver(elements);};Velocity(element,computedValues,opts);};}); /* fadeIn, fadeOut */$.each(["In","Out"],function(i,direction){Velocity.Redirects["fade"+direction]=function(element,options,elementsIndex,elementsSize,elements,promiseData){var opts=$.extend({},options),propertiesMap={opacity:direction==="In"?1:0},originalComplete=opts.complete; /* Since redirects are triggered individually for each element in the animated set, avoid repeatedly triggering
@@ -5159,8 +5158,6 @@ plugin.add("draggable", "zIndex", {
 	}
 });
 
-var draggable = $.ui.draggable;
-
 widget("ui.rotatable", mouse, {
 
 	options: {
@@ -5337,8 +5334,6 @@ widget("ui.rotatable", mouse, {
 	}
 
 });
-
-var rotatable = $.ui.rotatable;
 
 widget("ui.droppable", {
 	version: "1.12.0",
@@ -5686,8 +5681,6 @@ $.ui.ddmanager = {
 		}
 	}
 };
-
-var droppable = $.ui.droppable;
 
 widget("ui.resizable", mouse, {
 	version: "1.12.0",
@@ -6852,8 +6845,6 @@ plugin.add("resizable", "grid", {
 
 });
 
-var resizable = $.ui.resizable;
-
 widget("ui.selectable", mouse, {
 	version: "1.12.0",
 	options: {
@@ -7136,8 +7127,6 @@ widget("ui.selectable", mouse, {
 	}
 
 });
-
-var selectable = $.ui.selectable;
 
 widget("ui.sortable", mouse, {
 	version: "1.12.0",
@@ -8496,7 +8485,6 @@ widget("ui.sortable", mouse, {
 	}
 
 });
-var sortable = $.ui.sortable;
 
 widget("ui.progressbar", {
 	version: "1.12.0",
@@ -8630,8 +8618,6 @@ widget("ui.progressbar", {
 		}
 	}
 });
-
-var progressbar = $.ui.progressbar;
 
 var _idx = 0;
 var isIE = false;
@@ -8995,7 +8981,5 @@ widget("evol.colorpicker", {
 	}
 
 });
-
-var colorpicker = $.evol.colorpicker;
 
 export { $ };

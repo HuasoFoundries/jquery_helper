@@ -23,7 +23,7 @@ module.exports = function (grunt) {
 
 					} else if (filepath.indexOf('src/hammer.suffix.js') !== -1) {
 
-						grunt.log.writeln('CREATING: ' + 'libs/hammer.es6.js');
+						grunt.log.writeln('CREATING: ' + 'src/libs/hammer.es6.js');
 						return "export {Hammer};" + '\n' + "export default Hammer;";
 					} else {
 						return src.replace('window', '$_GLOBAL');
@@ -45,7 +45,7 @@ module.exports = function (grunt) {
 				'node_modules/hammerjs/src/expose.js',
 				'node_modules/hammerjs/src/hammer.suffix.js'
 			],
-			dest: 'libs/hammer.es6.js'
+			dest: 'src/libs/hammer.es6.js'
 
 		},
 		hammer_effects: {
@@ -84,16 +84,14 @@ module.exports = function (grunt) {
 
 			],
 			// the location of the resulting JS file
-			dest: 'src/hammer_helper.js'
+			dest: 'src/libs/maerialize_hammer_fns.js'
 		},
 
 
 		velocity: {
 
 			options: {
-				stripBanners: {
-					block: true
-				},
+				stripBanners: true,
 				process: function (src, filepath) {
 
 
@@ -107,7 +105,14 @@ module.exports = function (grunt) {
 
 						var intercept_return_final = modified_src[0].replace('return Velocity;', '').split('var DURATION_DEFAULT');
 
-						return '\n' + "var DURATION_DEFAULT " + intercept_return_final[1].replace(/global/g, 'jQuery');
+
+
+
+						modified_src = '\n' + "var DURATION_DEFAULT " + intercept_return_final[1].replace(/global/g, 'jQuery');
+
+
+
+						return modified_src.replace(/\|\| rAFShim/g, '').replace(/\/\*[^\*\/]+\*\//g, '');
 
 					} else {
 						return src;
@@ -119,7 +124,7 @@ module.exports = function (grunt) {
 				'node_modules/velocity-animate/velocity.js',
 				'src/helpers/animation_shim.js'
 			],
-			dest: 'src/velocity.js'
+			dest: 'src/libs/velocity.js'
 		},
 
 		material: {
@@ -161,7 +166,7 @@ module.exports = function (grunt) {
 				"src/helpers/waves.js"
 			],
 			// the location of the resulting JS file
-			dest: 'src/material_helper.js'
+			dest: 'src/libs/materialize.js'
 
 		}
 

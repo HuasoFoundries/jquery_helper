@@ -5,7 +5,7 @@ module.exports = function (grunt) {
 			es6: {
 				globals: grunt.file.read("src/helpers/global.js"),
 				wrapper: grunt.file.read("src/helpers/wrapper_es6.js"),
-				dest: "libs/jquery.es6.js",
+				dest: "src/libs/jquery.es6.js",
 				srcFolder: __dirname + '/node_modules/jquery/src',
 				minimum: [
 					"core",
@@ -33,7 +33,7 @@ module.exports = function (grunt) {
 				globals: grunt.file.read("src/helpers/global.js"),
 				wrapper: grunt.file.read("src/helpers/wrapper_amd.js"),
 				dest: "dist/jquery.js",
-				srcFolder: __dirname + '/jquery_shim',
+				srcFolder: __dirname + '/src/jquery_shim',
 				minimum: [
 					"core",
 					"selector"
@@ -71,7 +71,7 @@ module.exports = function (grunt) {
 				globals: grunt.file.read("src/helpers/global.js"),
 				wrapper: grunt.file.read("src/helpers/wrapper_amd.js"),
 				dest: "dist/jquery.min.js",
-				srcFolder: __dirname + '/jquery_shim',
+				srcFolder: __dirname + '/src/jquery_shim',
 				minimum: [
 					"core",
 					"selector"
