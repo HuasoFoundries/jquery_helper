@@ -1,11 +1,12 @@
 // Source: src/helpers/initial.js
-import jQuery from 'jquery';
-import $ from 'jquery';
+import {
+  $
+} from './velocity.js';
 
 
 
 var Materialize = {},
-  document = $_GLOBAL.document;
+  document = window.document;
 
 var Waves = {},
   $$ = document.querySelectorAll.bind(document);
@@ -439,10 +440,10 @@ $.fn.dropdown = function (option) {
       }
 
       // Offscreen detection
-      var $_GLOBALHeight = $_GLOBAL.innerHeight;
+      var windowHeight = window.innerHeight;
       var originHeight = origin.innerHeight();
       var offsetLeft = origin.offset().left;
-      var offsetTop = origin.offset().top - $($_GLOBAL).scrollTop();
+      var offsetTop = origin.offset().top - $(window).scrollTop();
       var currAlignment = options.alignment;
       var gutterSpacing = 0;
       var leftPosition = 0;
@@ -461,7 +462,7 @@ $.fn.dropdown = function (option) {
       }
 
 
-      if (offsetLeft + activates.innerWidth() > $($_GLOBAL).width()) {
+      if (offsetLeft + activates.innerWidth() > $(window).width()) {
         // Dropdown goes past screen on right, force right alignment
         currAlignment = 'right';
 
@@ -470,10 +471,10 @@ $.fn.dropdown = function (option) {
         currAlignment = 'left';
       }
       // Vertical bottom offscreen detection
-      if (offsetTop + activates.innerHeight() > $_GLOBALHeight) {
+      if (offsetTop + activates.innerHeight() > windowHeight) {
         // If going upwards still goes offscreen, just crop height of dropdown.
         if (offsetTop + originHeight - activates.innerHeight() < 0) {
-          var adjustedHeight = $_GLOBALHeight - offsetTop - verticalOffset;
+          var adjustedHeight = windowHeight - offsetTop - verticalOffset;
           activates.css('max-height', adjustedHeight);
         } else {
           // Flow upwards.
@@ -564,7 +565,7 @@ $.fn.dropdown = function (option) {
           if (origin[0] === e.currentTarget &&
             !origin.hasClass('active') &&
             ($(e.target).closest('.dropdown-content').length === 0)) {
-            e.preventDefault(); // Prevents button click from moving $_GLOBAL
+            e.preventDefault(); // Prevents button click from moving window
             placeDropdown('click');
           } else if (origin.hasClass('active')) {
             // If origin is clicked and menu is open, close menu
@@ -811,7 +812,7 @@ $.fn.extend({
 
       // Close Handlers
       $(this).click(function (e) {
-        options.starting_top = ($(this).offset().top - $($_GLOBAL).scrollTop()) / 1.15;
+        options.starting_top = ($(this).offset().top - $(window).scrollTop()) / 1.15;
         var modal_id = $(this).attr("href") || '#' + $(this).data('target');
         $(modal_id).openModal(options);
         e.preventDefault();
@@ -849,8 +850,8 @@ $.fn.materialbox = function () {
 
     origin.on('click', function () {
       var placeholder = origin.parent('.material-placeholder');
-      var $_GLOBALWidth = $_GLOBAL.innerWidth;
-      var $_GLOBALHeight = $_GLOBAL.innerHeight;
+      var windowWidth = window.innerWidth;
+      var windowHeight = window.innerHeight;
       var originalWidth = origin.width();
       var originalHeight = origin.height();
 
@@ -943,19 +944,19 @@ $.fn.materialbox = function () {
 
       // Resize Image
       var ratio = 0;
-      var widthPercent = originalWidth / $_GLOBALWidth;
-      var heightPercent = originalHeight / $_GLOBALHeight;
+      var widthPercent = originalWidth / windowWidth;
+      var heightPercent = originalHeight / windowHeight;
       var newWidth = 0;
       var newHeight = 0;
 
       if (widthPercent > heightPercent) {
         ratio = originalHeight / originalWidth;
-        newWidth = $_GLOBALWidth * 0.9;
-        newHeight = $_GLOBALWidth * 0.9 * ratio;
+        newWidth = windowWidth * 0.9;
+        newHeight = windowWidth * 0.9 * ratio;
       } else {
         ratio = originalWidth / originalHeight;
-        newWidth = ($_GLOBALHeight * 0.9) * ratio;
-        newHeight = $_GLOBALHeight * 0.9;
+        newWidth = (windowHeight * 0.9) * ratio;
+        newHeight = windowHeight * 0.9;
       }
 
       // Animate image + set z-index
@@ -974,8 +975,8 @@ $.fn.materialbox = function () {
                 .velocity({
                   height: newHeight,
                   width: newWidth,
-                  left: $(document).scrollLeft() + $_GLOBALWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
-                  top: $(document).scrollTop() + $_GLOBALHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
+                  left: $(document).scrollLeft() + windowWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
+                  top: $(document).scrollTop() + windowHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
                 }, {
                   duration: inDuration,
                   queue: false,
@@ -992,8 +993,8 @@ $.fn.materialbox = function () {
           .velocity({
             height: newHeight,
             width: newWidth,
-            left: $(document).scrollLeft() + $_GLOBALWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
-            top: $(document).scrollTop() + $_GLOBALHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
+            left: $(document).scrollLeft() + windowWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
+            top: $(document).scrollTop() + windowHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
           }, {
             duration: inDuration,
             queue: false,
@@ -1008,7 +1009,7 @@ $.fn.materialbox = function () {
 
 
     // Return on scroll
-    $($_GLOBAL).scroll(function () {
+    $(window).scroll(function () {
       if (overlayActive) {
         returnToOriginal();
       }
@@ -1031,8 +1032,8 @@ $.fn.materialbox = function () {
       doneAnimating = false;
 
       var placeholder = origin.parent('.material-placeholder');
-      var $_GLOBALWidth = $_GLOBAL.innerWidth;
-      var $_GLOBALHeight = $_GLOBAL.innerHeight;
+      var windowWidth = window.innerWidth;
+      var windowHeight = window.innerHeight;
       var originalWidth = origin.data('width');
       var originalHeight = origin.data('height');
 
@@ -1345,14 +1346,14 @@ var repositionWithinScreen = function (x, y, width, height) {
 
   if (newX < 0) {
     newX = 4;
-  } else if (newX + width > $_GLOBAL.innerWidth) {
-    newX -= newX + width - $_GLOBAL.innerWidth;
+  } else if (newX + width > window.innerWidth) {
+    newX -= newX + width - window.innerWidth;
   }
 
   if (newY < 0) {
     newY = 4;
-  } else if (newY + height > $_GLOBAL.innerHeight + $($_GLOBAL).scrollTop) {
-    newY -= newY + height - $_GLOBAL.innerHeight;
+  } else if (newY + height > window.innerHeight + $(window).scrollTop) {
+    newY -= newY + height - window.innerHeight;
   }
 
   return {
@@ -1657,7 +1658,7 @@ $(document).ready(function () {
 
 // Find exact position of element
 function isWindow(obj) {
-  return obj !== null && obj === obj.$_GLOBAL;
+  return obj !== null && obj === obj.window;
 }
 
 function getWindow(elem) {
@@ -1926,7 +1927,7 @@ function showEffect(e) {
   if (element !== null) {
     Effect.show(e, element);
 
-    if ('ontouchstart' in $_GLOBAL) {
+    if ('ontouchstart' in window) {
       element.addEventListener('touchend', Effect.hide, false);
       element.addEventListener('touchcancel', Effect.hide, false);
     }
@@ -1946,7 +1947,7 @@ Waves.displayEffect = function (options) {
   //Wrap input inside <i> tag
   Effect.wrapInput($$('.waves-effect'));
 
-  if ('ontouchstart' in $_GLOBAL) {
+  if ('ontouchstart' in window) {
     document.body.addEventListener('touchstart', showEffect, false);
   }
 
@@ -1967,14 +1968,14 @@ Waves.attach = function (element) {
     element = element.parentElement;
   }
 
-  if ('ontouchstart' in $_GLOBAL) {
+  if ('ontouchstart' in window) {
     element.addEventListener('touchstart', showEffect, false);
   }
 
   element.addEventListener('mousedown', showEffect, false);
 };
 
-$_GLOBAL.Waves = Waves;
+window.Waves = Waves;
 
 document.addEventListener('DOMContentLoaded', function () {
   Waves.displayEffect();
@@ -2049,7 +2050,7 @@ $.fn.tabs = function (methodOrOptions) {
         // For each set of tabs, we want to keep track of
         // which tab is active and its associated content
         var $this = $(this),
-          $_GLOBAL_width = $($_GLOBAL).width();
+          window_width = $(window).width();
 
         $this.width('100%');
         var $active, $content, $links = $this.find('li.tab a'),
@@ -2089,7 +2090,7 @@ $.fn.tabs = function (methodOrOptions) {
             "left": $index * $tab_width
           });
         }
-        $($_GLOBAL).resize(function () {
+        $(window).resize(function () {
           $tabs_width = $this.width();
           $tab_width = Math.max($tabs_width, $this[0].scrollWidth) / $links.length;
           if ($index < 0) {
@@ -2140,7 +2141,7 @@ $.fn.tabs = function (methodOrOptions) {
             $index = 0;
           }
           // Change url to current tab
-          // $_GLOBAL.location.hash = $active.attr('href');
+          // window.location.hash = $active.attr('href');
 
           if ($content !== undefined) {
             $content.show();
@@ -2227,12 +2228,12 @@ function textareaAutoResize($textarea) {
 
 
   // When textarea is hidden, width goes crazy.
-  // Approximate with half of $_GLOBAL size
+  // Approximate with half of window size
 
   if ($textarea.is(':visible')) {
     hiddenDiv.css('width', $textarea.width());
   } else {
-    hiddenDiv.css('width', $($_GLOBAL).width() / 2);
+    hiddenDiv.css('width', $(window).width() / 2);
   }
 
   $textarea.css('height', hiddenDiv.height());

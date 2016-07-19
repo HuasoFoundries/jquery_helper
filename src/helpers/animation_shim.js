@@ -1,6 +1,3 @@
-
-
-
 $.easing = {
     linear: function (p) {
         return p;
@@ -172,25 +169,26 @@ $.extend($.easing, {
 $.fn.animate = $.fn.velocity;
 
 $.fn.fadeOut = function (speed, easing, callback) {
-	return this.each(function () {
-		$(this).velocity({
-			opacity: 'hide'
-		}, speed, easing, callback);
-	});
+    return this.each(function () {
+        $(this).velocity({
+            opacity: 'hide'
+        }, speed, easing, callback);
+    });
 };
 
 $.fn.fadeIn = function (speed, easing, callback) {
-	return this.each(function () {
-		$(this).velocity({
-			opacity: 'show'
-		}, speed, easing, callback);
-	});
+    return this.each(function () {
+        $(this).velocity({
+            opacity: 'show'
+        }, speed, easing, callback);
+    });
 };
 
 
 
 
 
-
-return $;
-});
+export {
+    $,
+    Velocity
+};

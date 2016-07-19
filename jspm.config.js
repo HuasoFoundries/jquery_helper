@@ -3,7 +3,7 @@ SystemJS.config({
     "paths": {
       "github:": "jspm_packages/github/",
       "npm:": "jspm_packages/npm/",
-      "jquery":"dist/jquery.js"
+      "jquery": "dist/jquery.js"
     }
   },
   transpiler: "plugin-babel",
@@ -31,35 +31,33 @@ SystemJS.config({
         "stage1": true
       }
     },
-   
-    "dist/jquery.js":{
-      "build":false
+
+    "dist/jquery.js": {
+      "build": false
     }
   },
   packages: {
-    "jquery_helper":{
-      "main":"jquery.js"
+    "jquery_helper": {
+      "main": "jquery.js"
+    },
+    "jquery_ui": {
+      "main": "index.js",
+      "format": "esm",
+      "map": {
+        "jquery": "dist/jquery.js"
+      }
     },
     "jquery_shim": {
       "main": "index.js",
-      "format": "amd",
-      "map": {
-        "jquery": "libs/jquery.js"
-      }
+      "format": "esm"
     },
-    "jquery-ui": {
-      "main": "jquery-ui.js",
-      "format": "amd",
-      "map": {
-        "jquery": "libs/jquery.js"
-      }
-    },
+
     "src": {
       "main": "./material_helper.js",
       "defaultExtension": "js",
       "format": "esm",
-      "map":{
-        "jquery":"dist/jquery.js"
+      "map": {
+        "jquery": "dist/jquery.js"
       }
     }
   },
