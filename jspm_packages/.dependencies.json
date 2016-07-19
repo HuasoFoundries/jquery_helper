@@ -1,25 +1,5 @@
 {
-  "github:systemjs/plugin-css@0.1.23": {
-    "deps": {},
-    "peerDeps": {}
-  },
-  "github:marioizquierdo/jquery.serializeJSON@2.7.2": {
-    "deps": {},
-    "peerDeps": {}
-  },
-  "github:evanplaice/jquery-csv@0.8.2": {
-    "deps": {},
-    "peerDeps": {}
-  },
   "npm:systemjs-plugin-babel@0.0.12": {
-    "deps": {},
-    "peerDeps": {}
-  },
-  "github:huasofoundries/jquery.waitforChild@1.1.0": {
-    "deps": {},
-    "peerDeps": {}
-  },
-  "github:carhartl/jquery-cookie@1.4.1": {
     "deps": {},
     "peerDeps": {}
   },

@@ -1,7 +1,7 @@
 {
   "name": "jquery_helper",
-  "version": "1.5.4",
-  "main": "jquery.js",
+  "version": "1.6.0",
+  "main": "jquery.min.js",
   "description": "This helper bundles jQuery library plus all the jQuery and jQuery-UI plugins our app uses  in a single monolithic file.",
   "directories": {
     "example": "example"
@@ -14,8 +14,12 @@
     "grunt-contrib-connect": "^0.11.2",
     "hammerjs": "^2.0.8",
     "jquery": "^3.1.0",
+    "jquery-ui": "^1.12.0",
     "jspm": "^0.17.0-beta.22",
+    "lodash.assign": "^4.0.9",
     "materialize-css": "^0.97.6",
+    "requirejs": "^2.2.0",
+    "uglify-js": "^2.7.0",
     "velocity-animate": "^1.2.3"
   },
   "scripts": {
@@ -40,18 +44,14 @@
   "homepage": "https://github.com/HuasoFoundries/jquery_helper#readme",
   "jspm": {
     "registry": "github",
-    "main": "jquery.js",
+    "main": "jquery.min.js",
+    "format": "amd",
     "directories": {
       "lib": "dist"
     },
     "dependencies": {},
     "devDependencies": {
-      "css": "systemjs/plugin-css@^0.1.23",
       "jquery-ui": "components/jqueryui@^1.12.0",
-      "jquery-csv": "evanplaice/jquery-csv@~0.8",
-      "jquery-serializejson": "marioizquierdo/jquery.serializeJSON@~2.7",
-      "jquery.cookie": "carhartl/jquery-cookie@^1.4.1",
-      "jquery.waitforChild": "huasofoundries/jquery.waitforChild@^1",
       "plugin-babel": "npm:systemjs-plugin-babel@^0.0.12"
     },
     "overrides": {

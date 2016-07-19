@@ -3,23 +3,28 @@ VERSION = $(shell cat package.json | sed -n 's/.*"version": "\([^"]*\)",/\1/p')
 SHELL = /usr/bin/env bash
 
 default: build
-.PHONY: default build install tag publish
+.PHONY: default build install tag jquery material
 
 version:
 	@echo $(VERSION)
 	
 jquery:
-	grunt custom:-effects,-deprecated,-manipulation/_evalUrl,-exports/amd,-exports/global
-	grunt concat:jquery
-	jspm build jquery_shim dist/jquery.js  --skip-source-maps --skip-encode-names --global-name jQuery
-	jspm build jquery_shim dist/jquery.min.js --global-name jQuery -m
+	grunt build:full:*:-effects:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-event/ajax:-effects:-effects/Tween:-effects/animatedSelector:-deprecated
+	grunt build:min:*:-effects:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-event/ajax:-effects:-effects/Tween:-effects/animatedSelector:-deprecated 
 
-build: jquery material
+jquery_es6:
+	grunt build:es6:*:-effects:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-event/ajax:-effects:-effects/Tween:-effects/animatedSelector:-deprecated
+	jspm build jquery_shim dist/jquery.esm.js --format esm --skip-source-maps --skip-encode-names 
+
+
+build: jquery jquery_es6 material
 
 material:	
-	#grunt publish
-	grunt jspmbuild
-
+	grunt concat:velocity
+	#grunt jspmbuild
+	jspm build jquery_ui dist/jquery_helper.js  --skip-source-maps --skip-encode-names --global-deps '{"jquery":"jQuery"}'
+	jspm build jquery_ui dist/jquery_helper.esm.js  --format esm --skip-source-maps --skip-encode-names --global-deps '{"jquery":"jQuery"}'
+	jspm build jquery_ui dist/jquery_helper.min.js  -m --global-deps '{"jquery":"jQuery"}'
 
 
 install:

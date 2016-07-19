@@ -10,20 +10,9 @@
  * Binny V A, http://www.openjs.com/scripts/events/keyboard_shortcuts/
  */
 
-(function (root, factory) {
+define(["../core.js"], function (jQuery) {
+	var $ = jQuery;
 
-	if (typeof define === "function" && define.amd) {
-		// AMD (+ global for extensions)
-		define(['jquery'], factory);
-
-	} else if (typeof module !== 'undefined' && typeof exports === "object") {
-		// CommonJS
-		module.exports = factory(require('jquery'));
-	} else {
-		// Browser
-		root.jQuery = factory(root.jQuery);
-	}
-}(this, function (jQuery) {
 
 	jQuery.hotkeys = {
 		version: "0.8",
@@ -172,5 +161,4 @@
 			add: keyHandler
 		};
 	});
-
-}));
+});
