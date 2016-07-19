@@ -184,6 +184,11 @@ $.fn.fadeIn = function (speed, easing, callback) {
     });
 };
 
+$.fn.stop = function () {
+    return this.each(function () {
+        $(this).velocity('stop');
+    });
+};
 
 
 

@@ -21,7 +21,7 @@ build: jquery jquery_es6 material
 
 material:	
 	grunt concat
-	jspm build src/jquery_ui dist/jquery_helper.js --format amd --skip-source-maps --skip-encode-names
+	jspm build src/jquery_ui dist/jquery_helper.js --skip-source-maps --skip-encode-names
 	jspm build src/jquery_ui dist/jquery_helper.esm.js  --format esm --skip-source-maps --skip-encode-names
 	jspm build src/jquery_ui dist/jquery_helper.min.js  -m --global-deps '{"jquery":"jQuery"}'
 	#mjspm build src/jquery_ui dist/jquery_helper.esm.min.js  --format esm -m --global-deps '{"jquery":"jQuery"}'

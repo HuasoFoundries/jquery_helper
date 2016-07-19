@@ -145,11 +145,9 @@
 
 
         // Show dropdown
-        activates.stop(true, true).css('opacity', 0)
-          .velocity('slideDown')
-          .velocity({
-            opacity: 1
-          }, {
+        // Show dropdown
+        activates
+          .velocity('slideDown', {
             queue: false,
             duration: options.inDuration,
             easing: 'easeOutSine'
@@ -159,12 +157,17 @@
       function hideDropdown() {
         // Check for simultaneous focus and click events.
         isFocused = false;
-        activates.fadeOut(options.outDuration);
-        activates.removeClass('active');
+        activates
+          .velocity('slideUp', {
+            queue: false,
+            duration: options.outDuration,
+            complete: function () {
+              $(this).css('max-height', '');
+            }
+          }).removeClass('active');
+
         origin.removeClass('active');
-        setTimeout(function () {
-          activates.css('max-height', '');
-        }, options.outDuration);
+
       }
 
       // Hover

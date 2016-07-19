@@ -5,16 +5,10 @@ import {
 
 
 var Materialize = {},
-    document = window.document;
-
-var Waves = {},
+    Waves = {},
     $$ = document.querySelectorAll.bind(document);
 
-$.fn.stop = function () {
-    return this.each(function () {
-        $(this).velocity('stop');
-    });
-};
+
 
 
 var guidfn = (function () {
