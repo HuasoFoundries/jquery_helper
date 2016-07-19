@@ -1,5 +1,7 @@
 import $ from 'jquery';
-
+import {
+    Velocity
+} from './velocity.js';
 
 
 var Materialize = {},
