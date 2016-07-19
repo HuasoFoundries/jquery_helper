@@ -20,8 +20,7 @@ jquery_es6:
 build: jquery jquery_es6 material
 
 material:	
-	grunt concat:velocity
-	#grunt jspmbuild
+	grunt concat
 	jspm build src/jquery_ui dist/jquery_helper.js  --skip-source-maps --skip-encode-names --global-deps '{"jquery":"jQuery"}'
 	jspm build src/jquery_ui dist/jquery_helper.esm.js  --format esm --skip-source-maps --skip-encode-names --global-deps '{"jquery":"jQuery"}'
 	jspm build src/jquery_ui dist/jquery_helper.min.js  -m --global-deps '{"jquery":"jQuery"}'
