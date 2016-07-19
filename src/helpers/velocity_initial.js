@@ -1,5 +1,4 @@
 /*! VelocityJS.org (1.2.3). (C) 2014 Julian Shapiro. MIT @license: en.wikipedia.org/wiki/MIT_License */
-import jQuery from 'jquery';
 import $ from 'jquery';
 
 const requestAnimationFrame = function (callback, element) {

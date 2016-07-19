@@ -1,10 +1,10 @@
 /*!
  * jQuery UI Rotatable
  */
+import $ from 'jquery';
 import {
-	$
+	ui
 } from '../position.js';
-
 import {
 	widget
 } from '../widget.js';

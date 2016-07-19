@@ -12,10 +12,10 @@
 //>>description: Abstracts mouse-based interactions to assist in creating certain widgets.
 //>>docs: http://api.jqueryui.com/mouse/
 
+import $ from 'jquery';
 import {
-	$
+	ui
 } from '../position.js';
-
 import {
 	widget
 } from '../widget.js';

@@ -189,6 +189,5 @@ $.fn.fadeIn = function (speed, easing, callback) {
 
 
 export {
-    $,
     Velocity
 };

@@ -1,9 +1,8 @@
-import {
-	$
-} from '../libs/velocity.js';
+import $ from 'jquery';
 import {
 	Materialize
 } from '../libs/materialize.js';
+
 
 import './widget.js';
 import './widgets/mouse.js';
@@ -16,9 +15,3 @@ import './widgets/selectable.js';
 import './widgets/sortable.js';
 import './widgets/progressbar.js';
 import './widgets/colorpicker.js';
-
-
-
-export {
-	$
-};

@@ -36,7 +36,6 @@ SystemJS.config({
     },
     "src/jquery_ui": {
       "main": "index.js",
-      "format": "esm",
       "map": {
         "jquery": "dist/jquery.js"
       }

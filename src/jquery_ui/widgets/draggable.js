@@ -14,10 +14,10 @@
 //>>demos: http://jqueryui.com/draggable/
 //>>css.structure: ../../themes/base/draggable.css
 
+import $ from 'jquery';
 import {
-	$
+	ui
 } from '../position.js';
-
 import {
 	widget
 } from '../widget.js';

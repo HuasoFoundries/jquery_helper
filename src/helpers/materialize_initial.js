@@ -1,6 +1,4 @@
-import {
-    $
-} from './velocity.js';
+import $ from 'jquery';
 
 
 

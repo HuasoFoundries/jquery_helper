@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import {
 	ui
 } from './position.js';

@@ -97,7 +97,7 @@ module.exports = function (grunt) {
 
 					if (filepath.indexOf('velocity.js') !== -1) {
 
-						grunt.log.writeln('Generating ', 'src/velocity.js');
+						grunt.log.writeln('Generating ', 'src/libs/velocity.js');
 
 						var modified_src = (src.split('return function (global, window, document, undefined) {')[1])
 							.split('}((window.jQuery || window.Zepto || window), window, document);');
@@ -108,7 +108,7 @@ module.exports = function (grunt) {
 
 
 
-						modified_src = '\n' + "var DURATION_DEFAULT " + intercept_return_final[1].replace(/global/g, 'jQuery');
+						modified_src = '\n' + "var DURATION_DEFAULT " + intercept_return_final[1].replace(/global/g, '$');
 
 
 
@@ -140,6 +140,7 @@ module.exports = function (grunt) {
 							content = content.replace('(function($) {', '').replace('(function ($) {', '');
 							content = content.replace('}( jQuery ));', '').replace('})(jQuery);', '');
 							content = content.replace('}(jQuery));', '').replace(/methods/g, filename + 'methods');
+							content = content.replace(/jQuery\./g, '$.');
 							//content = content.replace(/window/g, '$_GLOBAL').replace(/wodniw/g, 'window');
 
 							return content;
@@ -154,7 +155,7 @@ module.exports = function (grunt) {
 			},
 			// the files to concatenate
 			src: [
-				"src/helpers/initial.js",
+				"src/helpers/materialize_initial.js",
 				"src/helpers/collapsible.js",
 				"src/helpers/dropdown.js",
 				"src/helpers/leanModal.js",

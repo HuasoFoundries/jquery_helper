@@ -13,9 +13,8 @@
 //>>docs: http://api.jqueryui.com/selectable/
 //>>demos: http://jqueryui.com/selectable/
 //>>css.structure: ../../themes/base/selectable.css
-
+import $ from 'jquery';
 import {
-	$,
 	ui
 } from '../position.js';
 

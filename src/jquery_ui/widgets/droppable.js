@@ -13,8 +13,8 @@
 //>>docs: http://api.jqueryui.com/droppable/
 //>>demos: http://jqueryui.com/droppable/
 
+import $ from 'jquery';
 import {
-	$,
 	ui,
 	intersect
 } from '../position.js';

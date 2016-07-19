@@ -1,6 +1,4 @@
-import {
-	$
-} from './index.js';
+import $ from 'jquery';
 
 
 var ui = {
@@ -675,7 +673,6 @@ $.fn.extend({
 });
 
 export {
-	$,
 	ui,
 	intersect
 };

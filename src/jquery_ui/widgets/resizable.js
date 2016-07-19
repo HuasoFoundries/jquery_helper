@@ -16,10 +16,10 @@
 //>>css.structure: ../../themes/base/resizable.css
 //>>css.theme: ../../themes/base/theme.css
 
+import $ from 'jquery';
 import {
-	$
+	ui
 } from '../position.js';
-
 import {
 	widget
 } from '../widget.js';

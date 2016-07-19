@@ -1,6 +1,4 @@
-import {
-	$
-} from './position.js';
+import $ from 'jquery';
 import {
 	Widget,
 	widgetUuid,

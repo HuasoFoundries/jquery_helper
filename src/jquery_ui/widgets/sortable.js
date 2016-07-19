@@ -14,9 +14,8 @@
 //>>demos: http://jqueryui.com/sortable/
 //>>css.structure: ../../themes/base/sortable.css
 
-
+import $ from 'jquery';
 import {
-	$,
 	ui
 } from '../position.js';
 
