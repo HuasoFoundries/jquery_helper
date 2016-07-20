@@ -471,7 +471,7 @@ $.fn.collapsible = function (options) {
       if (object.hasClass('active')) {
         object.parent().addClass('active');
         object.siblings('.collapsible-body').velocity('slideDown', function () {
-          jQuery(this).css('height', '');
+          $(this).css('height', '');
         }).trigger('shown');
       } else {
         object.parent().removeClass('active');
@@ -487,7 +487,7 @@ $.fn.collapsible = function (options) {
       if (object.hasClass('active')) {
         object.parent().addClass('active');
         object.siblings('.collapsible-body').velocity('slideDown', function () {
-          jQuery(this).css('height', '');
+          $(this).css('height', '');
         }).trigger('shown');
       } else {
         object.parent().removeClass('active');
@@ -2001,13 +2001,13 @@ document.addEventListener('DOMContentLoaded', function () {
 /*
         $.fn.extend({
         show: function () {
-            return jQuery(this).removeClass('invisible');
+            return $(this).removeClass('invisible');
         },
         hide: function () {
-            return jQuery(this).addClass('invisible');
+            return $(this).addClass('invisible');
         },
         toggle: function (state) {
-            return jQuery(this).toggleClass('invisible');
+            return $(this).toggleClass('invisible');
         }
     });
 */
@@ -2046,10 +2046,10 @@ $.fn.modal = function (option) {
  * @return {jQuery Object} uno o mas elementos que calzan con el criterio de seleccion
  */
 $.getOrCreate = function (selector, html) {
-  var elemento = jQuery(selector);
+  var elemento = $(selector);
 
   if (elemento.length === 0) {
-    elemento = jQuery(html);
+    elemento = $(html);
   }
 
   return elemento;

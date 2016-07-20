@@ -141,6 +141,7 @@ module.exports = function (grunt) {
 							content = content.replace('}( jQuery ));', '').replace('})(jQuery);', '');
 							content = content.replace('}(jQuery));', '').replace(/methods/g, filename + 'methods');
 							content = content.replace(/jQuery\./g, '$.');
+							content = content.replace(/jQuery\(/g, '$(');
 							//content = content.replace(/window/g, '$_GLOBAL').replace(/wodniw/g, 'window');
 
 							return content;
