@@ -237,7 +237,7 @@
         ******************/$.Velocity=Velocity;if($!==window){$.fn.velocity=animate;$.fn.velocity.defaults=Velocity.defaults;} /***********************
            Packaged Redirects
         ***********************/$.each(["Down","Up"],function(i,direction){Velocity.Redirects["slide"+direction]=function(element,options,elementsIndex,elementsSize,elements,promiseData){var opts=$.extend({},options),begin=opts.begin,complete=opts.complete,computedValues={height:"",marginTop:"",marginBottom:"",paddingTop:"",paddingBottom:""},inlineValues={};if(opts.display===undefined){opts.display=direction==="Down"?Velocity.CSS.Values.getDisplayType(element)==="inline"?"inline-block":"block":"none";}opts.begin=function(){begin&&begin.call(elements,elements);for(var property in computedValues){inlineValues[property]=element.style[property];var propertyValue=Velocity.CSS.getPropertyValue(element,property);computedValues[property]=direction==="Down"?[propertyValue,0]:[0,propertyValue];}inlineValues.overflow=element.style.overflow;element.style.overflow="hidden";};opts.complete=function(){for(var property in inlineValues){element.style[property]=inlineValues[property];}complete&&complete.call(elements,elements);promiseData&&promiseData.resolver(elements);};Velocity(element,computedValues,opts);};});$.each(["In","Out"],function(i,direction){Velocity.Redirects["fade"+direction]=function(element,options,elementsIndex,elementsSize,elements,promiseData){var opts=$.extend({},options),propertiesMap={opacity:direction==="In"?1:0},originalComplete=opts.complete;if(elementsIndex!==elementsSize-1){opts.complete=opts.begin=null;}else {opts.complete=function(){if(originalComplete){originalComplete.call(elements,elements);}promiseData&&promiseData.resolver(elements);};}if(opts.display===undefined){opts.display=direction==="In"?"auto":"none";}Velocity(this,propertiesMap,opts);};});$.easing={linear:function linear(p){return p;},swing:function swing(p){return 0.5-Math.cos(p*Math.PI)/2;},jswing:function jswing(p){return 0.5-Math.cos(p*Math.PI)/2;},easeInOutMaterial:function easeInOutMaterial(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t+b;return c/4*((t-=2)*t*t+2)+b;},_default:"swing"};$.extend($.easing,{def:'easeOutQuad',swing:function swing(x,t,b,c,d){ //alert($.easing.default);
-    return $.easing[$.easing.def](x,t,b,c,d);},easeInQuad:function easeInQuad(x,t,b,c,d){return c*(t/=d)*t+b;},easeOutQuad:function easeOutQuad(x,t,b,c,d){return -c*(t/=d)*(t-2)+b;},easeInOutQuad:function easeInOutQuad(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t+b;return -c/2*(--t*(t-2)-1)+b;},easeInCubic:function easeInCubic(x,t,b,c,d){return c*(t/=d)*t*t+b;},easeOutCubic:function easeOutCubic(x,t,b,c,d){return c*((t=t/d-1)*t*t+1)+b;},easeInOutCubic:function easeInOutCubic(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t+b;return c/2*((t-=2)*t*t+2)+b;},easeInQuart:function easeInQuart(x,t,b,c,d){return c*(t/=d)*t*t*t+b;},easeOutQuart:function easeOutQuart(x,t,b,c,d){return -c*((t=t/d-1)*t*t*t-1)+b;},easeInOutQuart:function easeInOutQuart(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t+b;return -c/2*((t-=2)*t*t*t-2)+b;},easeInQuint:function easeInQuint(x,t,b,c,d){return c*(t/=d)*t*t*t*t+b;},easeOutQuint:function easeOutQuint(x,t,b,c,d){return c*((t=t/d-1)*t*t*t*t+1)+b;},easeInOutQuint:function easeInOutQuint(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t*t+b;return c/2*((t-=2)*t*t*t*t+2)+b;},easeInSine:function easeInSine(x,t,b,c,d){return -c*Math.cos(t/d*(Math.PI/2))+c+b;},easeOutSine:function easeOutSine(x,t,b,c,d){return c*Math.sin(t/d*(Math.PI/2))+b;},easeInOutSine:function easeInOutSine(x,t,b,c,d){return -c/2*(Math.cos(Math.PI*t/d)-1)+b;},easeInExpo:function easeInExpo(x,t,b,c,d){return t==0?b:c*Math.pow(2,10*(t/d-1))+b;},easeOutExpo:function easeOutExpo(x,t,b,c,d){return t==d?b+c:c*(-Math.pow(2,-10*t/d)+1)+b;},easeInOutExpo:function easeInOutExpo(x,t,b,c,d){if(t==0)return b;if(t==d)return b+c;if((t/=d/2)<1)return c/2*Math.pow(2,10*(t-1))+b;return c/2*(-Math.pow(2,-10*--t)+2)+b;},easeInCirc:function easeInCirc(x,t,b,c,d){return -c*(Math.sqrt(1-(t/=d)*t)-1)+b;},easeOutCirc:function easeOutCirc(x,t,b,c,d){return c*Math.sqrt(1-(t=t/d-1)*t)+b;},easeInOutCirc:function easeInOutCirc(x,t,b,c,d){if((t/=d/2)<1)return -c/2*(Math.sqrt(1-t*t)-1)+b;return c/2*(Math.sqrt(1-(t-=2)*t)+1)+b;},easeInElastic:function easeInElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);return -(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;},easeOutElastic:function easeOutElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);return a*Math.pow(2,-10*t)*Math.sin((t*d-s)*(2*Math.PI)/p)+c+b;},easeInOutElastic:function easeInOutElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d/2)==2)return b+c;if(!p)p=d*(.3*1.5);if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);if(t<1)return -.5*(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;return a*Math.pow(2,-10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p)*.5+c+b;},easeInBack:function easeInBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*(t/=d)*t*((s+1)*t-s)+b;},easeOutBack:function easeOutBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*((t=t/d-1)*t*((s+1)*t+s)+1)+b;},easeInOutBack:function easeInOutBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;if((t/=d/2)<1)return c/2*(t*t*(((s*=1.525)+1)*t-s))+b;return c/2*((t-=2)*t*(((s*=1.525)+1)*t+s)+2)+b;},easeInBounce:function easeInBounce(x,t,b,c,d){return c-$.easing.easeOutBounce(x,d-t,0,c,d)+b;},easeOutBounce:function easeOutBounce(x,t,b,c,d){if((t/=d)<1/2.75){return c*(7.5625*t*t)+b;}else if(t<2/2.75){return c*(7.5625*(t-=1.5/2.75)*t+.75)+b;}else if(t<2.5/2.75){return c*(7.5625*(t-=2.25/2.75)*t+.9375)+b;}else {return c*(7.5625*(t-=2.625/2.75)*t+.984375)+b;}},easeInOutBounce:function easeInOutBounce(x,t,b,c,d){if(t<d/2)return $.easing.easeInBounce(x,t*2,0,c,d)*.5+b;return $.easing.easeOutBounce(x,t*2-d,0,c,d)*.5+c*.5+b;}});$.fn.animate=$.fn.velocity;$.fn.fadeOut=function(speed,easing,callback){return this.each(function(){$(this).velocity({opacity:'hide'},speed,easing,callback);});};$.fn.fadeIn=function(speed,easing,callback){return this.each(function(){$(this).velocity({opacity:'show'},speed,easing,callback);});};$.fn.stop=function(){return this.each(function(){$(this).velocity('stop');});};
+    return $.easing[$.easing.def](x,t,b,c,d);},easeInQuad:function easeInQuad(x,t,b,c,d){return c*(t/=d)*t+b;},easeOutQuad:function easeOutQuad(x,t,b,c,d){return -c*(t/=d)*(t-2)+b;},easeInOutQuad:function easeInOutQuad(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t+b;return -c/2*(--t*(t-2)-1)+b;},easeInCubic:function easeInCubic(x,t,b,c,d){return c*(t/=d)*t*t+b;},easeOutCubic:function easeOutCubic(x,t,b,c,d){return c*((t=t/d-1)*t*t+1)+b;},easeInOutCubic:function easeInOutCubic(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t+b;return c/2*((t-=2)*t*t+2)+b;},easeInQuart:function easeInQuart(x,t,b,c,d){return c*(t/=d)*t*t*t+b;},easeOutQuart:function easeOutQuart(x,t,b,c,d){return -c*((t=t/d-1)*t*t*t-1)+b;},easeInOutQuart:function easeInOutQuart(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t+b;return -c/2*((t-=2)*t*t*t-2)+b;},easeInQuint:function easeInQuint(x,t,b,c,d){return c*(t/=d)*t*t*t*t+b;},easeOutQuint:function easeOutQuint(x,t,b,c,d){return c*((t=t/d-1)*t*t*t*t+1)+b;},easeInOutQuint:function easeInOutQuint(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t*t+b;return c/2*((t-=2)*t*t*t*t+2)+b;},easeInSine:function easeInSine(x,t,b,c,d){return -c*Math.cos(t/d*(Math.PI/2))+c+b;},easeOutSine:function easeOutSine(x,t,b,c,d){return c*Math.sin(t/d*(Math.PI/2))+b;},easeInOutSine:function easeInOutSine(x,t,b,c,d){return -c/2*(Math.cos(Math.PI*t/d)-1)+b;},easeInExpo:function easeInExpo(x,t,b,c,d){return t==0?b:c*Math.pow(2,10*(t/d-1))+b;},easeOutExpo:function easeOutExpo(x,t,b,c,d){return t==d?b+c:c*(-Math.pow(2,-10*t/d)+1)+b;},easeInOutExpo:function easeInOutExpo(x,t,b,c,d){if(t==0)return b;if(t==d)return b+c;if((t/=d/2)<1)return c/2*Math.pow(2,10*(t-1))+b;return c/2*(-Math.pow(2,-10*--t)+2)+b;},easeInCirc:function easeInCirc(x,t,b,c,d){return -c*(Math.sqrt(1-(t/=d)*t)-1)+b;},easeOutCirc:function easeOutCirc(x,t,b,c,d){return c*Math.sqrt(1-(t=t/d-1)*t)+b;},easeInOutCirc:function easeInOutCirc(x,t,b,c,d){if((t/=d/2)<1)return -c/2*(Math.sqrt(1-t*t)-1)+b;return c/2*(Math.sqrt(1-(t-=2)*t)+1)+b;},easeInElastic:function easeInElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);return -(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;},easeOutElastic:function easeOutElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);return a*Math.pow(2,-10*t)*Math.sin((t*d-s)*(2*Math.PI)/p)+c+b;},easeInOutElastic:function easeInOutElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d/2)==2)return b+c;if(!p)p=d*(.3*1.5);if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);if(t<1)return -.5*(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;return a*Math.pow(2,-10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p)*.5+c+b;},easeInBack:function easeInBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*(t/=d)*t*((s+1)*t-s)+b;},easeOutBack:function easeOutBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*((t=t/d-1)*t*((s+1)*t+s)+1)+b;},easeInOutBack:function easeInOutBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;if((t/=d/2)<1)return c/2*(t*t*(((s*=1.525)+1)*t-s))+b;return c/2*((t-=2)*t*(((s*=1.525)+1)*t+s)+2)+b;},easeInBounce:function easeInBounce(x,t,b,c,d){return c-$.easing.easeOutBounce(x,d-t,0,c,d)+b;},easeOutBounce:function easeOutBounce(x,t,b,c,d){if((t/=d)<1/2.75){return c*(7.5625*t*t)+b;}else if(t<2/2.75){return c*(7.5625*(t-=1.5/2.75)*t+.75)+b;}else if(t<2.5/2.75){return c*(7.5625*(t-=2.25/2.75)*t+.9375)+b;}else {return c*(7.5625*(t-=2.625/2.75)*t+.984375)+b;}},easeInOutBounce:function easeInOutBounce(x,t,b,c,d){if(t<d/2)return $.easing.easeInBounce(x,t*2,0,c,d)*.5+b;return $.easing.easeOutBounce(x,t*2-d,0,c,d)*.5+c*.5+b;}});$.fn.animate=$.fn.velocity;$.fn.fadeOut=function(speed,easing,callback){return this.each(function(){$(this).velocity({opacity:'hide'},speed,easing,callback);});};$.fn.fadeIn=function(speed,easing,callback){return this.each(function(){$(this).velocity({opacity:'show'},speed,easing,callback);});};$.fn.stop=function(){return this.each(function(){$(this).velocity('stop');});};$.fn.slideDown=function(){return this.each(function(){$(this).velocity('slideDown');});};$.fn.slideUp=function(){return this.each(function(){$(this).velocity('slideDown');});};
 
     var Materialize = {};
     var Waves = {};
@@ -253,6 +253,348 @@
     // Unique ID
     Materialize.guid = guidfn();
 
+    // Source: src/helpers/collapsible.js
+
+    $.fn.collapsible = function (options) {
+      var defaults = {
+        accordion: undefined
+      };
+
+      options = $.extend(defaults, options);
+
+      return this.each(function () {
+
+        var $this = $(this);
+
+        var $panel_headers = $(this).find('> li > .collapsible-header');
+
+        var collapsible_type = $this.data("collapsible");
+
+        // Turn off any existing event handlers
+        $this.off('click.collapse', '> li > .collapsible-header');
+        $panel_headers.off('click.collapse');
+
+        /****************
+        Helper Functions
+        ****************/
+
+        // Accordion Open
+        function accordionOpen(object) {
+          $panel_headers = $this.find('> li > .collapsible-header');
+          if (object.hasClass('active')) {
+            object.parent().addClass('active');
+            object.siblings('.collapsible-body').velocity('slideDown', function () {
+              $(this).css('height', '');
+            }).trigger('shown');
+          } else {
+            object.parent().removeClass('active');
+            object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');
+          }
+
+          $panel_headers.not(object).removeClass('active').parent().removeClass('active');
+          $panel_headers.not(object).parent().children('.collapsible-body').velocity('slideUp').trigger('hidden');
+        }
+
+        // Expandable Open
+        function expandableOpen(object) {
+          if (object.hasClass('active')) {
+            object.parent().addClass('active');
+            object.siblings('.collapsible-body').velocity('slideDown', function () {
+              $(this).css('height', '');
+            }).trigger('shown');
+          } else {
+            object.parent().removeClass('active');
+            object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');
+          }
+        }
+
+        /**
+         * Get panel header from a children element
+         * @param  {Object} object Jquery object
+         * @return {Object} panel header object
+         */
+        function getPanelHeader(object) {
+
+          return object.closest('li > .collapsible-header');
+        }
+
+        /**
+         * Check if object is children of panel header
+         * @param  {Object}  object Jquery object
+         * @return {Boolean} true if it is children
+         */
+        function isChildrenOfPanelHeader(object) {
+
+          var panelHeader = getPanelHeader(object);
+
+          return panelHeader.length > 0;
+        }
+
+        /*****  End Helper Functions  *****/
+
+        // Add click handler to only direct collapsible header children
+        $this.on('click.collapse', '> li > .collapsible-header', function (e) {
+          var $header = $(this),
+              element = $(e.target);
+
+          if (isChildrenOfPanelHeader(element)) {
+            element = getPanelHeader(element);
+          }
+
+          element.toggleClass('active');
+
+          if (options.accordion || collapsible_type === "accordion" || collapsible_type === undefined) {
+            // Handle Accordion
+            accordionOpen(element);
+          } else {
+            // Handle Expandables
+            expandableOpen(element);
+
+            if ($header.hasClass('active')) {
+              expandableOpen($header);
+            }
+          }
+        });
+
+        if (options.accordion || collapsible_type === "accordion" || collapsible_type === undefined) {
+          // Handle Accordion
+          accordionOpen($panel_headers.filter('.active').first());
+        } else {
+          // Handle Expandables
+          $panel_headers.filter('.active').each(function () {
+            expandableOpen($(this));
+          });
+        }
+      });
+    };
+
+    $(document).ready(function () {
+      $('.collapsible').collapsible();
+    });
+
+    // Source: src/helpers/dropdown.js
+
+    // Add posibility to scroll to selected option
+    // usefull for select for example
+    $.fn.scrollTo = function (elem) {
+      $(this).scrollTop($(this).scrollTop() - $(this).offset().top + $(elem).offset().top);
+      return this;
+    };
+
+    $.fn.dropdown = function (option) {
+      var defaults = {
+        inDuration: 300,
+        outDuration: 225,
+        constrain_width: true, // Constrains width of dropdown to the activator
+        hover: false,
+        gutter: 0, // Spacing from edge
+        belowOrigin: false,
+        alignment: 'left'
+      };
+
+      this.each(function () {
+        var origin = $(this);
+        var options = $.extend({}, defaults, option);
+        var isFocused = false;
+
+        // Dropdown menu
+        var activates = $("#" + origin.attr('data-activates'));
+
+        function updateOptions() {
+          if (origin.data('induration') !== undefined) options.inDuration = origin.data('inDuration');
+          if (origin.data('outduration') !== undefined) options.outDuration = origin.data('outDuration');
+          if (origin.data('constrainwidth') !== undefined) options.constrain_width = origin.data('constrainwidth');
+          if (origin.data('hover') !== undefined) options.hover = origin.data('hover');
+          if (origin.data('gutter') !== undefined) options.gutter = origin.data('gutter');
+          if (origin.data('beloworigin') !== undefined) options.belowOrigin = origin.data('beloworigin');
+          if (origin.data('alignment') !== undefined) options.alignment = origin.data('alignment');
+        }
+
+        updateOptions();
+
+        // Attach dropdown to its activator
+        origin.after(activates);
+
+        /*
+          Helper function to position and resize dropdown.
+          Used in hover and click handler.
+        */
+        function placeDropdown(eventType) {
+          // Check for simultaneous focus and click events.
+          if (eventType === 'focus') {
+            isFocused = true;
+          }
+
+          // Check html data attributes
+          updateOptions();
+
+          // Set Dropdown state
+          activates.addClass('active');
+          origin.addClass('active');
+
+          // Constrain width
+          if (options.constrain_width === true) {
+            activates.css('width', origin.outerWidth());
+          } else {
+            activates.css('white-space', 'nowrap');
+          }
+
+          // Offscreen detection
+          var windowHeight = window.innerHeight;
+          var originHeight = origin.innerHeight();
+          var offsetLeft = origin.offset().left;
+          var offsetTop = origin.offset().top - $(window).scrollTop();
+          var currAlignment = options.alignment;
+          var gutterSpacing = 0;
+          var leftPosition = 0;
+
+          // Below Origin
+          var verticalOffset = 0;
+          if (options.belowOrigin === true) {
+            verticalOffset = originHeight;
+          }
+
+          // Check for scrolling positioned container.
+          var scrollOffset = 0;
+          var wrapper = origin.parent();
+          if (!wrapper.is('body') && wrapper[0].scrollHeight > wrapper[0].clientHeight) {
+            scrollOffset = wrapper[0].scrollTop;
+          }
+
+          if (offsetLeft + activates.innerWidth() > $(window).width()) {
+            // Dropdown goes past screen on right, force right alignment
+            currAlignment = 'right';
+          } else if (offsetLeft - activates.innerWidth() + origin.innerWidth() < 0) {
+            // Dropdown goes past screen on left, force left alignment
+            currAlignment = 'left';
+          }
+          // Vertical bottom offscreen detection
+          if (offsetTop + activates.innerHeight() > windowHeight) {
+            // If going upwards still goes offscreen, just crop height of dropdown.
+            if (offsetTop + originHeight - activates.innerHeight() < 0) {
+              var adjustedHeight = windowHeight - offsetTop - verticalOffset;
+              activates.css('max-height', adjustedHeight);
+            } else {
+              // Flow upwards.
+              if (!verticalOffset) {
+                verticalOffset += originHeight;
+              }
+              verticalOffset -= activates.innerHeight();
+            }
+          }
+
+          // Handle edge alignment
+          if (currAlignment === 'left') {
+            gutterSpacing = options.gutter;
+            leftPosition = origin.position().left + gutterSpacing;
+          } else if (currAlignment === 'right') {
+            var offsetRight = origin.position().left + origin.outerWidth() - activates.outerWidth();
+            gutterSpacing = -options.gutter;
+            leftPosition = offsetRight + gutterSpacing;
+          }
+
+          // Position dropdown
+          activates.css({
+            position: 'absolute',
+            top: origin.position().top + verticalOffset + scrollOffset,
+            left: leftPosition
+          });
+
+          // Show dropdown
+          activates.stop(true, true).css('opacity', 0).slideDown({
+            queue: false,
+            duration: options.inDuration,
+            easing: 'easeOutCubic',
+            complete: function complete() {
+              $(this).css('height', '');
+            }
+          }).animate({
+            opacity: 1
+          }, {
+            queue: false,
+            duration: options.inDuration,
+            easing: 'easeOutSine'
+          });
+        }
+
+        function hideDropdown() {
+          // Check for simultaneous focus and click events.
+          isFocused = false;
+          activates.fadeOut(options.outDuration);
+          activates.removeClass('active');
+          origin.removeClass('active');
+          setTimeout(function () {
+            activates.css('max-height', '');
+          }, options.outDuration);
+        }
+
+        // Hover
+        if (options.hover) {
+          var open = false;
+          origin.unbind('click.' + origin.attr('id'));
+          // Hover handler to show dropdown
+          origin.on('mouseenter', function (e) {
+            // Mouse over
+            if (open === false) {
+              placeDropdown();
+              open = true;
+            }
+          });
+          origin.on('mouseleave', function (e) {
+            // If hover on origin then to something other than dropdown content, then close
+            var toEl = e.toElement || e.relatedTarget; // added browser compatibility for target element
+            if (!$(toEl).closest('.dropdown-content').is(activates)) {
+              activates.stop(true, true);
+              hideDropdown();
+              open = false;
+            }
+          });
+
+          activates.on('mouseleave', function (e) {
+            // Mouse out
+            var toEl = e.toElement || e.relatedTarget;
+            if (!$(toEl).closest('.dropdown-button').is(origin)) {
+              activates.stop(true, true);
+              hideDropdown();
+              open = false;
+            }
+          });
+
+          // Click
+        } else {
+            // Click handler to show dropdown
+            origin.unbind('click.' + origin.attr('id'));
+            origin.bind('click.' + origin.attr('id'), function (e) {
+              if (!isFocused) {
+                if (origin[0] == e.currentTarget && !origin.hasClass('active') && $(e.target).closest('.dropdown-content').length === 0) {
+                  e.preventDefault(); // Prevents button click from moving window
+                  placeDropdown('click');
+                }
+                // If origin is clicked and menu is open, close menu
+                else if (origin.hasClass('active')) {
+                    hideDropdown();
+                    $(document).unbind('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'));
+                  }
+                // If menu open, add click close handler to document
+                if (activates.hasClass('active')) {
+                  $(document).bind('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'), function (e) {
+                    if (!activates.is(e.target) && !origin.is(e.target) && !origin.find(e.target).length) {
+                      hideDropdown();
+                      $(document).unbind('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'));
+                    }
+                  });
+                }
+              }
+            });
+          } // End else
+
+        // Listen to open and close event - useful for select component
+        origin.on('open', function (e, eventType) {
+          placeDropdown(eventType);
+        });
+        origin.on('close', hideDropdown);
+      });
+    }; // End dropdown plugin
     $.fn.material_select = function (callback) {
       $(this).each(function () {
         var $select = $(this);
@@ -573,358 +915,6 @@
         select.siblings('input.select-dropdown').val(value);
       }
     };
-
-    // Source: src/helpers/collapsible.js
-
-    $.fn.collapsible = function (options) {
-      var defaults = {
-        accordion: undefined
-      };
-
-      options = $.extend(defaults, options);
-
-      return this.each(function () {
-
-        var $this = $(this);
-
-        var $panel_headers = $(this).find('> li > .collapsible-header');
-
-        var collapsible_type = $this.data("collapsible");
-
-        // Turn off any existing event handlers
-        $this.off('click.collapse', '> li > .collapsible-header');
-        $panel_headers.off('click.collapse');
-
-        /****************
-        Helper Functions
-        ****************/
-
-        // Accordion Open
-        function accordionOpen(object) {
-          $panel_headers = $this.find('> li > .collapsible-header');
-          if (object.hasClass('active')) {
-            object.parent().addClass('active');
-            object.siblings('.collapsible-body').velocity('slideDown', function () {
-              $(this).css('height', '');
-            }).trigger('shown');
-          } else {
-            object.parent().removeClass('active');
-            object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');
-          }
-
-          $panel_headers.not(object).removeClass('active').parent().removeClass('active');
-          $panel_headers.not(object).parent().children('.collapsible-body').velocity('slideUp').trigger('hidden');
-        }
-
-        // Expandable Open
-        function expandableOpen(object) {
-          if (object.hasClass('active')) {
-            object.parent().addClass('active');
-            object.siblings('.collapsible-body').velocity('slideDown', function () {
-              $(this).css('height', '');
-            }).trigger('shown');
-          } else {
-            object.parent().removeClass('active');
-            object.siblings('.collapsible-body').velocity('slideUp').trigger('hidden');
-          }
-        }
-
-        /**
-         * Get panel header from a children element
-         * @param  {Object} object Jquery object
-         * @return {Object} panel header object
-         */
-        function getPanelHeader(object) {
-
-          return object.closest('li > .collapsible-header');
-        }
-
-        /**
-         * Check if object is children of panel header
-         * @param  {Object}  object Jquery object
-         * @return {Boolean} true if it is children
-         */
-        function isChildrenOfPanelHeader(object) {
-
-          var panelHeader = getPanelHeader(object);
-
-          return panelHeader.length > 0;
-        }
-
-        /*****  End Helper Functions  *****/
-
-        // Add click handler to only direct collapsible header children
-        $this.on('click.collapse', '> li > .collapsible-header', function (e) {
-          var $header = $(this),
-              element = $(e.target);
-
-          if (isChildrenOfPanelHeader(element)) {
-            element = getPanelHeader(element);
-          }
-
-          element.toggleClass('active');
-
-          if (options.accordion || collapsible_type === "accordion" || collapsible_type === undefined) {
-            // Handle Accordion
-            accordionOpen(element);
-          } else {
-            // Handle Expandables
-            expandableOpen(element);
-
-            if ($header.hasClass('active')) {
-              expandableOpen($header);
-            }
-          }
-        });
-
-        if (options.accordion || collapsible_type === "accordion" || collapsible_type === undefined) {
-          // Handle Accordion
-          accordionOpen($panel_headers.filter('.active').first());
-        } else {
-          // Handle Expandables
-          $panel_headers.filter('.active').each(function () {
-            expandableOpen($(this));
-          });
-        }
-      });
-    };
-
-    $(document).ready(function () {
-      $('.collapsible').collapsible();
-    });
-
-    // Source: src/helpers/dropdown.js
-
-    // Add posibility to scroll to selected option
-    // usefull for select for example
-    $.fn.scrollTo = function (elem) {
-      $(this).scrollTop($(this).scrollTop() - $(this).offset().top + $(elem).offset().top);
-      return this;
-    };
-
-    $.fn.dropdown = function (option) {
-      var defaults = {
-        inDuration: 300,
-        outDuration: 225,
-        constrain_width: true, // Constrains width of dropdown to the activator
-        hover: false,
-        gutter: 0, // Spacing from edge
-        belowOrigin: false,
-        alignment: 'left'
-      };
-
-      this.each(function () {
-        var origin = $(this);
-        var options = $.extend({}, defaults, option);
-        var isFocused = false;
-
-        // Dropdown menu
-        var activates = $("#" + origin.attr('data-activates'));
-
-        function updateOptions() {
-          if (origin.data('induration') !== undefined) {
-            options.inDuration = origin.data('inDuration');
-          }
-          if (origin.data('outduration') !== undefined) {
-            options.outDuration = origin.data('outDuration');
-          }
-          if (origin.data('constrainwidth') !== undefined) {
-            options.constrain_width = origin.data('constrainwidth');
-          }
-          if (origin.data('hover') !== undefined) {
-            options.hover = origin.data('hover');
-          }
-          if (origin.data('gutter') !== undefined) {
-            options.gutter = origin.data('gutter');
-          }
-          if (origin.data('beloworigin') !== undefined) {
-            options.belowOrigin = origin.data('beloworigin');
-          }
-          if (origin.data('alignment') !== undefined) {
-            options.alignment = origin.data('alignment');
-          }
-        }
-
-        updateOptions();
-
-        // Attach dropdown to its activator
-        origin.after(activates);
-
-        /*
-          Helper function to position and resize dropdown.
-          Used in hover and click handler.
-        */
-        function placeDropdown(eventType) {
-          // Check for simultaneous focus and click events.
-          if (eventType === 'focus') {
-            isFocused = true;
-          }
-
-          // Check html data attributes
-          updateOptions();
-
-          // Set Dropdown state
-          activates.addClass('active');
-          origin.addClass('active');
-
-          // Constrain width
-          if (options.constrain_width === true) {
-            activates.css('width', origin.outerWidth());
-          } else {
-            activates.css('white-space', 'nowrap');
-          }
-
-          // Offscreen detection
-          var windowHeight = window.innerHeight;
-          var originHeight = origin.innerHeight();
-          var offsetLeft = origin.offset().left;
-          var offsetTop = origin.offset().top - $(window).scrollTop();
-          var currAlignment = options.alignment;
-          var gutterSpacing = 0;
-          var leftPosition = 0;
-
-          // Below Origin
-          var verticalOffset = 0;
-          if (options.belowOrigin === true) {
-            verticalOffset = originHeight;
-          }
-
-          // Check for scrolling positioned container.
-          var scrollOffset = 0;
-          var wrapper = origin.parent();
-          if (!wrapper.is('body') && wrapper[0].scrollHeight > wrapper[0].clientHeight) {
-            scrollOffset = wrapper[0].scrollTop;
-          }
-
-          if (offsetLeft + activates.innerWidth() > $(window).width()) {
-            // Dropdown goes past screen on right, force right alignment
-            currAlignment = 'right';
-          } else if (offsetLeft - activates.innerWidth() + origin.innerWidth() < 0) {
-            // Dropdown goes past screen on left, force left alignment
-            currAlignment = 'left';
-          }
-          // Vertical bottom offscreen detection
-          if (offsetTop + activates.innerHeight() > windowHeight) {
-            // If going upwards still goes offscreen, just crop height of dropdown.
-            if (offsetTop + originHeight - activates.innerHeight() < 0) {
-              var adjustedHeight = windowHeight - offsetTop - verticalOffset;
-              activates.css('max-height', adjustedHeight);
-            } else {
-              // Flow upwards.
-              if (!verticalOffset) {
-                verticalOffset += originHeight;
-              }
-              verticalOffset -= activates.innerHeight();
-            }
-          }
-
-          // Handle edge alignment
-          if (currAlignment === 'left') {
-            gutterSpacing = options.gutter;
-            leftPosition = origin.position().left + gutterSpacing;
-          } else if (currAlignment === 'right') {
-            var offsetRight = origin.position().left + origin.outerWidth() - activates.outerWidth();
-            gutterSpacing = -options.gutter;
-            leftPosition = offsetRight + gutterSpacing;
-          }
-
-          // Position dropdown
-          activates.css({
-            position: 'absolute',
-            top: origin.position().top + verticalOffset + scrollOffset,
-            left: leftPosition
-          });
-
-          // Show dropdown
-          // Show dropdown
-          activates.velocity('slideDown', {
-            queue: false,
-            duration: options.inDuration,
-            easing: 'easeOutSine'
-          });
-        }
-
-        function hideDropdown() {
-          // Check for simultaneous focus and click events.
-          isFocused = false;
-          activates.velocity('slideUp', {
-            queue: false,
-            duration: options.outDuration,
-            complete: function complete() {
-              $(this).css('max-height', '');
-            }
-          }).removeClass('active');
-
-          origin.removeClass('active');
-        }
-
-        // Hover
-        if (options.hover) {
-          var open = false;
-          origin.off('click.' + origin.attr('id'));
-          // Hover handler to show dropdown
-          origin.on('mouseenter', function (e) {
-            // Mouse over
-            if (open === false) {
-              placeDropdown();
-              open = true;
-            }
-          });
-          origin.on('mouseleave', function (e) {
-            // If hover on origin then to something other than dropdown content, then close
-            var toEl = e.toElement || e.relatedTarget; // added browser compatibility for target element
-            if (!$(toEl).closest('.dropdown-content').is(activates)) {
-              activates.stop(true, true);
-              hideDropdown();
-              open = false;
-            }
-          });
-
-          activates.on('mouseleave', function (e) {
-            // Mouse out
-            var toEl = e.toElement || e.relatedTarget;
-            if (!$(toEl).closest('.dropdown-button').is(origin)) {
-              activates.stop(true, true);
-              hideDropdown();
-              open = false;
-            }
-          });
-
-          // Click
-        } else {
-            // Click handler to show dropdown
-            origin.off('click.' + origin.attr('id'));
-            origin.on('click.' + origin.attr('id'), function (e) {
-              if (!isFocused) {
-                if (origin[0] === e.currentTarget && !origin.hasClass('active') && $(e.target).closest('.dropdown-content').length === 0) {
-                  e.preventDefault(); // Prevents button click from moving window
-                  placeDropdown('click');
-                } else if (origin.hasClass('active')) {
-                  // If origin is clicked and menu is open, close menu
-                  hideDropdown();
-                  $(document).off('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'));
-                }
-                // If menu open, add click close handler to document
-                if (activates.hasClass('active')) {
-                  $(document).on('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'), function (ev2) {
-                    if (!activates.is(ev2.target) && !origin.is(ev2.target) && !origin.find(ev2.target).length) {
-                      hideDropdown();
-                      $(document).off('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'));
-                    }
-                  });
-                }
-              }
-            });
-          } // End else
-
-        // Listen to open and close event - useful for select component
-        origin.on('open', function (e, eventType) {
-          placeDropdown(eventType);
-        });
-        origin.on('close', hideDropdown);
-      });
-    }; // End dropdown plugin
-
     $(document).ready(function () {
       $('.dropdown-button').dropdown();
     });

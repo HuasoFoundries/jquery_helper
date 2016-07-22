@@ -3450,7 +3450,19 @@ $.extend($.easing, {
     }
 });
 
-$.fn.animate = $.fn.velocity;
+
+$.fn.animate = $.fn.animate || $.fn.velocity;
+
+$.fn.slideDown = $.fn.slideDown || function () {
+    return this.each(function () {
+        $(this).velocity('slideDown');
+    });
+};
+$.fn.slideUp = $.fn.slideUp || function () {
+    return this.each(function () {
+        $(this).velocity('slideDown');
+    });
+};
 
 $.fn.fadeOut = function (speed, easing, callback) {
     return this.each(function () {
@@ -3468,12 +3480,11 @@ $.fn.fadeIn = function (speed, easing, callback) {
     });
 };
 
-$.fn.stop = function () {
+$.fn.stop = $.fn.stop || function () {
     return this.each(function () {
         $(this).velocity('stop');
     });
 };
-
 
 
 

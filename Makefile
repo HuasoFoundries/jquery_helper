@@ -9,11 +9,12 @@ version:
 	@echo $(VERSION)
 	
 jquery:
-	grunt build:full:*:-effects:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-effects:-effects/Tween:-effects/animatedSelector:-deprecated
-	grunt build:min:*:-effects:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-effects:-effects/Tween:-effects/animatedSelector:-deprecated 
+	grunt build:full:*:-effects:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-effects:-deprecated
+	grunt build:min:*:-effects:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-effects:-deprecated 
 
 jquery_es6:
-	grunt build:es6:*:-effects:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-effects:-effects/Tween:-effects/animatedSelector:-deprecated
+	grunt build:es6:*:-effects:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-deprecated 
+	#-effects:-effects/Tween:-effects/animatedSelector
 	jspm build src/jquery_shim dist/jquery.esm.js --skip-source-maps --skip-encode-names --format esm
 
 
