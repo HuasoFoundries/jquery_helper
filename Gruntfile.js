@@ -1,5 +1,19 @@
 module.exports = function (grunt) {
 
+	function readOptionalJSON(filepath) {
+		var stripJSONComments = require("strip-json-comments"),
+			data = {};
+		try {
+			data = JSON.parse(stripJSONComments(
+				fs.readFileSync(filepath, {
+					encoding: "utf8"
+				})
+			));
+		} catch (e) {}
+		return data;
+	}
+
+
 	grunt.initConfig({
 		build: {
 			es6: {

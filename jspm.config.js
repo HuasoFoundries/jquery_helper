@@ -4,6 +4,7 @@ SystemJS.config({
       "github:": "jspm_packages/github/",
       "npm:": "jspm_packages/npm/",
       "jquery": "dist/jquery.js",
+      "jquery": "dist/jquery.esm.js",
       "jquery_helper/": "dist/"
     }
   },
@@ -28,6 +29,9 @@ SystemJS.config({
     },
     "dist/jquery.js": {
       "build": false
+    },
+    "dist/jquery.esm.js": {
+      "build": false
     }
   },
   packages: {
@@ -40,6 +44,13 @@ SystemJS.config({
         "jquery": "dist/jquery.js"
       }
     },
+    "src/jquery_ui_es6": {
+      "main": "index.js",
+      "format": "esm",
+      "map": {
+        "jquery": "dist/jquery.esm.js"
+      }
+    },
     "src/jquery_shim": {
       "main": "index.js",
       "format": "esm"
@@ -48,7 +59,7 @@ SystemJS.config({
   },
   map: {
     "jquery": "dist/jquery.js",
-    "hammerjs": "libs/hammer.es6.js"
+    "hammerjs": "src/libs/hammer.es6.js"
   }
 });
 

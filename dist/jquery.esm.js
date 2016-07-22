@@ -1438,7 +1438,8 @@ if(support.createHTMLDocument){context=document$1.implementation.createHTMLDocum
 // so any parsed elements with URLs
 // are based on the document's URL (gh-2965)
 base=context.createElement("base");base.href=document$1.location.href;context.head.appendChild(base);}else {context=document$1;}}parsed=rsingleTag.exec(data);scripts=!keepScripts&&[]; // Single tag
-if(parsed){return [context.createElement(parsed[1])];}parsed=buildFragment([data],context,scripts);if(scripts&&scripts.length){jQuery(scripts).remove();}return jQuery.merge([],parsed.childNodes);}; /**
+if(parsed){return [context.createElement(parsed[1])];}parsed=buildFragment([data],context,scripts);if(scripts&&scripts.length){jQuery(scripts).remove();}return jQuery.merge([],parsed.childNodes);}; // Attach a bunch of functions for handling common AJAX events
+jQuery.each(["ajaxStart","ajaxStop","ajaxComplete","ajaxError","ajaxSuccess","ajaxSend"],function(i,type){jQuery.fn[type]=function(fn){return this.on(type,fn);};}); /**
  * Gets a window from an element
  */function getWindow(elem){return jQuery.isWindow(elem)?elem:elem.nodeType===9&&elem.defaultView;}jQuery.offset={setOffset:function setOffset(elem,options,i){var curPosition,curLeft,curCSSTop,curTop,curOffset,curCSSLeft,calculatePosition,position=jQuery.css(elem,"position"),curElem=jQuery(elem),props={}; // Set position first, in-case top/left are set even on static elem
 if(position==="static"){elem.style.position="relative";}curOffset=curElem.offset();curCSSTop=jQuery.css(elem,"top");curCSSLeft=jQuery.css(elem,"left");calculatePosition=(position==="absolute"||position==="fixed")&&(curCSSTop+curCSSLeft).indexOf("auto")>-1; // Need to be able to calculate position if either
@@ -1485,9 +1486,7 @@ return Math.max(elem.body["scroll"+name],doc["scroll"+name],elem.body["offset"+n
 jQuery.css(elem,type,extra): // Set width or height on the element
 jQuery.style(elem,type,value,extra);},type,chainable?margin:undefined,chainable);};});});jQuery.noConflict=function(){};
 
-var jQuery$1 = jQuery;
-
-jQuery$1.hotkeys = {
+jQuery.hotkeys = {
 	version: "0.8",
 
 	specialKeys: {
@@ -1579,12 +1578,12 @@ function keyHandler(handleObj) {
 
 	handleObj.handler = function (event) {
 		// Don't fire in text-accepting inputs that we didn't directly bind to
-		if (this !== event.target && (/textarea|select/i.test(event.target.nodeName) || jQuery$1.inArray(event.target.type, textAcceptingInputTypes) > -1)) {
+		if (this !== event.target && (/textarea|select/i.test(event.target.nodeName) || jQuery.inArray(event.target.type, textAcceptingInputTypes) > -1)) {
 			return;
 		}
 
 		// Keypress represents characters, not special keys
-		var special = event.type !== "keypress" && jQuery$1.hotkeys.specialKeys[event.which],
+		var special = event.type !== "keypress" && jQuery.hotkeys.specialKeys[event.which],
 		    character = String.fromCharCode(event.which).toLowerCase(),
 		    key,
 		    modif = "",
@@ -1612,11 +1611,11 @@ function keyHandler(handleObj) {
 			possible[modif + special] = true;
 		} else {
 			possible[modif + character] = true;
-			possible[modif + jQuery$1.hotkeys.shiftNums[character]] = true;
+			possible[modif + jQuery.hotkeys.shiftNums[character]] = true;
 
 			// "$" can be triggered as "Shift+4" or "Shift+$" or just "$"
 			if (modif === "shift+") {
-				possible[jQuery$1.hotkeys.shiftNums[character]] = true;
+				possible[jQuery.hotkeys.shiftNums[character]] = true;
 			}
 		}
 
@@ -1628,8 +1627,8 @@ function keyHandler(handleObj) {
 	};
 }
 
-jQuery$1.each(["keydown", "keyup", "keypress"], function () {
-	jQuery$1.event.special[this] = {
+jQuery.each(["keydown", "keyup", "keypress"], function () {
+	jQuery.event.special[this] = {
 		add: keyHandler
 	};
 });
@@ -2167,8 +2166,6 @@ jQuery.serializeJSON = {
 
 };
 
-//import './plugins/jquery-csv.js';
-
 (function (jQuery) {
 	var originalXhr = jQuery.ajaxSettings.xhr;
 	jQuery.ajaxSetup({
@@ -2192,10 +2189,4 @@ jQuery.serializeJSON = {
 	});
 })(jQuery);
 
-(function (root, jQuery) {
-
-	root.jQuery = jQuery;
-	root.$ = jQuery;
-})(window, jQuery);
-
-export { jQuery as $ };
+export default jQuery;

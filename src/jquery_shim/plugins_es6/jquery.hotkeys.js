@@ -1,5 +1,5 @@
 /*
- * jQuery Hotkeys Plugin
+ * $ Hotkeys Plugin
  * Copyright 2010, John Resig
  * Dual licensed under the MIT or GPL Version 2 licenses.
  *
@@ -10,13 +10,10 @@
  * Binny V A, http://www.openjs.com/scripts/events/keyboard_shortcuts/
  */
 
-import {
-	$
-} from '../index.js';
-var jQuery = $;
+import $ from '../../libs/jquery.es6.js';
 
 
-jQuery.hotkeys = {
+$.hotkeys = {
 	version: "0.8",
 
 	specialKeys: {
@@ -109,12 +106,12 @@ function keyHandler(handleObj) {
 	handleObj.handler = function (event) {
 		// Don't fire in text-accepting inputs that we didn't directly bind to
 		if (this !== event.target && (/textarea|select/i.test(event.target.nodeName) ||
-				jQuery.inArray(event.target.type, textAcceptingInputTypes) > -1)) {
+				$.inArray(event.target.type, textAcceptingInputTypes) > -1)) {
 			return;
 		}
 
 		// Keypress represents characters, not special keys
-		var special = event.type !== "keypress" && jQuery.hotkeys.specialKeys[event.which],
+		var special = event.type !== "keypress" && $.hotkeys.specialKeys[event.which],
 			character = String.fromCharCode(event.which).toLowerCase(),
 			key, modif = "",
 			possible = {};
@@ -142,11 +139,11 @@ function keyHandler(handleObj) {
 
 		} else {
 			possible[modif + character] = true;
-			possible[modif + jQuery.hotkeys.shiftNums[character]] = true;
+			possible[modif + $.hotkeys.shiftNums[character]] = true;
 
 			// "$" can be triggered as "Shift+4" or "Shift+$" or just "$"
 			if (modif === "shift+") {
-				possible[jQuery.hotkeys.shiftNums[character]] = true;
+				possible[$.hotkeys.shiftNums[character]] = true;
 			}
 		}
 
@@ -158,8 +155,8 @@ function keyHandler(handleObj) {
 	};
 }
 
-jQuery.each(["keydown", "keyup", "keypress"], function () {
-	jQuery.event.special[this] = {
+$.each(["keydown", "keyup", "keypress"], function () {
+	$.event.special[this] = {
 		add: keyHandler
 	};
 });

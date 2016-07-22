@@ -5,9 +5,7 @@
  * Copyright 2015 Felipe Figueroa
  * Released under the MIT license
  */
-import {
-	$
-} from '../index.js';
+import $ from '../../libs/jquery.es6.js';
 
 'use strict';
 

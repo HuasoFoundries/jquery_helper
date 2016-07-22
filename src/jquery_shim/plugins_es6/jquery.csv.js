@@ -26,9 +26,7 @@
  * Copyrighted 2012 by Evan Plaice.
  */
 
-import {
-  $
-} from '../index.js';
+import $ from '../../libs/jquery.es6.js';
 
 RegExp.escape = function (s) {
   return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
