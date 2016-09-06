@@ -1,3 +1,7 @@
+/**
+ * Entry point to build jQuery + plugins using grunt
+ * @return {[type]}         [description]
+ */
 define([
 	"./core.js",
 

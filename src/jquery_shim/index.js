@@ -1,3 +1,7 @@
+/**
+ * Entry point to build jQuery ES6 + es6 version of plugins using grunt
+ * @return {[type]}         [description]
+ */
 import $ from '../libs/jquery.es6.js';
 
 
