@@ -20,8 +20,8 @@ module.exports = function (grunt) {
 				globals: grunt.file.read("src/helpers/global.js"),
 				wrapper: grunt.file.read("src/helpers/wrapper_es6.js"),
 				dest: "src/jquery_shim/jquery.es6.js",
-				srcFolder: __dirname + '/src/jquery_shim',
-				//srcFolder: __dirname + '/node_modules/jquery/src',
+				//srcFolder: __dirname + '/src/jquery_shim',
+				srcFolder: __dirname + '/node_modules/jquery/src',
 				minimum: [
 					"core",
 					"selector"
