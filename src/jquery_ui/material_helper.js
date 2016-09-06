@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import {
 	Materialize
-} from '../libs/materialize.js';
+} from './materialize.js';
 
 
 import './widget.js';

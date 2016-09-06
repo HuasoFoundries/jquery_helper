@@ -3,7 +3,6 @@ SystemJS.config({
     "paths": {
       "github:": "jspm_packages/github/",
       "npm:": "jspm_packages/npm/",
-      "jquery": "dist/jquery.js",
       "jquery": "dist/jquery.esm.js",
       "jquery_helper/": "dist/"
     }
@@ -17,8 +16,10 @@ SystemJS.config({
   },
   devConfig: {
     "map": {
-      "jquery-ui": "github:components/jqueryui@1.12.0",
-      "plugin-babel": "npm:systemjs-plugin-babel@0.0.12"
+      "plugin-babel": "npm:systemjs-plugin-babel@0.0.12",
+      "jquery_shim": "src/jquery_shim",
+      "jquery_ui": "src/jquery_ui",
+      "jquery_ui_es6": "src/jquery_ui"
     }
   },
   meta: {
@@ -38,24 +39,23 @@ SystemJS.config({
     "jquery_helper": {
       "main": "jquery.js"
     },
-    "src/jquery_ui": {
+    "jquery_ui": {
       "main": "index.js",
       "map": {
         "jquery": "dist/jquery.js"
       }
     },
-    "src/jquery_ui_es6": {
+    "jquery_ui_es6": {
       "main": "index.js",
       "format": "esm",
       "map": {
         "jquery": "dist/jquery.esm.js"
       }
     },
-    "src/jquery_shim": {
+    "jquery_shim": {
       "main": "index.js",
       "format": "esm"
     }
-
   },
   map: {
     "jquery": "dist/jquery.js",

@@ -15,19 +15,26 @@ jquery:
 jquery_es6:
 	grunt build:es6:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery
 	#-effects:-effects/Tween:-effects/animatedSelector
-	jspm build src/jquery_shim dist/jquery.esm.js --skip-source-maps --skip-encode-names --format esm
+	jspm build jquery_shim dist/jquery.esm.js --skip-source-maps --skip-encode-names --format esm
 
 
-build: jquery jquery_es6 material
+build: jquery jquery_es6 material material_helper bootstrap_helper
 
 material:	
 	grunt concat
-	cp src/libs/materialize.js src/jquery_ui_es6
-	cp src/libs/velocity.js src/jquery_ui_es6
-	jspm build src/jquery_ui dist/jquery_helper.js --skip-source-maps --skip-encode-names
-	jspm build src/jquery_ui_es6 dist/jquery_helper.esm.js  --format esm --skip-source-maps --skip-encode-names
-	jspm build src/jquery_ui dist/jquery_helper.min.js  -m --global-deps '{"jquery":"jQuery"}'
-	#mjspm build src/jquery_ui dist/jquery_helper.esm.min.js  --format esm -m --global-deps '{"jquery":"jQuery"}'
+
+	
+
+material_helper:	
+	jspm build jquery_ui/material_helper.js dist/material_helper.js --skip-source-maps --skip-encode-names --global-name material_helper
+	jspm build jquery_ui/material_helper.js dist/material_helper.min.js  -m --global-deps '{"jquery":"jQuery"}' --global-name material_helper
+	jspm build jquery_ui_es6/material_helper.js dist/material_helper.esm.js  --format esm --skip-source-maps --skip-encode-names
+
+bootstrap_helper:	
+	jspm build jquery_ui/bootstrap_helper.js dist/bootstrap_helper.js --skip-source-maps --skip-encode-names --global-name bootstrap_helper
+	jspm build jquery_ui/bootstrap_helper.js dist/bootstrap_helper.min.js  -m --global-deps '{"jquery":"jQuery"}' --global-name bootstrap_helper
+	jspm build jquery_ui_es6/bootstrap_helper.js dist/bootstrap_helper.esm.js  --format esm --skip-source-maps --skip-encode-names
+	
 
 
 install:

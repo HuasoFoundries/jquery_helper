@@ -1,4 +1,4 @@
-import $ from '../../libs/jquery.es6.js';
+import $ from '../jquery.es6.js';
 
 export default ((jQuery) => {
 	var originalXhr = jQuery.ajaxSettings.xhr;

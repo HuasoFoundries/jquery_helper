@@ -84,7 +84,7 @@ module.exports = function (grunt) {
 
 			],
 			// the location of the resulting JS file
-			dest: 'src/libs/maerialize_hammer_fns.js'
+			dest: 'src/libs/materialize_hammer_fns.js'
 		},
 
 
@@ -97,7 +97,7 @@ module.exports = function (grunt) {
 
 					if (filepath.indexOf('velocity.js') !== -1) {
 
-						grunt.log.writeln('Generating ', 'src/libs/velocity.js');
+						grunt.log.writeln('Generating ', 'src/jquery_ui/velocity.js');
 
 						var modified_src = (src.split('return function (global, window, document, undefined) {')[1])
 							.split('}((window.jQuery || window.Zepto || window), window, document);');
@@ -124,7 +124,7 @@ module.exports = function (grunt) {
 				'node_modules/velocity-animate/velocity.js',
 				'src/helpers/animation_shim.js'
 			],
-			dest: 'src/libs/velocity.js'
+			dest: 'src/jquery_ui/velocity.js'
 		},
 
 		material: {
@@ -168,7 +168,7 @@ module.exports = function (grunt) {
 				"src/helpers/waves.js"
 			],
 			// the location of the resulting JS file
-			dest: 'src/libs/materialize.js'
+			dest: 'src/jquery_ui/materialize.js'
 
 		}
 

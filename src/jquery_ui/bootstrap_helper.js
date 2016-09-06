@@ -1,7 +1,5 @@
 import $ from 'jquery';
-import {
-	Materialize
-} from '../libs/materialize.js';
+import './bootstrap2.js';
 
 
 import './widget.js';

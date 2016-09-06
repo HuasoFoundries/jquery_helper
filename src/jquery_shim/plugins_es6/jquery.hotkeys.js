@@ -10,7 +10,7 @@
  * Binny V A, http://www.openjs.com/scripts/events/keyboard_shortcuts/
  */
 
-import $ from '../../libs/jquery.es6.js';
+import $ from '../jquery.es6.js';
 
 
 $.hotkeys = {

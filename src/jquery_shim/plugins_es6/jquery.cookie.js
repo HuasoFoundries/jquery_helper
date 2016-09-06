@@ -5,7 +5,7 @@
  * Copyright 2013 Klaus Hartl
  * Released under the MIT license
  */
-import $ from '../../libs/jquery.es6.js';
+import $ from '../jquery.es6.js';
 
 
 var pluses = /\+/g;
