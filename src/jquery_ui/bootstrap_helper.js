@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import './bootstrap2.js';
 
 
 import './widget.js';
@@ -13,3 +12,13 @@ import './widgets/selectable.js';
 import './widgets/sortable.js';
 import './widgets/progressbar.js';
 import './widgets/colorpicker.js';
+
+import './bootstrap2/bootstrap-alert.js';
+import './bootstrap2/bootstrap-button.js';
+import './bootstrap2/bootstrap-collapse.js';
+import './bootstrap2/bootstrap-dropdown.js';
+import './bootstrap2/bootstrap-modal.js';
+import './bootstrap2/bootstrap-popover.js';
+
+import './bootstrap2/bootstrap-tooltip.js';
+import './bootstrap2/bootstrap-transition.js';
