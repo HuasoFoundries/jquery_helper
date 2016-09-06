@@ -17,7 +17,7 @@ module.exports = function (grunt) {
 	grunt.initConfig({
 		build: {
 			es6: {
-				globals: grunt.file.read("src/helpers/global.js"),
+				globals: grunt.file.read("src/helpers/noglobal.js"),
 				wrapper: grunt.file.read("src/helpers/wrapper_es6.js"),
 				dest: "src/jquery_shim/jquery.es6.js",
 				//srcFolder: __dirname + '/src/jquery_shim',

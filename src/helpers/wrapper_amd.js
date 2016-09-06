@@ -5,6 +5,7 @@
 		(global.jQuery = factory());
 }(this, function () {
 	"use strict";
+	var noGlobal=false;
 
 	// @CODE
 	return jQuery;

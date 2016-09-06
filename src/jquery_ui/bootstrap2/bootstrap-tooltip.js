@@ -318,13 +318,13 @@ import $ from 'jquery';
       this.hide().$element.off('.' + this.type).removeData(this.type)
     }
 
-  }
+  };
 
 
  /* TOOLTIP PLUGIN DEFINITION
   * ========================= */
 
-  var old = $.fn.tooltip
+  var old = $.fn.tooltip;
 
   $.fn.tooltip = function ( option ) {
     return this.each(function () {
@@ -334,9 +334,9 @@ import $ from 'jquery';
       if (!data) $this.data('tooltip', (data = new Tooltip(this, options)))
       if (typeof option == 'string') data[option]()
     })
-  }
+  };
 
-  $.fn.tooltip.Constructor = Tooltip
+  $.fn.tooltip.Constructor = Tooltip;
 
   $.fn.tooltip.defaults = {
     animation: true
@@ -348,7 +348,7 @@ import $ from 'jquery';
   , delay: 0
   , html: false
   , container: false
-  }
+  };
 
 
  /* TOOLTIP NO CONFLICT
@@ -357,5 +357,6 @@ import $ from 'jquery';
   $.fn.tooltip.noConflict = function () {
     $.fn.tooltip = old
     return this
-  }
+  };
 
+export {Tooltip};

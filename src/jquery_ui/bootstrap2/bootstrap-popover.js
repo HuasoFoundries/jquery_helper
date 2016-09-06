@@ -20,7 +20,7 @@
 
 
 import $ from 'jquery';
-
+import {Tooltip} from './bootstrap-tooltip.js';
   "use strict"; // jshint ;_;
 
 

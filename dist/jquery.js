@@ -511,7 +511,7 @@
         var value = config.raw ? s : parseCookieValue(s);
         return $.isFunction(converter) ? converter(value) : value;
     }
-    var arr = [], document = window.document, getProto = Object.getPrototypeOf, slice = arr.slice, concat = arr.concat, push = arr.push, indexOf = arr.indexOf, class2type = {}, toString = class2type.toString, hasOwn = class2type.hasOwnProperty, fnToString = hasOwn.toString, ObjectFunctionString = fnToString.call(Object), support = {}, version = "3.1.0", jQuery = function(selector, context) {
+    var noGlobal = !1, arr = [], document = window.document, getProto = Object.getPrototypeOf, slice = arr.slice, concat = arr.concat, push = arr.push, indexOf = arr.indexOf, class2type = {}, toString = class2type.toString, hasOwn = class2type.hasOwnProperty, fnToString = hasOwn.toString, ObjectFunctionString = fnToString.call(Object), support = {}, version = "3.1.0", jQuery = function(selector, context) {
         return new jQuery.fn.init(selector, context);
     }, rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, rmsPrefix = /^-ms-/, rdashAlpha = /-([a-z])/g, fcamelCase = function(all, letter) {
         return letter.toUpperCase();
@@ -3214,7 +3214,7 @@
         return $this;
     };
     var $ = jQuery;
-    return $.fn.serializeJSON = function(options) {
+    $.fn.serializeJSON = function(options) {
         var f, $form, opts, formAsArray, serializedObject, name, value, _obj, nameWithNoType, type, keys;
         return f = $.serializeJSON, $form = this, opts = f.setupOpts(options), formAsArray = $form.serializeArray(), 
         f.readCheckboxUncheckedValues(formAsArray, opts, $form), serializedObject = {}, 
@@ -3367,5 +3367,10 @@
                 }, !1), req;
             }
         });
-    }(jQuery), jQuery.noConflict = function() {}, jQuery;
+    }(jQuery);
+    var _jQuery = window.jQuery, _$ = window.$;
+    return jQuery.noConflict = function(deep) {
+        return window.$ === jQuery && (window.$ = _$), deep && window.jQuery === jQuery && (window.jQuery = _jQuery), 
+        jQuery;
+    }, noGlobal || (window.jQuery = window.$ = jQuery), jQuery;
 });
