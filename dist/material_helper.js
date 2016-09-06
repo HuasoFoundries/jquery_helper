@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('jquery')) :
     typeof define === 'function' && define.amd ? define(['exports', 'jquery'], factory) :
-    (factory((global.jquery_ui = global.jquery_ui || {}),global.$));
+    (factory((global.material_helper = global.material_helper || {}),global.$));
 }(this, function (exports,$) { 'use strict';
 
     $ = 'default' in $ ? $['default'] : $;
