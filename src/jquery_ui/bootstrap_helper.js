@@ -22,3 +22,4 @@ import './bootstrap2/bootstrap-popover.js';
 
 import './bootstrap2/bootstrap-tooltip.js';
 import './bootstrap2/bootstrap-transition.js';
+import './bootstrap2/bootstrap-tab.js';
