@@ -16,10 +16,7 @@ SystemJS.config({
   },
   devConfig: {
     "map": {
-      "plugin-babel": "npm:systemjs-plugin-babel@0.0.12",
-      "jquery_shim": "src/jquery_shim",
-      "jquery_ui": "src/jquery_ui",
-      "jquery_ui_es6": "src/jquery_ui"
+      "plugin-babel": "npm:systemjs-plugin-babel@0.0.12"
     }
   },
   meta: {
@@ -59,7 +56,10 @@ SystemJS.config({
   },
   map: {
     "jquery": "dist/jquery.js",
-    "hammerjs": "src/libs/hammer.es6.js"
+    "hammerjs": "src/libs/hammer.es6.js",
+    "jquery_shim": "src/jquery_shim",
+    "jquery_ui": "src/jquery_ui",
+    "jquery_ui_es6": "src/jquery_ui"
   }
 });
 

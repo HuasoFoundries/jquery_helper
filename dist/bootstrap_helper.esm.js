@@ -3,7 +3,7 @@ import $ from 'jquery';
 var widgetUuid = 0;
 var widgetSlice = Array.prototype.slice;
 
-function Widget() /* options, element */{};
+function Widget() /* options, element */{}
 
 Widget._childConstructors = [];
 
@@ -710,7 +710,7 @@ $.widget.bridge = function (name, object) {
 	};
 };
 
-var widget = $.widget;
+var widget$1 = $.widget;
 
 var ui = {
 	version: "1.12.0",
@@ -1329,12 +1329,26 @@ $.fn.extend({
 	}
 });
 
+/*!
+ * jQuery UI Mouse 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Mouse
+//>>group: Widgets
+//>>description: Abstracts mouse-based interactions to assist in creating certain widgets.
+//>>docs: http://api.jqueryui.com/mouse/
+
 var mouseHandled = false;
 $(document).on("mouseup", function () {
 	mouseHandled = false;
 });
 
-widget("ui.mouse", {
+widget$1("ui.mouse", {
 	version: "1.12.0",
 	options: {
 		cancel: "input, textarea, button, select, option",
@@ -1543,7 +1557,23 @@ ui.plugin = {
 
 var plugin = ui.plugin;
 
-widget("ui.draggable", mouse, {
+/*!
+ * jQuery UI Draggable 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Draggable
+//>>group: Interactions
+//>>description: Enables dragging functionality for any element.
+//>>docs: http://api.jqueryui.com/draggable/
+//>>demos: http://jqueryui.com/draggable/
+//>>css.structure: ../../themes/base/draggable.css
+
+widget$1("ui.draggable", mouse, {
 	version: "1.12.0",
 	widgetEventPrefix: "drag",
 	options: {
@@ -1762,12 +1792,12 @@ widget("ui.draggable", mouse, {
 
 		//Call plugins and callbacks and use the resulting position if something is returned
 		if (!noPropagation) {
-			var ui = this._uiHash();
-			if (this._trigger("drag", event, ui) === false) {
+			var ui$$1 = this._uiHash();
+			if (this._trigger("drag", event, ui$$1) === false) {
 				this._mouseUp(new $.Event("mouseup", event));
 				return false;
 			}
-			this.position = ui.position;
+			this.position = ui$$1.position;
 		}
 
 		this.helper[0].style.left = this.position.left + "px";
@@ -2171,16 +2201,16 @@ widget("ui.draggable", mouse, {
 
 	// From now on bulk stuff - mainly helpers
 
-	_trigger: function _trigger(type, event, ui) {
-		ui = ui || this._uiHash();
-		plugin.call(this, type, [event, ui, this], true);
+	_trigger: function _trigger(type, event, ui$$1) {
+		ui$$1 = ui$$1 || this._uiHash();
+		plugin.call(this, type, [event, ui$$1, this], true);
 
 		// Absolute position and offset (see #6884 ) have to be recalculated after plugins
 		if (/^(drag|start|stop)/.test(type)) {
 			this.positionAbs = this._convertPositionTo("absolute");
-			ui.offset = this.positionAbs;
+			ui$$1.offset = this.positionAbs;
 		}
-		return $.Widget.prototype._trigger.call(this, type, event, ui);
+		return $.Widget.prototype._trigger.call(this, type, event, ui$$1);
 	},
 
 	plugins: {},
@@ -2197,8 +2227,8 @@ widget("ui.draggable", mouse, {
 });
 
 plugin.add("draggable", "connectToSortable", {
-	start: function start(event, ui, draggable) {
-		var uiSortable = $.extend({}, ui, {
+	start: function start(event, ui$$1, draggable) {
+		var uiSortable = $.extend({}, ui$$1, {
 			item: draggable.element
 		});
 
@@ -2217,8 +2247,8 @@ plugin.add("draggable", "connectToSortable", {
 			}
 		});
 	},
-	stop: function stop(event, ui, draggable) {
-		var uiSortable = $.extend({}, ui, {
+	stop: function stop(event, ui$$1, draggable) {
+		var uiSortable = $.extend({}, ui$$1, {
 			item: draggable.element
 		});
 
@@ -2259,7 +2289,7 @@ plugin.add("draggable", "connectToSortable", {
 			}
 		});
 	},
-	drag: function drag(event, ui, draggable) {
+	drag: function drag(event, ui$$1, draggable) {
 		$.each(draggable.sortables, function () {
 			var innermostIntersecting = false,
 			    sortable = this;
@@ -2295,15 +2325,15 @@ plugin.add("draggable", "connectToSortable", {
 					sortable.isOver = 1;
 
 					// Store draggable's parent in case we need to reappend to it later.
-					draggable._parent = ui.helper.parent();
+					draggable._parent = ui$$1.helper.parent();
 
-					sortable.currentItem = ui.helper.appendTo(sortable.element).data("ui-sortable-item", true);
+					sortable.currentItem = ui$$1.helper.appendTo(sortable.element).data("ui-sortable-item", true);
 
 					// Store helper option to later restore it
 					sortable.options._helper = sortable.options.helper;
 
 					sortable.options.helper = function () {
-						return ui.helper[0];
+						return ui$$1.helper[0];
 					};
 
 					// Fire the start events of the sortable with our passed browser event,
@@ -2342,7 +2372,7 @@ plugin.add("draggable", "connectToSortable", {
 					// Copy the sortable's position because the draggable's can potentially reflect
 					// a relative position, while sortable is always absolute, which the dragged
 					// element has now become. (#8809)
-					ui.position = sortable.position;
+					ui$$1.position = sortable.position;
 				}
 			} else {
 
@@ -2373,9 +2403,9 @@ plugin.add("draggable", "connectToSortable", {
 
 					// Restore and recalculate the draggable's offset considering the sortable
 					// may have modified them in unexpected ways. (#8809, #10669)
-					ui.helper.appendTo(draggable._parent);
+					ui$$1.helper.appendTo(draggable._parent);
 					draggable._refreshOffsets(event);
-					ui.position = draggable._generatePosition(event, true);
+					ui$$1.position = draggable._generatePosition(event, true);
 
 					draggable._trigger("fromSortable", event);
 
@@ -2394,7 +2424,7 @@ plugin.add("draggable", "connectToSortable", {
 });
 
 plugin.add("draggable", "cursor", {
-	start: function start(event, ui, instance) {
+	start: function start(event, ui$$1, instance) {
 		var t = $("body"),
 		    o = instance.options;
 
@@ -2403,7 +2433,7 @@ plugin.add("draggable", "cursor", {
 		}
 		t.css("cursor", o.cursor);
 	},
-	stop: function stop(event, ui, instance) {
+	stop: function stop(event, ui$$1, instance) {
 		var o = instance.options;
 		if (o._cursor) {
 			$("body").css("cursor", o._cursor);
@@ -2412,24 +2442,24 @@ plugin.add("draggable", "cursor", {
 });
 
 plugin.add("draggable", "opacity", {
-	start: function start(event, ui, instance) {
-		var t = $(ui.helper),
+	start: function start(event, ui$$1, instance) {
+		var t = $(ui$$1.helper),
 		    o = instance.options;
 		if (t.css("opacity")) {
 			o._opacity = t.css("opacity");
 		}
 		t.css("opacity", o.opacity);
 	},
-	stop: function stop(event, ui, instance) {
+	stop: function stop(event, ui$$1, instance) {
 		var o = instance.options;
 		if (o._opacity) {
-			$(ui.helper).css("opacity", o._opacity);
+			$(ui$$1.helper).css("opacity", o._opacity);
 		}
 	}
 });
 
 plugin.add("draggable", "scroll", {
-	start: function start(event, ui, i) {
+	start: function start(event, ui$$1, i) {
 		if (!i.scrollParentNotHidden) {
 			i.scrollParentNotHidden = i.helper.scrollParent(false);
 		}
@@ -2438,7 +2468,7 @@ plugin.add("draggable", "scroll", {
 			i.overflowOffset = i.scrollParentNotHidden.offset();
 		}
 	},
-	drag: function drag(event, ui, i) {
+	drag: function drag(event, ui$$1, i) {
 
 		var o = i.options,
 		    scrolled = false,
@@ -2487,7 +2517,7 @@ plugin.add("draggable", "scroll", {
 });
 
 plugin.add("draggable", "snap", {
-	start: function start(event, ui, i) {
+	start: function start(event, ui$$1, i) {
 
 		var o = i.options;
 
@@ -2507,7 +2537,7 @@ plugin.add("draggable", "snap", {
 			}
 		});
 	},
-	drag: function drag(event, ui, inst) {
+	drag: function drag(event, ui$$1, inst) {
 
 		var ts,
 		    bs,
@@ -2521,9 +2551,9 @@ plugin.add("draggable", "snap", {
 		    first,
 		    o = inst.options,
 		    d = o.snapTolerance,
-		    x1 = ui.offset.left,
+		    x1 = ui$$1.offset.left,
 		    x2 = x1 + inst.helperProportions.width,
-		    y1 = ui.offset.top,
+		    y1 = ui$$1.offset.top,
 		    y2 = y1 + inst.helperProportions.height;
 
 		for (i = inst.snapElements.length - 1; i >= 0; i--) {
@@ -2549,25 +2579,25 @@ plugin.add("draggable", "snap", {
 				ls = Math.abs(l - x2) <= d;
 				rs = Math.abs(r - x1) <= d;
 				if (ts) {
-					ui.position.top = inst._convertPositionTo("relative", {
+					ui$$1.position.top = inst._convertPositionTo("relative", {
 						top: t - inst.helperProportions.height,
 						left: 0
 					}).top;
 				}
 				if (bs) {
-					ui.position.top = inst._convertPositionTo("relative", {
+					ui$$1.position.top = inst._convertPositionTo("relative", {
 						top: b,
 						left: 0
 					}).top;
 				}
 				if (ls) {
-					ui.position.left = inst._convertPositionTo("relative", {
+					ui$$1.position.left = inst._convertPositionTo("relative", {
 						top: 0,
 						left: l - inst.helperProportions.width
 					}).left;
 				}
 				if (rs) {
-					ui.position.left = inst._convertPositionTo("relative", {
+					ui$$1.position.left = inst._convertPositionTo("relative", {
 						top: 0,
 						left: r
 					}).left;
@@ -2582,25 +2612,25 @@ plugin.add("draggable", "snap", {
 				ls = Math.abs(l - x1) <= d;
 				rs = Math.abs(r - x2) <= d;
 				if (ts) {
-					ui.position.top = inst._convertPositionTo("relative", {
+					ui$$1.position.top = inst._convertPositionTo("relative", {
 						top: t,
 						left: 0
 					}).top;
 				}
 				if (bs) {
-					ui.position.top = inst._convertPositionTo("relative", {
+					ui$$1.position.top = inst._convertPositionTo("relative", {
 						top: b - inst.helperProportions.height,
 						left: 0
 					}).top;
 				}
 				if (ls) {
-					ui.position.left = inst._convertPositionTo("relative", {
+					ui$$1.position.left = inst._convertPositionTo("relative", {
 						top: 0,
 						left: l
 					}).left;
 				}
 				if (rs) {
-					ui.position.left = inst._convertPositionTo("relative", {
+					ui$$1.position.left = inst._convertPositionTo("relative", {
 						top: 0,
 						left: r - inst.helperProportions.width
 					}).left;
@@ -2618,7 +2648,7 @@ plugin.add("draggable", "snap", {
 });
 
 plugin.add("draggable", "stack", {
-	start: function start(event, ui, instance) {
+	start: function start(event, ui$$1, instance) {
 		var min,
 		    o = instance.options,
 		    group = $.makeArray($(o.stack)).sort(function (a, b) {
@@ -2638,8 +2668,8 @@ plugin.add("draggable", "stack", {
 });
 
 plugin.add("draggable", "zIndex", {
-	start: function start(event, ui, instance) {
-		var t = $(ui.helper),
+	start: function start(event, ui$$1, instance) {
+		var t = $(ui$$1.helper),
 		    o = instance.options;
 
 		if (t.css("zIndex")) {
@@ -2647,16 +2677,19 @@ plugin.add("draggable", "zIndex", {
 		}
 		t.css("zIndex", o.zIndex);
 	},
-	stop: function stop(event, ui, instance) {
+	stop: function stop(event, ui$$1, instance) {
 		var o = instance.options;
 
 		if (o._zIndex) {
-			$(ui.helper).css("zIndex", o._zIndex);
+			$(ui$$1.helper).css("zIndex", o._zIndex);
 		}
 	}
 });
 
-widget("ui.rotatable", mouse, {
+/*!
+ * jQuery UI Rotatable
+ */
+widget$1("ui.rotatable", mouse, {
 
 	options: {
 		handle: false,
@@ -2833,7 +2866,22 @@ widget("ui.rotatable", mouse, {
 
 });
 
-widget("ui.droppable", {
+/*!
+ * jQuery UI Droppable 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Droppable
+//>>group: Interactions
+//>>description: Enables drop targets for draggable elements.
+//>>docs: http://api.jqueryui.com/droppable/
+//>>demos: http://jqueryui.com/droppable/
+
+widget$1("ui.droppable", {
 	version: "1.12.0",
 	widgetEventPrefix: "drop",
 	options: {
@@ -2922,66 +2970,66 @@ widget("ui.droppable", {
 	},
 
 	_activate: function _activate(event) {
-		var draggable = $.ui.ddmanager.current;
+		var draggable$$1 = $.ui.ddmanager.current;
 
 		this._addActiveClass();
-		if (draggable) {
-			this._trigger("activate", event, this.ui(draggable));
+		if (draggable$$1) {
+			this._trigger("activate", event, this.ui(draggable$$1));
 		}
 	},
 
 	_deactivate: function _deactivate(event) {
-		var draggable = $.ui.ddmanager.current;
+		var draggable$$1 = $.ui.ddmanager.current;
 
 		this._removeActiveClass();
-		if (draggable) {
-			this._trigger("deactivate", event, this.ui(draggable));
+		if (draggable$$1) {
+			this._trigger("deactivate", event, this.ui(draggable$$1));
 		}
 	},
 
 	_over: function _over(event) {
 
-		var draggable = $.ui.ddmanager.current;
+		var draggable$$1 = $.ui.ddmanager.current;
 
 		// Bail if draggable and droppable are same element
-		if (!draggable || (draggable.currentItem || draggable.element)[0] === this.element[0]) {
+		if (!draggable$$1 || (draggable$$1.currentItem || draggable$$1.element)[0] === this.element[0]) {
 			return;
 		}
 
-		if (this.accept.call(this.element[0], draggable.currentItem || draggable.element)) {
+		if (this.accept.call(this.element[0], draggable$$1.currentItem || draggable$$1.element)) {
 			this._addHoverClass();
-			this._trigger("over", event, this.ui(draggable));
+			this._trigger("over", event, this.ui(draggable$$1));
 		}
 	},
 
 	_out: function _out(event) {
 
-		var draggable = $.ui.ddmanager.current;
+		var draggable$$1 = $.ui.ddmanager.current;
 
 		// Bail if draggable and droppable are same element
-		if (!draggable || (draggable.currentItem || draggable.element)[0] === this.element[0]) {
+		if (!draggable$$1 || (draggable$$1.currentItem || draggable$$1.element)[0] === this.element[0]) {
 			return;
 		}
 
-		if (this.accept.call(this.element[0], draggable.currentItem || draggable.element)) {
+		if (this.accept.call(this.element[0], draggable$$1.currentItem || draggable$$1.element)) {
 			this._removeHoverClass();
-			this._trigger("out", event, this.ui(draggable));
+			this._trigger("out", event, this.ui(draggable$$1));
 		}
 	},
 
 	_drop: function _drop(event, custom) {
 
-		var draggable = custom || $.ui.ddmanager.current,
+		var draggable$$1 = custom || $.ui.ddmanager.current,
 		    childrenIntersection = false;
 
 		// Bail if draggable and droppable are same element
-		if (!draggable || (draggable.currentItem || draggable.element)[0] === this.element[0]) {
+		if (!draggable$$1 || (draggable$$1.currentItem || draggable$$1.element)[0] === this.element[0]) {
 			return false;
 		}
 
 		this.element.find(":data(ui-droppable)").not(".ui-draggable-dragging").each(function () {
 			var inst = $(this).droppable("instance");
-			if (inst.options.greedy && !inst.options.disabled && inst.options.scope === draggable.options.scope && inst.accept.call(inst.element[0], draggable.currentItem || draggable.element) && intersect(draggable, $.extend(inst, {
+			if (inst.options.greedy && !inst.options.disabled && inst.options.scope === draggable$$1.options.scope && inst.accept.call(inst.element[0], draggable$$1.currentItem || draggable$$1.element) && intersect(draggable$$1, $.extend(inst, {
 				offset: inst.element.offset()
 			}), inst.options.tolerance, event)) {
 				childrenIntersection = true;
@@ -2992,11 +3040,11 @@ widget("ui.droppable", {
 			return false;
 		}
 
-		if (this.accept.call(this.element[0], draggable.currentItem || draggable.element)) {
+		if (this.accept.call(this.element[0], draggable$$1.currentItem || draggable$$1.element)) {
 			this._removeActiveClass();
 			this._removeHoverClass();
 
-			this._trigger("drop", event, this.ui(draggable));
+			this._trigger("drop", event, this.ui(draggable$$1));
 			return this.element;
 		}
 
@@ -3080,21 +3128,21 @@ $.ui.ddmanager = {
 			});
 		}
 	},
-	drop: function drop(draggable, event) {
+	drop: function drop(draggable$$1, event) {
 
 		var dropped = false;
 
 		// Create a copy of the droppables in case the list changes during the drop (#9116)
-		$.each(($.ui.ddmanager.droppables[draggable.options.scope] || []).slice(), function () {
+		$.each(($.ui.ddmanager.droppables[draggable$$1.options.scope] || []).slice(), function () {
 
 			if (!this.options) {
 				return;
 			}
-			if (!this.options.disabled && this.visible && intersect(draggable, this, this.options.tolerance, event)) {
+			if (!this.options.disabled && this.visible && intersect(draggable$$1, this, this.options.tolerance, event)) {
 				dropped = this._drop.call(this, event) || dropped;
 			}
 
-			if (!this.options.disabled && this.visible && this.accept.call(this.element[0], draggable.currentItem || draggable.element)) {
+			if (!this.options.disabled && this.visible && this.accept.call(this.element[0], draggable$$1.currentItem || draggable$$1.element)) {
 				this.isout = true;
 				this.isover = false;
 				this._deactivate.call(this, event);
@@ -3102,26 +3150,26 @@ $.ui.ddmanager = {
 		});
 		return dropped;
 	},
-	dragStart: function dragStart(draggable, event) {
+	dragStart: function dragStart(draggable$$1, event) {
 
 		// Listen for scrolling so that if the dragging causes scrolling the position of the
 		// droppables can be recalculated (see #5003)
-		draggable.element.parentsUntil("body").on("scroll.droppable", function () {
-			if (!draggable.options.refreshPositions) {
-				$.ui.ddmanager.prepareOffsets(draggable, event);
+		draggable$$1.element.parentsUntil("body").on("scroll.droppable", function () {
+			if (!draggable$$1.options.refreshPositions) {
+				$.ui.ddmanager.prepareOffsets(draggable$$1, event);
 			}
 		});
 	},
-	drag: function drag(draggable, event) {
+	drag: function drag(draggable$$1, event) {
 
 		// If you have a highly dynamic page, you might try this option. It renders positions
 		// every time you move the mouse.
-		if (draggable.options.refreshPositions) {
-			$.ui.ddmanager.prepareOffsets(draggable, event);
+		if (draggable$$1.options.refreshPositions) {
+			$.ui.ddmanager.prepareOffsets(draggable$$1, event);
 		}
 
 		// Run through all droppables and check their positions based on specific tolerance options
-		$.each($.ui.ddmanager.droppables[draggable.options.scope] || [], function () {
+		$.each($.ui.ddmanager.droppables[draggable$$1.options.scope] || [], function () {
 
 			if (this.options.disabled || this.greedyChild || !this.visible) {
 				return;
@@ -3130,7 +3178,7 @@ $.ui.ddmanager = {
 			var parentInstance,
 			    scope,
 			    parent,
-			    intersects = intersect(draggable, this, this.options.tolerance, event),
+			    intersects = intersect(draggable$$1, this, this.options.tolerance, event),
 			    c = !intersects && this.isover ? "isout" : intersects && !this.isover ? "isover" : null;
 			if (!c) {
 				return;
@@ -3169,18 +3217,36 @@ $.ui.ddmanager = {
 			}
 		});
 	},
-	dragStop: function dragStop(draggable, event) {
-		draggable.element.parentsUntil("body").off("scroll.droppable");
+	dragStop: function dragStop(draggable$$1, event) {
+		draggable$$1.element.parentsUntil("body").off("scroll.droppable");
 
 		// Call prepareOffsets one final time since IE does not fire return scroll events when
 		// overflow was caused by drag (see #5003)
-		if (!draggable.options.refreshPositions) {
-			$.ui.ddmanager.prepareOffsets(draggable, event);
+		if (!draggable$$1.options.refreshPositions) {
+			$.ui.ddmanager.prepareOffsets(draggable$$1, event);
 		}
 	}
 };
 
-widget("ui.resizable", mouse, {
+/*!
+ * jQuery UI Resizable 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Resizable
+//>>group: Interactions
+//>>description: Enables resize functionality for any element.
+//>>docs: http://api.jqueryui.com/resizable/
+//>>demos: http://jqueryui.com/resizable/
+//>>css.structure: ../../themes/base/core.css
+//>>css.structure: ../../themes/base/resizable.css
+//>>css.theme: ../../themes/base/theme.css
+
+widget$1("ui.resizable", mouse, {
 	version: "1.12.0",
 	widgetEventPrefix: "resize",
 	options: {
@@ -4183,7 +4249,7 @@ plugin.add("resizable", "alsoResize", {
 		});
 	},
 
-	resize: function resize(event, ui) {
+	resize: function resize(event, ui$$1) {
 		var that = $(this).resizable("instance"),
 		    o = that.options,
 		    os = that.originalSize,
@@ -4199,7 +4265,7 @@ plugin.add("resizable", "alsoResize", {
 			var el = $(this),
 			    start = $(this).data("ui-resizable-alsoresize"),
 			    style = {},
-			    css = el.parents(ui.originalElement[0]).length ? ["width", "height"] : ["width", "height", "top", "left"];
+			    css = el.parents(ui$$1.originalElement[0]).length ? ["width", "height"] : ["width", "height", "top", "left"];
 
 			$.each(css, function (i, prop) {
 				var sum = (start[prop] || 0) + (delta[prop] || 0);
@@ -4343,7 +4409,22 @@ plugin.add("resizable", "grid", {
 
 });
 
-widget("ui.selectable", mouse, {
+/*!
+ * jQuery UI Selectable 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Selectable
+//>>group: Interactions
+//>>description: Allows groups of elements to be selected with the mouse.
+//>>docs: http://api.jqueryui.com/selectable/
+//>>demos: http://jqueryui.com/selectable/
+//>>css.structure: ../../themes/base/selectable.css
+widget$1("ui.selectable", mouse, {
 	version: "1.12.0",
 	options: {
 		appendTo: "body",
@@ -4626,7 +4707,23 @@ widget("ui.selectable", mouse, {
 
 });
 
-widget("ui.sortable", mouse, {
+/*!
+ * jQuery UI Sortable 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Sortable
+//>>group: Interactions
+//>>description: Enables items in a list to be sorted using the mouse.
+//>>docs: http://api.jqueryui.com/sortable/
+//>>demos: http://jqueryui.com/sortable/
+//>>css.structure: ../../themes/base/sortable.css
+
+widget$1("ui.sortable", mouse, {
 	version: "1.12.0",
 	widgetEventPrefix: "sort",
 	ready: false,
@@ -5984,7 +6081,27 @@ widget("ui.sortable", mouse, {
 
 });
 
-widget("ui.progressbar", {
+/*!
+ * jQuery UI Progressbar 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Progressbar
+//>>group: Widgets
+// jscs:disable maximumLineLength
+//>>description: Displays a status indicator for loading state, standard percentage, and other progress indicators.
+// jscs:enable maximumLineLength
+//>>docs: http://api.jqueryui.com/progressbar/
+//>>demos: http://jqueryui.com/progressbar/
+//>>css.structure: ../../themes/base/core.css
+//>>css.structure: ../../themes/base/progressbar.css
+//>>css.theme: ../../themes/base/theme.css
+
+widget$1("ui.progressbar", {
 	version: "1.12.0",
 	options: {
 		classes: {
@@ -6117,6 +6234,9 @@ widget("ui.progressbar", {
 	}
 });
 
+/*!
+ * jQuery Evol Colorpicker
+ */
 var _idx = 0;
 var isIE = false;
 var _ie = isIE ? '-ie' : '';
@@ -6144,7 +6264,8 @@ var toHex3 = function toHex3(c) {
 		return c;
 	}
 };
-widget("evol.colorpicker", {
+
+widget$1("evol.colorpicker", {
 
 	version: '2.1',
 
@@ -6480,10 +6601,33 @@ widget("evol.colorpicker", {
 
 });
 
+/* ==========================================================
+ * bootstrap-alert.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html#alerts
+ * ==========================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ========================================================== */
+
+/* ALERT CLASS DEFINITION
+ * ====================== */
+
 var dismiss = '[data-dismiss="alert"]';
 var Alert = function Alert(el) {
   $(el).on('click', dismiss, this.close);
 };
+
 Alert.prototype.close = function (e) {
   var $this = $(this),
       selector = $this.attr('data-target'),
@@ -6542,7 +6686,24 @@ $.fn.alert.noConflict = function () {
 
 $(document).on('click.alert.data-api', dismiss, Alert.prototype.close);
 
-// jshint ;_;
+/* ============================================================
+ * bootstrap-button.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html#buttons
+ * ============================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============================================================ */
 
 /* BUTTON PUBLIC CLASS DEFINITION
  * ============================== */
@@ -6615,7 +6776,24 @@ $(document).on('click.button.data-api', '[data-toggle^=button]', function (e) {
   $btn.button('toggle');
 });
 
-// jshint ;_;
+/* =============================================================
+ * bootstrap-collapse.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html#collapse
+ * =============================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============================================================ */
 
 /* COLLAPSE PUBLIC CLASS DEFINITION
  * ================================ */
@@ -6747,18 +6925,41 @@ $(document).on('click.collapse.data-api', '[data-toggle=collapse]', function (e)
   $(target).collapse(option);
 });
 
-var toggle = '[data-toggle=dropdown]';
+/* ============================================================
+ * bootstrap-dropdown.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html#dropdowns
+ * ============================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============================================================ */
+
+/* DROPDOWN CLASS DEFINITION
+ * ========================= */
+
+var toggle$1 = '[data-toggle=dropdown]';
 var Dropdown = function Dropdown(element) {
   var $el = $(element).on('click.dropdown.data-api', this.toggle);
   $('html').on('click.dropdown.data-api', function () {
     $el.parent().removeClass('open');
   });
 };
+
 Dropdown.prototype = {
 
   constructor: Dropdown,
 
-  toggle: function toggle(e) {
+  toggle: function toggle$1(e) {
     var $this = $(this),
         $parent,
         isActive;
@@ -6801,7 +7002,7 @@ Dropdown.prototype = {
     isActive = $parent.hasClass('open');
 
     if (!isActive || isActive && e.keyCode == 27) {
-      if (e.which == 27) $parent.find(toggle).focus();
+      if (e.which == 27) $parent.find(toggle$1).focus();
       return $this.click();
     }
 
@@ -6822,7 +7023,7 @@ Dropdown.prototype = {
 
 function clearMenus() {
   $('.dropdown-backdrop').remove();
-  $(toggle).each(function () {
+  $(toggle$1).each(function () {
     getParent($(this)).removeClass('open');
   });
 }
@@ -6872,9 +7073,26 @@ $.fn.dropdown.noConflict = function () {
 
 $(document).on('click.dropdown.data-api', clearMenus).on('click.dropdown.data-api', '.dropdown form', function (e) {
   e.stopPropagation();
-}).on('click.dropdown.data-api', toggle, Dropdown.prototype.toggle).on('keydown.dropdown.data-api', toggle + ', [role=menu]', Dropdown.prototype.keydown);
+}).on('click.dropdown.data-api', toggle$1, Dropdown.prototype.toggle).on('keydown.dropdown.data-api', toggle$1 + ', [role=menu]', Dropdown.prototype.keydown);
 
-// jshint ;_;
+/* =========================================================
+ * bootstrap-modal.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html#modals
+ * =========================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ========================================================= */
 
 /* MODAL CLASS DEFINITION
  * ====================== */
@@ -7073,7 +7291,25 @@ $(document).on('click.modal.data-api', '[data-toggle="modal"]', function (e) {
   });
 });
 
-// jshint ;_;
+/* ===========================================================
+ * bootstrap-tooltip.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html#tooltips
+ * Inspired by the original jQuery.tipsy by Jason Frame
+ * ===========================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ========================================================== */
 
 /* TOOLTIP PUBLIC CLASS DEFINITION
  * =============================== */
@@ -7389,7 +7625,24 @@ $.fn.tooltip.noConflict = function () {
   return this;
 };
 
-// jshint ;_;
+/* ===========================================================
+ * bootstrap-popover.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html#popovers
+ * ===========================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * =========================================================== */
 
 /* POPOVER PUBLIC CLASS DEFINITION
  * =============================== */
@@ -7475,7 +7728,24 @@ $.fn.popover.noConflict = function () {
   return this;
 };
 
-// jshint ;_;
+/* ===================================================
+ * bootstrap-transition.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html#transitions
+ * ===================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ========================================================== */
 
 /* CSS TRANSITION SUPPORT (http://www.modernizr.com/)
  * ======================================================= */
@@ -7508,7 +7778,24 @@ $(function () {
   }();
 });
 
-// jshint ;_;
+/* ========================================================
+ * bootstrap-tab.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html#tabs
+ * ========================================================
+ * Copyright 2013 Twitter, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ======================================================== */
 
 /* TAB CLASS DEFINITION
  * ==================== */

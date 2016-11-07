@@ -1,12 +1,8 @@
 import $ from 'jquery';
 
-var requestAnimationFrame=function requestAnimationFrame(callback,element){var currTime=new Date().getTime();var timeToCall=Math.max(0,16-(currTime-lastTime));var id=window.setTimeout(function(){callback(currTime+timeToCall);},timeToCall);lastTime=currTime+timeToCall;return id;};
-var cancelAnimationFrame=function cancelAnimationFrame(id){clearTimeout(id);};
-(function(self,raf,caf){var lastTime=0;var vendors=['ms','moz','webkit','o'];for(var x=0;x<vendors.length&&!self.requestAnimationFrame;++x){self.requestAnimationFrame=self[vendors[x]+'RequestAnimationFrame'];self.cancelAnimationFrame=self[vendors[x]+'CancelAnimationFrame']||self[vendors[x]+'CancelRequestAnimationFrame'];}if(!self.requestAnimationFrame)self.requestAnimationFrame=raf;if(!self.cancelAnimationFrame)self.cancelAnimationFrame=caf;})(window,requestAnimationFrame,cancelAnimationFrame); /* IE detection. Gist: https://gist.github.com/julianshapiro/9098609 */var IE=function(docobj){if(docobj.documentMode){return docobj.documentMode;}else {for(var i=7;i>4;i--){var div=docobj.createElement("div");div.innerHTML="<!--[if IE "+i+"]><span></span><![endif]-->";if(div.getElementsByTagName("span").length){div=null;return i;}}}return undefined;}(window.document);/* Array compacting. Copyright Lo-Dash. MIT License: https://github.com/lodash/lodash/blob/master/LICENSE.txt */function compactSparseArray(array){var index=-1,length=array?array.length:0,result=[];while(++index<length){var value=array[index];if(value){result.push(value);}}return result;}function sanitizeElements(elements){ /* Unwrap jQuery/Zepto objects. */if(Type.isWrapped(elements)){elements=[].slice.call(elements); /* Wrap a single element in an array so that $.each() can iterate with the element instead of its node's children. */}else if(Type.isNode(elements)){elements=[elements];}return elements;}var Type={isString:function isString(variable){return typeof variable==="string";},isArray:Array.isArray||function(variable){return Object.prototype.toString.call(variable)==="[object Array]";},isFunction:function isFunction(variable){return Object.prototype.toString.call(variable)==="[object Function]";},isNode:function isNode(variable){return variable&&variable.nodeType;}, /* Copyright Martin Bohm. MIT License: https://gist.github.com/Tomalak/818a78a226a0738eaade */isNodeList:function isNodeList(variable){return typeof variable==="object"&&/^\[object (HTMLCollection|NodeList|Object)\]$/.test(Object.prototype.toString.call(variable))&&variable.length!==undefined&&(variable.length===0||typeof variable[0]==="object"&&variable[0].nodeType>0);}, /* Determine if variable is a wrapped jQuery or Zepto element. */isWrapped:function isWrapped(variable){return variable&&(variable.jquery||window.Zepto&&window.Zepto.zepto.isZ(variable));},isSVG:function isSVG(variable){return window.SVGElement&&variable instanceof window.SVGElement;},isEmptyObject:function isEmptyObject(variable){for(var name in variable){return false;}return true;}};var DURATION_DEFAULT=400;
-var EASING_DEFAULT="swing";
-/*************
+/*! VelocityJS.org (1.2.3). (C) 2014 Julian Shapiro. MIT @license: en.wikipedia.org/wiki/MIT_License */var requestAnimationFrame=function requestAnimationFrame(callback,element){var currTime=new Date().getTime();var timeToCall=Math.max(0,16-(currTime-lastTime));var id=window.setTimeout(function(){callback(currTime+timeToCall);},timeToCall);lastTime=currTime+timeToCall;return id;}; var cancelAnimationFrame=function cancelAnimationFrame(id){clearTimeout(id);};(function(self,raf,caf){var lastTime=0;var vendors=['ms','moz','webkit','o'];for(var x=0;x<vendors.length&&!self.requestAnimationFrame;++x){self.requestAnimationFrame=self[vendors[x]+'RequestAnimationFrame'];self.cancelAnimationFrame=self[vendors[x]+'CancelAnimationFrame']||self[vendors[x]+'CancelRequestAnimationFrame'];}if(!self.requestAnimationFrame)self.requestAnimationFrame=raf;if(!self.cancelAnimationFrame)self.cancelAnimationFrame=caf;})(window,requestAnimationFrame,cancelAnimationFrame); /* IE detection. Gist: https://gist.github.com/julianshapiro/9098609 */var IE=function(docobj){if(docobj.documentMode){return docobj.documentMode;}else {for(var i=7;i>4;i--){var div=docobj.createElement("div");div.innerHTML="<!--[if IE "+i+"]><span></span><![endif]-->";if(div.getElementsByTagName("span").length){div=null;return i;}}}return undefined;}(window.document);function compactSparseArray(array){var index=-1,length=array?array.length:0,result=[];while(++index<length){var value=array[index];if(value){result.push(value);}}return result;}function sanitizeElements(elements){ /* Unwrap jQuery/Zepto objects. */if(Type.isWrapped(elements)){elements=[].slice.call(elements); /* Wrap a single element in an array so that $.each() can iterate with the element instead of its node's children. */}else if(Type.isNode(elements)){elements=[elements];}return elements;}var Type={isString:function isString(variable){return typeof variable==="string";},isArray:Array.isArray||function(variable){return Object.prototype.toString.call(variable)==="[object Array]";},isFunction:function isFunction(variable){return Object.prototype.toString.call(variable)==="[object Function]";},isNode:function isNode(variable){return variable&&variable.nodeType;}, /* Copyright Martin Bohm. MIT License: https://gist.github.com/Tomalak/818a78a226a0738eaade */isNodeList:function isNodeList(variable){return typeof variable==="object"&&/^\[object (HTMLCollection|NodeList|Object)\]$/.test(Object.prototype.toString.call(variable))&&variable.length!==undefined&&(variable.length===0||typeof variable[0]==="object"&&variable[0].nodeType>0);}, /* Determine if variable is a wrapped jQuery or Zepto element. */isWrapped:function isWrapped(variable){return variable&&(variable.jquery||window.Zepto&&window.Zepto.zepto.isZ(variable));},isSVG:function isSVG(variable){return window.SVGElement&&variable instanceof window.SVGElement;},isEmptyObject:function isEmptyObject(variable){for(var name in variable){return false;}return true;}};var DURATION_DEFAULT=400; var EASING_DEFAULT="swing"; /*************
         State
-    *************/var Velocity={State:{isMobile:/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),isAndroid:/Android/i.test(navigator.userAgent),isGingerbread:/Android 2\.3\.[3-7]/i.test(navigator.userAgent),isChrome:window.chrome,isFirefox:/Firefox/i.test(navigator.userAgent),prefixElement:document.createElement("div"),prefixMatches:{},scrollAnchor:null,scrollPropertyLeft:null,scrollPropertyTop:null,isTicking:false,calls:[]},CSS:{},Utilities:$,Redirects:{},Easings:{},Promise:window.Promise,defaults:{queue:"",duration:DURATION_DEFAULT,easing:EASING_DEFAULT,begin:undefined,complete:undefined,progress:undefined,display:undefined,visibility:undefined,loop:false,delay:false,mobileHA:true,_cacheValues:true},init:function init(element){$.data(element,"velocity",{isSVG:Type.isSVG(element),isAnimating:false, /* A reference to the element's live computedStyle object. Learn more here: https://developer.mozilla.org/en/docs/Web/API/window.getComputedStyle */computedStyle:null,tweensContainer:null,rootPropertyValueCache:{},transformCache:{}});}, /* A parallel to jQuery's $.css(), used for getting/setting Velocity's hooked CSS properties. */hook:null,mock:false,version:{major:1,minor:2,patch:2},debug:false}; /* Retrieve the appropriate scroll anchor and property name for the browser: https://developer.mozilla.org/en-US/docs/Web/API/Window.scrollY */if(window.pageYOffset!==undefined){Velocity.State.scrollAnchor=window;Velocity.State.scrollPropertyLeft="pageXOffset";Velocity.State.scrollPropertyTop="pageYOffset";}else {Velocity.State.scrollAnchor=document.documentElement||document.body.parentNode||document.body;Velocity.State.scrollPropertyLeft="scrollLeft";Velocity.State.scrollPropertyTop="scrollTop";}function Data(element){var response=$.data(element,"velocity");return response===null?undefined:response;}; /**************
+    *************/var Velocity={State:{isMobile:/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),isAndroid:/Android/i.test(navigator.userAgent),isGingerbread:/Android 2\.3\.[3-7]/i.test(navigator.userAgent),isChrome:window.chrome,isFirefox:/Firefox/i.test(navigator.userAgent),prefixElement:document.createElement("div"),prefixMatches:{},scrollAnchor:null,scrollPropertyLeft:null,scrollPropertyTop:null,isTicking:false,calls:[]},CSS:{},Utilities:$,Redirects:{},Easings:{},Promise:window.Promise,defaults:{queue:"",duration:DURATION_DEFAULT,easing:EASING_DEFAULT,begin:undefined,complete:undefined,progress:undefined,display:undefined,visibility:undefined,loop:false,delay:false,mobileHA:true,_cacheValues:true},init:function init(element){$.data(element,"velocity",{isSVG:Type.isSVG(element),isAnimating:false, /* A reference to the element's live computedStyle object. Learn more here: https://developer.mozilla.org/en/docs/Web/API/window.getComputedStyle */computedStyle:null,tweensContainer:null,rootPropertyValueCache:{},transformCache:{}});}, /* A parallel to jQuery's $.css(), used for getting/setting Velocity's hooked CSS properties. */hook:null,mock:false,version:{major:1,minor:2,patch:2},debug:false}; /* Retrieve the appropriate scroll anchor and property name for the browser: https://developer.mozilla.org/en-US/docs/Web/API/Window.scrollY */if(window.pageYOffset!==undefined){Velocity.State.scrollAnchor=window;Velocity.State.scrollPropertyLeft="pageXOffset";Velocity.State.scrollPropertyTop="pageYOffset";}else {Velocity.State.scrollAnchor=document.documentElement||document.body.parentNode||document.body;Velocity.State.scrollPropertyLeft="scrollLeft";Velocity.State.scrollPropertyTop="scrollTop";}function Data(element){var response=$.data(element,"velocity");return response===null?undefined:response;} /**************
         Easing
     **************/function generateStep(steps){return function(p){return Math.round(p*steps)*(1/steps);};} /* Bezier curve function generator. Copyright Gaetan Renaudeau. MIT License: http://en.wikipedia.org/wiki/MIT_License */function generateBezier(mX1,mY1,mX2,mY2){var NEWTON_ITERATIONS=4,NEWTON_MIN_SLOPE=0.001,SUBDIVISION_PRECISION=0.0000001,SUBDIVISION_MAX_ITERATIONS=10,kSplineTableSize=11,kSampleStepSize=1.0/(kSplineTableSize-1.0),float32ArraySupported="Float32Array" in window;if(arguments.length!==4){return false;}for(var i=0;i<4;++i){if(typeof arguments[i]!=="number"||isNaN(arguments[i])||!isFinite(arguments[i])){return false;}}mX1=Math.min(mX1,1);mX2=Math.min(mX2,1);mX1=Math.max(mX1,0);mX2=Math.max(mX2,0);var mSampleValues=float32ArraySupported?new Float32Array(kSplineTableSize):new Array(kSplineTableSize);function A(aA1,aA2){return 1.0-3.0*aA2+3.0*aA1;}function B(aA1,aA2){return 3.0*aA2-6.0*aA1;}function C(aA1){return 3.0*aA1;}function calcBezier(aT,aA1,aA2){return ((A(aA1,aA2)*aT+B(aA1,aA2))*aT+C(aA1))*aT;}function getSlope(aT,aA1,aA2){return 3.0*A(aA1,aA2)*aT*aT+2.0*B(aA1,aA2)*aT+C(aA1);}function newtonRaphsonIterate(aX,aGuessT){for(var i=0;i<NEWTON_ITERATIONS;++i){var currentSlope=getSlope(aGuessT,mX1,mX2);if(currentSlope===0.0)return aGuessT;var currentX=calcBezier(aGuessT,mX1,mX2)-aX;aGuessT-=currentX/currentSlope;}return aGuessT;}function calcSampleValues(){for(var i=0;i<kSplineTableSize;++i){mSampleValues[i]=calcBezier(i*kSampleStepSize,mX1,mX2);}}function binarySubdivide(aX,aA,aB){var currentX,currentT,i=0;do {currentT=aA+(aB-aA)/2.0;currentX=calcBezier(currentT,mX1,mX2)-aX;if(currentX>0.0){aB=currentT;}else {aA=currentT;}}while(Math.abs(currentX)>SUBDIVISION_PRECISION&&++i<SUBDIVISION_MAX_ITERATIONS);return currentT;}function getTForX(aX){var intervalStart=0.0,currentSample=1,lastSample=kSplineTableSize-1;for(;currentSample!=lastSample&&mSampleValues[currentSample]<=aX;++currentSample){intervalStart+=kSampleStepSize;}--currentSample;var dist=(aX-mSampleValues[currentSample])/(mSampleValues[currentSample+1]-mSampleValues[currentSample]),guessForT=intervalStart+dist*kSampleStepSize,initialSlope=getSlope(guessForT,mX1,mX2);if(initialSlope>=NEWTON_MIN_SLOPE){return newtonRaphsonIterate(aX,guessForT);}else if(initialSlope==0.0){return guessForT;}else {return binarySubdivide(aX,intervalStart,intervalStart+kSampleStepSize);}}var _precomputed=false;function precompute(){_precomputed=true;if(mX1!=mY1||mX2!=mY2)calcSampleValues();}var f=function f(aX){if(!_precomputed)precompute();if(mX1===mY1&&mX2===mY2)return aX;if(aX===0)return 0;if(aX===1)return 1;return calcBezier(getTForX(aX),mY1,mY2);};f.getControlPoints=function(){return [{x:mX1,y:mY1},{x:mX2,y:mY2}];};var str="generateBezier("+[mX1,mY1,mX2,mY2]+")";f.toString=function(){return str;};return f;} /* Runge-Kutta spring physics function generator. Adapted from Framer.js, copyright Koen Bok. MIT License: http://en.wikipedia.org/wiki/MIT_License */var generateSpringRK4=function(){function springAccelerationForState(state){return -state.tension*state.x-state.friction*state.v;}function springEvaluateStateWithDerivative(initialState,dt,derivative){var state={x:initialState.x+derivative.dx*dt,v:initialState.v+derivative.dv*dt,tension:initialState.tension,friction:initialState.friction};return {dx:state.v,dv:springAccelerationForState(state)};}function springIntegrateState(state,dt){var a={dx:state.v,dv:springAccelerationForState(state)},b=springEvaluateStateWithDerivative(state,dt*0.5,a),c=springEvaluateStateWithDerivative(state,dt*0.5,b),d=springEvaluateStateWithDerivative(state,dt,c),dxdt=1.0/6.0*(a.dx+2.0*(b.dx+c.dx)+d.dx),dvdt=1.0/6.0*(a.dv+2.0*(b.dv+c.dv)+d.dv);state.x=state.x+dxdt*dt;state.v=state.v+dvdt*dt;return state;}return function springRK4Factory(tension,friction,duration){var initState={x:-1,v:0,tension:null,friction:null},path=[0],time_lapsed=0,tolerance=1/10000,DT=16/1000,have_duration,dt,last_state;tension=parseFloat(tension)||500;friction=parseFloat(friction)||20;duration=duration||null;initState.tension=tension;initState.friction=friction;have_duration=duration!==null;if(have_duration){time_lapsed=springRK4Factory(tension,friction);dt=time_lapsed/duration*DT;}else {dt=DT;}while(true){ /* Next/step function .*/last_state=springIntegrateState(last_state||initState,dt);path.push(1+last_state.x);time_lapsed+=16;if(!(Math.abs(last_state.x)>tolerance&&Math.abs(last_state.v)>tolerance)){break;}}return !have_duration?time_lapsed:function(percentComplete){return path[percentComplete*(path.length-1)|0];};};}();Velocity.Easings={linear:function linear(p){return p;},swing:function swing(p){return 0.5-Math.cos(p*Math.PI)/2;},spring:function spring(p){return 1-Math.cos(p*4.5*Math.PI)*Math.exp(-p*6);}};$.each([["ease",[0.25,0.1,0.25,1.0]],["ease-in",[0.42,0.0,1.00,1.0]],["ease-out",[0.00,0.0,0.58,1.0]],["ease-in-out",[0.42,0.0,0.58,1.0]],["easeInSine",[0.47,0,0.745,0.715]],["easeOutSine",[0.39,0.575,0.565,1]],["easeInOutSine",[0.445,0.05,0.55,0.95]],["easeInQuad",[0.55,0.085,0.68,0.53]],["easeOutQuad",[0.25,0.46,0.45,0.94]],["easeInOutQuad",[0.455,0.03,0.515,0.955]],["easeInCubic",[0.55,0.055,0.675,0.19]],["easeOutCubic",[0.215,0.61,0.355,1]],["easeInOutCubic",[0.645,0.045,0.355,1]],["easeInQuart",[0.895,0.03,0.685,0.22]],["easeOutQuart",[0.165,0.84,0.44,1]],["easeInOutQuart",[0.77,0,0.175,1]],["easeInQuint",[0.755,0.05,0.855,0.06]],["easeOutQuint",[0.23,1,0.32,1]],["easeInOutQuint",[0.86,0,0.07,1]],["easeInExpo",[0.95,0.05,0.795,0.035]],["easeOutExpo",[0.19,1,0.22,1]],["easeInOutExpo",[1,0,0,1]],["easeInCirc",[0.6,0.04,0.98,0.335]],["easeOutCirc",[0.075,0.82,0.165,1]],["easeInOutCirc",[0.785,0.135,0.15,0.86]]],function(i,easingArray){Velocity.Easings[easingArray[0]]=generateBezier.apply(null,easingArray[1]);});function getEasing(value,duration){var easing=value; /* The easing option can either be a string that references a pre-registered easing,
            or it can be a two-/four-item array of integers to be converted into a bezier/spring function. */if(Type.isString(value)){if(!Velocity.Easings[value]){easing=false;}}else if(Type.isArray(value)&&value.length===1){easing=generateStep.apply(null,value);}else if(Type.isArray(value)&&value.length===2){easing=generateSpringRK4.apply(null,value.concat([duration]));}else if(Type.isArray(value)&&value.length===4){easing=generateBezier.apply(null,value);}else {easing=false;}if(easing===false){if(Velocity.Easings[Velocity.defaults.easing]){easing=Velocity.defaults.easing;}else {easing=EASING_DEFAULT;}}return easing;} /*****************
@@ -233,9 +229,11 @@ var EASING_DEFAULT="swing";
     ***********************/$.each(["Down","Up"],function(i,direction){Velocity.Redirects["slide"+direction]=function(element,options,elementsIndex,elementsSize,elements,promiseData){var opts=$.extend({},options),begin=opts.begin,complete=opts.complete,computedValues={height:"",marginTop:"",marginBottom:"",paddingTop:"",paddingBottom:""},inlineValues={};if(opts.display===undefined){opts.display=direction==="Down"?Velocity.CSS.Values.getDisplayType(element)==="inline"?"inline-block":"block":"none";}opts.begin=function(){begin&&begin.call(elements,elements);for(var property in computedValues){inlineValues[property]=element.style[property];var propertyValue=Velocity.CSS.getPropertyValue(element,property);computedValues[property]=direction==="Down"?[propertyValue,0]:[0,propertyValue];}inlineValues.overflow=element.style.overflow;element.style.overflow="hidden";};opts.complete=function(){for(var property in inlineValues){element.style[property]=inlineValues[property];}complete&&complete.call(elements,elements);promiseData&&promiseData.resolver(elements);};Velocity(element,computedValues,opts);};});$.each(["In","Out"],function(i,direction){Velocity.Redirects["fade"+direction]=function(element,options,elementsIndex,elementsSize,elements,promiseData){var opts=$.extend({},options),propertiesMap={opacity:direction==="In"?1:0},originalComplete=opts.complete;if(elementsIndex!==elementsSize-1){opts.complete=opts.begin=null;}else {opts.complete=function(){if(originalComplete){originalComplete.call(elements,elements);}promiseData&&promiseData.resolver(elements);};}if(opts.display===undefined){opts.display=direction==="In"?"auto":"none";}Velocity(this,propertiesMap,opts);};});$.easing={linear:function linear(p){return p;},swing:function swing(p){return 0.5-Math.cos(p*Math.PI)/2;},jswing:function jswing(p){return 0.5-Math.cos(p*Math.PI)/2;},easeInOutMaterial:function easeInOutMaterial(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t+b;return c/4*((t-=2)*t*t+2)+b;},_default:"swing"};$.extend($.easing,{def:'easeOutQuad',swing:function swing(x,t,b,c,d){ //alert($.easing.default);
 return $.easing[$.easing.def](x,t,b,c,d);},easeInQuad:function easeInQuad(x,t,b,c,d){return c*(t/=d)*t+b;},easeOutQuad:function easeOutQuad(x,t,b,c,d){return -c*(t/=d)*(t-2)+b;},easeInOutQuad:function easeInOutQuad(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t+b;return -c/2*(--t*(t-2)-1)+b;},easeInCubic:function easeInCubic(x,t,b,c,d){return c*(t/=d)*t*t+b;},easeOutCubic:function easeOutCubic(x,t,b,c,d){return c*((t=t/d-1)*t*t+1)+b;},easeInOutCubic:function easeInOutCubic(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t+b;return c/2*((t-=2)*t*t+2)+b;},easeInQuart:function easeInQuart(x,t,b,c,d){return c*(t/=d)*t*t*t+b;},easeOutQuart:function easeOutQuart(x,t,b,c,d){return -c*((t=t/d-1)*t*t*t-1)+b;},easeInOutQuart:function easeInOutQuart(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t+b;return -c/2*((t-=2)*t*t*t-2)+b;},easeInQuint:function easeInQuint(x,t,b,c,d){return c*(t/=d)*t*t*t*t+b;},easeOutQuint:function easeOutQuint(x,t,b,c,d){return c*((t=t/d-1)*t*t*t*t+1)+b;},easeInOutQuint:function easeInOutQuint(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t*t+b;return c/2*((t-=2)*t*t*t*t+2)+b;},easeInSine:function easeInSine(x,t,b,c,d){return -c*Math.cos(t/d*(Math.PI/2))+c+b;},easeOutSine:function easeOutSine(x,t,b,c,d){return c*Math.sin(t/d*(Math.PI/2))+b;},easeInOutSine:function easeInOutSine(x,t,b,c,d){return -c/2*(Math.cos(Math.PI*t/d)-1)+b;},easeInExpo:function easeInExpo(x,t,b,c,d){return t==0?b:c*Math.pow(2,10*(t/d-1))+b;},easeOutExpo:function easeOutExpo(x,t,b,c,d){return t==d?b+c:c*(-Math.pow(2,-10*t/d)+1)+b;},easeInOutExpo:function easeInOutExpo(x,t,b,c,d){if(t==0)return b;if(t==d)return b+c;if((t/=d/2)<1)return c/2*Math.pow(2,10*(t-1))+b;return c/2*(-Math.pow(2,-10*--t)+2)+b;},easeInCirc:function easeInCirc(x,t,b,c,d){return -c*(Math.sqrt(1-(t/=d)*t)-1)+b;},easeOutCirc:function easeOutCirc(x,t,b,c,d){return c*Math.sqrt(1-(t=t/d-1)*t)+b;},easeInOutCirc:function easeInOutCirc(x,t,b,c,d){if((t/=d/2)<1)return -c/2*(Math.sqrt(1-t*t)-1)+b;return c/2*(Math.sqrt(1-(t-=2)*t)+1)+b;},easeInElastic:function easeInElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);return -(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;},easeOutElastic:function easeOutElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);return a*Math.pow(2,-10*t)*Math.sin((t*d-s)*(2*Math.PI)/p)+c+b;},easeInOutElastic:function easeInOutElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d/2)==2)return b+c;if(!p)p=d*(.3*1.5);if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);if(t<1)return -.5*(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;return a*Math.pow(2,-10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p)*.5+c+b;},easeInBack:function easeInBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*(t/=d)*t*((s+1)*t-s)+b;},easeOutBack:function easeOutBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*((t=t/d-1)*t*((s+1)*t+s)+1)+b;},easeInOutBack:function easeInOutBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;if((t/=d/2)<1)return c/2*(t*t*(((s*=1.525)+1)*t-s))+b;return c/2*((t-=2)*t*(((s*=1.525)+1)*t+s)+2)+b;},easeInBounce:function easeInBounce(x,t,b,c,d){return c-$.easing.easeOutBounce(x,d-t,0,c,d)+b;},easeOutBounce:function easeOutBounce(x,t,b,c,d){if((t/=d)<1/2.75){return c*(7.5625*t*t)+b;}else if(t<2/2.75){return c*(7.5625*(t-=1.5/2.75)*t+.75)+b;}else if(t<2.5/2.75){return c*(7.5625*(t-=2.25/2.75)*t+.9375)+b;}else {return c*(7.5625*(t-=2.625/2.75)*t+.984375)+b;}},easeInOutBounce:function easeInOutBounce(x,t,b,c,d){if(t<d/2)return $.easing.easeInBounce(x,t*2,0,c,d)*.5+b;return $.easing.easeOutBounce(x,t*2-d,0,c,d)*.5+c*.5+b;}});$.fn.animate=$.fn.animate||$.fn.velocity;$.fn.slideDown=$.fn.slideDown||function(){return this.each(function(){$(this).velocity('slideDown');});};$.fn.slideUp=$.fn.slideUp||function(){return this.each(function(){$(this).velocity('slideDown');});};$.fn.fadeOut=function(speed,easing,callback){return this.each(function(){$(this).velocity({opacity:'hide'},speed,easing,callback);});};$.fn.fadeIn=function(speed,easing,callback){return this.each(function(){$(this).velocity({opacity:'show'},speed,easing,callback);});};$.fn.stop=$.fn.stop||function(){return this.each(function(){$(this).velocity('stop');});};
 
+// Source: src/helpers/materialize_initial.js
 var Materialize = {};
 var Waves = {};
 var $$ = document.querySelectorAll.bind(document);
+
 var guidfn = function guidfn() {
   function s4() {
     return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
@@ -921,6 +919,7 @@ var _generateID = function _generateID() {
   _lastID++;
   return 'materialize-lean-overlay-' + _lastID;
 };
+
 $.fn.extend({
   openModal: function openModal(options) {
 
@@ -2411,7 +2410,7 @@ $(document).ready(function () {
 var widgetUuid = 0;
 var widgetSlice = Array.prototype.slice;
 
-function Widget() /* options, element */{};
+function Widget() /* options, element */{}
 
 Widget._childConstructors = [];
 
@@ -3118,7 +3117,7 @@ $.widget.bridge = function (name, object) {
 	};
 };
 
-var widget = $.widget;
+var widget$1 = $.widget;
 
 var ui = {
 	version: "1.12.0",
@@ -3737,12 +3736,26 @@ $.fn.extend({
 	}
 });
 
+/*!
+ * jQuery UI Mouse 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Mouse
+//>>group: Widgets
+//>>description: Abstracts mouse-based interactions to assist in creating certain widgets.
+//>>docs: http://api.jqueryui.com/mouse/
+
 var mouseHandled = false;
 $(document).on("mouseup", function () {
 	mouseHandled = false;
 });
 
-widget("ui.mouse", {
+widget$1("ui.mouse", {
 	version: "1.12.0",
 	options: {
 		cancel: "input, textarea, button, select, option",
@@ -3951,7 +3964,23 @@ ui.plugin = {
 
 var plugin = ui.plugin;
 
-widget("ui.draggable", mouse, {
+/*!
+ * jQuery UI Draggable 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Draggable
+//>>group: Interactions
+//>>description: Enables dragging functionality for any element.
+//>>docs: http://api.jqueryui.com/draggable/
+//>>demos: http://jqueryui.com/draggable/
+//>>css.structure: ../../themes/base/draggable.css
+
+widget$1("ui.draggable", mouse, {
 	version: "1.12.0",
 	widgetEventPrefix: "drag",
 	options: {
@@ -4170,12 +4199,12 @@ widget("ui.draggable", mouse, {
 
 		//Call plugins and callbacks and use the resulting position if something is returned
 		if (!noPropagation) {
-			var ui = this._uiHash();
-			if (this._trigger("drag", event, ui) === false) {
+			var ui$$1 = this._uiHash();
+			if (this._trigger("drag", event, ui$$1) === false) {
 				this._mouseUp(new $.Event("mouseup", event));
 				return false;
 			}
-			this.position = ui.position;
+			this.position = ui$$1.position;
 		}
 
 		this.helper[0].style.left = this.position.left + "px";
@@ -4579,16 +4608,16 @@ widget("ui.draggable", mouse, {
 
 	// From now on bulk stuff - mainly helpers
 
-	_trigger: function _trigger(type, event, ui) {
-		ui = ui || this._uiHash();
-		plugin.call(this, type, [event, ui, this], true);
+	_trigger: function _trigger(type, event, ui$$1) {
+		ui$$1 = ui$$1 || this._uiHash();
+		plugin.call(this, type, [event, ui$$1, this], true);
 
 		// Absolute position and offset (see #6884 ) have to be recalculated after plugins
 		if (/^(drag|start|stop)/.test(type)) {
 			this.positionAbs = this._convertPositionTo("absolute");
-			ui.offset = this.positionAbs;
+			ui$$1.offset = this.positionAbs;
 		}
-		return $.Widget.prototype._trigger.call(this, type, event, ui);
+		return $.Widget.prototype._trigger.call(this, type, event, ui$$1);
 	},
 
 	plugins: {},
@@ -4605,8 +4634,8 @@ widget("ui.draggable", mouse, {
 });
 
 plugin.add("draggable", "connectToSortable", {
-	start: function start(event, ui, draggable) {
-		var uiSortable = $.extend({}, ui, {
+	start: function start(event, ui$$1, draggable) {
+		var uiSortable = $.extend({}, ui$$1, {
 			item: draggable.element
 		});
 
@@ -4625,8 +4654,8 @@ plugin.add("draggable", "connectToSortable", {
 			}
 		});
 	},
-	stop: function stop(event, ui, draggable) {
-		var uiSortable = $.extend({}, ui, {
+	stop: function stop(event, ui$$1, draggable) {
+		var uiSortable = $.extend({}, ui$$1, {
 			item: draggable.element
 		});
 
@@ -4667,7 +4696,7 @@ plugin.add("draggable", "connectToSortable", {
 			}
 		});
 	},
-	drag: function drag(event, ui, draggable) {
+	drag: function drag(event, ui$$1, draggable) {
 		$.each(draggable.sortables, function () {
 			var innermostIntersecting = false,
 			    sortable = this;
@@ -4703,15 +4732,15 @@ plugin.add("draggable", "connectToSortable", {
 					sortable.isOver = 1;
 
 					// Store draggable's parent in case we need to reappend to it later.
-					draggable._parent = ui.helper.parent();
+					draggable._parent = ui$$1.helper.parent();
 
-					sortable.currentItem = ui.helper.appendTo(sortable.element).data("ui-sortable-item", true);
+					sortable.currentItem = ui$$1.helper.appendTo(sortable.element).data("ui-sortable-item", true);
 
 					// Store helper option to later restore it
 					sortable.options._helper = sortable.options.helper;
 
 					sortable.options.helper = function () {
-						return ui.helper[0];
+						return ui$$1.helper[0];
 					};
 
 					// Fire the start events of the sortable with our passed browser event,
@@ -4750,7 +4779,7 @@ plugin.add("draggable", "connectToSortable", {
 					// Copy the sortable's position because the draggable's can potentially reflect
 					// a relative position, while sortable is always absolute, which the dragged
 					// element has now become. (#8809)
-					ui.position = sortable.position;
+					ui$$1.position = sortable.position;
 				}
 			} else {
 
@@ -4781,9 +4810,9 @@ plugin.add("draggable", "connectToSortable", {
 
 					// Restore and recalculate the draggable's offset considering the sortable
 					// may have modified them in unexpected ways. (#8809, #10669)
-					ui.helper.appendTo(draggable._parent);
+					ui$$1.helper.appendTo(draggable._parent);
 					draggable._refreshOffsets(event);
-					ui.position = draggable._generatePosition(event, true);
+					ui$$1.position = draggable._generatePosition(event, true);
 
 					draggable._trigger("fromSortable", event);
 
@@ -4802,7 +4831,7 @@ plugin.add("draggable", "connectToSortable", {
 });
 
 plugin.add("draggable", "cursor", {
-	start: function start(event, ui, instance) {
+	start: function start(event, ui$$1, instance) {
 		var t = $("body"),
 		    o = instance.options;
 
@@ -4811,7 +4840,7 @@ plugin.add("draggable", "cursor", {
 		}
 		t.css("cursor", o.cursor);
 	},
-	stop: function stop(event, ui, instance) {
+	stop: function stop(event, ui$$1, instance) {
 		var o = instance.options;
 		if (o._cursor) {
 			$("body").css("cursor", o._cursor);
@@ -4820,24 +4849,24 @@ plugin.add("draggable", "cursor", {
 });
 
 plugin.add("draggable", "opacity", {
-	start: function start(event, ui, instance) {
-		var t = $(ui.helper),
+	start: function start(event, ui$$1, instance) {
+		var t = $(ui$$1.helper),
 		    o = instance.options;
 		if (t.css("opacity")) {
 			o._opacity = t.css("opacity");
 		}
 		t.css("opacity", o.opacity);
 	},
-	stop: function stop(event, ui, instance) {
+	stop: function stop(event, ui$$1, instance) {
 		var o = instance.options;
 		if (o._opacity) {
-			$(ui.helper).css("opacity", o._opacity);
+			$(ui$$1.helper).css("opacity", o._opacity);
 		}
 	}
 });
 
 plugin.add("draggable", "scroll", {
-	start: function start(event, ui, i) {
+	start: function start(event, ui$$1, i) {
 		if (!i.scrollParentNotHidden) {
 			i.scrollParentNotHidden = i.helper.scrollParent(false);
 		}
@@ -4846,7 +4875,7 @@ plugin.add("draggable", "scroll", {
 			i.overflowOffset = i.scrollParentNotHidden.offset();
 		}
 	},
-	drag: function drag(event, ui, i) {
+	drag: function drag(event, ui$$1, i) {
 
 		var o = i.options,
 		    scrolled = false,
@@ -4895,7 +4924,7 @@ plugin.add("draggable", "scroll", {
 });
 
 plugin.add("draggable", "snap", {
-	start: function start(event, ui, i) {
+	start: function start(event, ui$$1, i) {
 
 		var o = i.options;
 
@@ -4915,7 +4944,7 @@ plugin.add("draggable", "snap", {
 			}
 		});
 	},
-	drag: function drag(event, ui, inst) {
+	drag: function drag(event, ui$$1, inst) {
 
 		var ts,
 		    bs,
@@ -4929,9 +4958,9 @@ plugin.add("draggable", "snap", {
 		    first,
 		    o = inst.options,
 		    d = o.snapTolerance,
-		    x1 = ui.offset.left,
+		    x1 = ui$$1.offset.left,
 		    x2 = x1 + inst.helperProportions.width,
-		    y1 = ui.offset.top,
+		    y1 = ui$$1.offset.top,
 		    y2 = y1 + inst.helperProportions.height;
 
 		for (i = inst.snapElements.length - 1; i >= 0; i--) {
@@ -4957,25 +4986,25 @@ plugin.add("draggable", "snap", {
 				ls = Math.abs(l - x2) <= d;
 				rs = Math.abs(r - x1) <= d;
 				if (ts) {
-					ui.position.top = inst._convertPositionTo("relative", {
+					ui$$1.position.top = inst._convertPositionTo("relative", {
 						top: t - inst.helperProportions.height,
 						left: 0
 					}).top;
 				}
 				if (bs) {
-					ui.position.top = inst._convertPositionTo("relative", {
+					ui$$1.position.top = inst._convertPositionTo("relative", {
 						top: b,
 						left: 0
 					}).top;
 				}
 				if (ls) {
-					ui.position.left = inst._convertPositionTo("relative", {
+					ui$$1.position.left = inst._convertPositionTo("relative", {
 						top: 0,
 						left: l - inst.helperProportions.width
 					}).left;
 				}
 				if (rs) {
-					ui.position.left = inst._convertPositionTo("relative", {
+					ui$$1.position.left = inst._convertPositionTo("relative", {
 						top: 0,
 						left: r
 					}).left;
@@ -4990,25 +5019,25 @@ plugin.add("draggable", "snap", {
 				ls = Math.abs(l - x1) <= d;
 				rs = Math.abs(r - x2) <= d;
 				if (ts) {
-					ui.position.top = inst._convertPositionTo("relative", {
+					ui$$1.position.top = inst._convertPositionTo("relative", {
 						top: t,
 						left: 0
 					}).top;
 				}
 				if (bs) {
-					ui.position.top = inst._convertPositionTo("relative", {
+					ui$$1.position.top = inst._convertPositionTo("relative", {
 						top: b - inst.helperProportions.height,
 						left: 0
 					}).top;
 				}
 				if (ls) {
-					ui.position.left = inst._convertPositionTo("relative", {
+					ui$$1.position.left = inst._convertPositionTo("relative", {
 						top: 0,
 						left: l
 					}).left;
 				}
 				if (rs) {
-					ui.position.left = inst._convertPositionTo("relative", {
+					ui$$1.position.left = inst._convertPositionTo("relative", {
 						top: 0,
 						left: r - inst.helperProportions.width
 					}).left;
@@ -5026,7 +5055,7 @@ plugin.add("draggable", "snap", {
 });
 
 plugin.add("draggable", "stack", {
-	start: function start(event, ui, instance) {
+	start: function start(event, ui$$1, instance) {
 		var min,
 		    o = instance.options,
 		    group = $.makeArray($(o.stack)).sort(function (a, b) {
@@ -5046,8 +5075,8 @@ plugin.add("draggable", "stack", {
 });
 
 plugin.add("draggable", "zIndex", {
-	start: function start(event, ui, instance) {
-		var t = $(ui.helper),
+	start: function start(event, ui$$1, instance) {
+		var t = $(ui$$1.helper),
 		    o = instance.options;
 
 		if (t.css("zIndex")) {
@@ -5055,16 +5084,19 @@ plugin.add("draggable", "zIndex", {
 		}
 		t.css("zIndex", o.zIndex);
 	},
-	stop: function stop(event, ui, instance) {
+	stop: function stop(event, ui$$1, instance) {
 		var o = instance.options;
 
 		if (o._zIndex) {
-			$(ui.helper).css("zIndex", o._zIndex);
+			$(ui$$1.helper).css("zIndex", o._zIndex);
 		}
 	}
 });
 
-widget("ui.rotatable", mouse, {
+/*!
+ * jQuery UI Rotatable
+ */
+widget$1("ui.rotatable", mouse, {
 
 	options: {
 		handle: false,
@@ -5241,7 +5273,22 @@ widget("ui.rotatable", mouse, {
 
 });
 
-widget("ui.droppable", {
+/*!
+ * jQuery UI Droppable 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Droppable
+//>>group: Interactions
+//>>description: Enables drop targets for draggable elements.
+//>>docs: http://api.jqueryui.com/droppable/
+//>>demos: http://jqueryui.com/droppable/
+
+widget$1("ui.droppable", {
 	version: "1.12.0",
 	widgetEventPrefix: "drop",
 	options: {
@@ -5330,66 +5377,66 @@ widget("ui.droppable", {
 	},
 
 	_activate: function _activate(event) {
-		var draggable = $.ui.ddmanager.current;
+		var draggable$$1 = $.ui.ddmanager.current;
 
 		this._addActiveClass();
-		if (draggable) {
-			this._trigger("activate", event, this.ui(draggable));
+		if (draggable$$1) {
+			this._trigger("activate", event, this.ui(draggable$$1));
 		}
 	},
 
 	_deactivate: function _deactivate(event) {
-		var draggable = $.ui.ddmanager.current;
+		var draggable$$1 = $.ui.ddmanager.current;
 
 		this._removeActiveClass();
-		if (draggable) {
-			this._trigger("deactivate", event, this.ui(draggable));
+		if (draggable$$1) {
+			this._trigger("deactivate", event, this.ui(draggable$$1));
 		}
 	},
 
 	_over: function _over(event) {
 
-		var draggable = $.ui.ddmanager.current;
+		var draggable$$1 = $.ui.ddmanager.current;
 
 		// Bail if draggable and droppable are same element
-		if (!draggable || (draggable.currentItem || draggable.element)[0] === this.element[0]) {
+		if (!draggable$$1 || (draggable$$1.currentItem || draggable$$1.element)[0] === this.element[0]) {
 			return;
 		}
 
-		if (this.accept.call(this.element[0], draggable.currentItem || draggable.element)) {
+		if (this.accept.call(this.element[0], draggable$$1.currentItem || draggable$$1.element)) {
 			this._addHoverClass();
-			this._trigger("over", event, this.ui(draggable));
+			this._trigger("over", event, this.ui(draggable$$1));
 		}
 	},
 
 	_out: function _out(event) {
 
-		var draggable = $.ui.ddmanager.current;
+		var draggable$$1 = $.ui.ddmanager.current;
 
 		// Bail if draggable and droppable are same element
-		if (!draggable || (draggable.currentItem || draggable.element)[0] === this.element[0]) {
+		if (!draggable$$1 || (draggable$$1.currentItem || draggable$$1.element)[0] === this.element[0]) {
 			return;
 		}
 
-		if (this.accept.call(this.element[0], draggable.currentItem || draggable.element)) {
+		if (this.accept.call(this.element[0], draggable$$1.currentItem || draggable$$1.element)) {
 			this._removeHoverClass();
-			this._trigger("out", event, this.ui(draggable));
+			this._trigger("out", event, this.ui(draggable$$1));
 		}
 	},
 
 	_drop: function _drop(event, custom) {
 
-		var draggable = custom || $.ui.ddmanager.current,
+		var draggable$$1 = custom || $.ui.ddmanager.current,
 		    childrenIntersection = false;
 
 		// Bail if draggable and droppable are same element
-		if (!draggable || (draggable.currentItem || draggable.element)[0] === this.element[0]) {
+		if (!draggable$$1 || (draggable$$1.currentItem || draggable$$1.element)[0] === this.element[0]) {
 			return false;
 		}
 
 		this.element.find(":data(ui-droppable)").not(".ui-draggable-dragging").each(function () {
 			var inst = $(this).droppable("instance");
-			if (inst.options.greedy && !inst.options.disabled && inst.options.scope === draggable.options.scope && inst.accept.call(inst.element[0], draggable.currentItem || draggable.element) && intersect(draggable, $.extend(inst, {
+			if (inst.options.greedy && !inst.options.disabled && inst.options.scope === draggable$$1.options.scope && inst.accept.call(inst.element[0], draggable$$1.currentItem || draggable$$1.element) && intersect(draggable$$1, $.extend(inst, {
 				offset: inst.element.offset()
 			}), inst.options.tolerance, event)) {
 				childrenIntersection = true;
@@ -5400,11 +5447,11 @@ widget("ui.droppable", {
 			return false;
 		}
 
-		if (this.accept.call(this.element[0], draggable.currentItem || draggable.element)) {
+		if (this.accept.call(this.element[0], draggable$$1.currentItem || draggable$$1.element)) {
 			this._removeActiveClass();
 			this._removeHoverClass();
 
-			this._trigger("drop", event, this.ui(draggable));
+			this._trigger("drop", event, this.ui(draggable$$1));
 			return this.element;
 		}
 
@@ -5488,21 +5535,21 @@ $.ui.ddmanager = {
 			});
 		}
 	},
-	drop: function drop(draggable, event) {
+	drop: function drop(draggable$$1, event) {
 
 		var dropped = false;
 
 		// Create a copy of the droppables in case the list changes during the drop (#9116)
-		$.each(($.ui.ddmanager.droppables[draggable.options.scope] || []).slice(), function () {
+		$.each(($.ui.ddmanager.droppables[draggable$$1.options.scope] || []).slice(), function () {
 
 			if (!this.options) {
 				return;
 			}
-			if (!this.options.disabled && this.visible && intersect(draggable, this, this.options.tolerance, event)) {
+			if (!this.options.disabled && this.visible && intersect(draggable$$1, this, this.options.tolerance, event)) {
 				dropped = this._drop.call(this, event) || dropped;
 			}
 
-			if (!this.options.disabled && this.visible && this.accept.call(this.element[0], draggable.currentItem || draggable.element)) {
+			if (!this.options.disabled && this.visible && this.accept.call(this.element[0], draggable$$1.currentItem || draggable$$1.element)) {
 				this.isout = true;
 				this.isover = false;
 				this._deactivate.call(this, event);
@@ -5510,26 +5557,26 @@ $.ui.ddmanager = {
 		});
 		return dropped;
 	},
-	dragStart: function dragStart(draggable, event) {
+	dragStart: function dragStart(draggable$$1, event) {
 
 		// Listen for scrolling so that if the dragging causes scrolling the position of the
 		// droppables can be recalculated (see #5003)
-		draggable.element.parentsUntil("body").on("scroll.droppable", function () {
-			if (!draggable.options.refreshPositions) {
-				$.ui.ddmanager.prepareOffsets(draggable, event);
+		draggable$$1.element.parentsUntil("body").on("scroll.droppable", function () {
+			if (!draggable$$1.options.refreshPositions) {
+				$.ui.ddmanager.prepareOffsets(draggable$$1, event);
 			}
 		});
 	},
-	drag: function drag(draggable, event) {
+	drag: function drag(draggable$$1, event) {
 
 		// If you have a highly dynamic page, you might try this option. It renders positions
 		// every time you move the mouse.
-		if (draggable.options.refreshPositions) {
-			$.ui.ddmanager.prepareOffsets(draggable, event);
+		if (draggable$$1.options.refreshPositions) {
+			$.ui.ddmanager.prepareOffsets(draggable$$1, event);
 		}
 
 		// Run through all droppables and check their positions based on specific tolerance options
-		$.each($.ui.ddmanager.droppables[draggable.options.scope] || [], function () {
+		$.each($.ui.ddmanager.droppables[draggable$$1.options.scope] || [], function () {
 
 			if (this.options.disabled || this.greedyChild || !this.visible) {
 				return;
@@ -5538,7 +5585,7 @@ $.ui.ddmanager = {
 			var parentInstance,
 			    scope,
 			    parent,
-			    intersects = intersect(draggable, this, this.options.tolerance, event),
+			    intersects = intersect(draggable$$1, this, this.options.tolerance, event),
 			    c = !intersects && this.isover ? "isout" : intersects && !this.isover ? "isover" : null;
 			if (!c) {
 				return;
@@ -5577,18 +5624,36 @@ $.ui.ddmanager = {
 			}
 		});
 	},
-	dragStop: function dragStop(draggable, event) {
-		draggable.element.parentsUntil("body").off("scroll.droppable");
+	dragStop: function dragStop(draggable$$1, event) {
+		draggable$$1.element.parentsUntil("body").off("scroll.droppable");
 
 		// Call prepareOffsets one final time since IE does not fire return scroll events when
 		// overflow was caused by drag (see #5003)
-		if (!draggable.options.refreshPositions) {
-			$.ui.ddmanager.prepareOffsets(draggable, event);
+		if (!draggable$$1.options.refreshPositions) {
+			$.ui.ddmanager.prepareOffsets(draggable$$1, event);
 		}
 	}
 };
 
-widget("ui.resizable", mouse, {
+/*!
+ * jQuery UI Resizable 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Resizable
+//>>group: Interactions
+//>>description: Enables resize functionality for any element.
+//>>docs: http://api.jqueryui.com/resizable/
+//>>demos: http://jqueryui.com/resizable/
+//>>css.structure: ../../themes/base/core.css
+//>>css.structure: ../../themes/base/resizable.css
+//>>css.theme: ../../themes/base/theme.css
+
+widget$1("ui.resizable", mouse, {
 	version: "1.12.0",
 	widgetEventPrefix: "resize",
 	options: {
@@ -6591,7 +6656,7 @@ plugin.add("resizable", "alsoResize", {
 		});
 	},
 
-	resize: function resize(event, ui) {
+	resize: function resize(event, ui$$1) {
 		var that = $(this).resizable("instance"),
 		    o = that.options,
 		    os = that.originalSize,
@@ -6607,7 +6672,7 @@ plugin.add("resizable", "alsoResize", {
 			var el = $(this),
 			    start = $(this).data("ui-resizable-alsoresize"),
 			    style = {},
-			    css = el.parents(ui.originalElement[0]).length ? ["width", "height"] : ["width", "height", "top", "left"];
+			    css = el.parents(ui$$1.originalElement[0]).length ? ["width", "height"] : ["width", "height", "top", "left"];
 
 			$.each(css, function (i, prop) {
 				var sum = (start[prop] || 0) + (delta[prop] || 0);
@@ -6751,7 +6816,22 @@ plugin.add("resizable", "grid", {
 
 });
 
-widget("ui.selectable", mouse, {
+/*!
+ * jQuery UI Selectable 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Selectable
+//>>group: Interactions
+//>>description: Allows groups of elements to be selected with the mouse.
+//>>docs: http://api.jqueryui.com/selectable/
+//>>demos: http://jqueryui.com/selectable/
+//>>css.structure: ../../themes/base/selectable.css
+widget$1("ui.selectable", mouse, {
 	version: "1.12.0",
 	options: {
 		appendTo: "body",
@@ -7034,7 +7114,23 @@ widget("ui.selectable", mouse, {
 
 });
 
-widget("ui.sortable", mouse, {
+/*!
+ * jQuery UI Sortable 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Sortable
+//>>group: Interactions
+//>>description: Enables items in a list to be sorted using the mouse.
+//>>docs: http://api.jqueryui.com/sortable/
+//>>demos: http://jqueryui.com/sortable/
+//>>css.structure: ../../themes/base/sortable.css
+
+widget$1("ui.sortable", mouse, {
 	version: "1.12.0",
 	widgetEventPrefix: "sort",
 	ready: false,
@@ -8392,7 +8488,27 @@ widget("ui.sortable", mouse, {
 
 });
 
-widget("ui.progressbar", {
+/*!
+ * jQuery UI Progressbar 1.12.0
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: Progressbar
+//>>group: Widgets
+// jscs:disable maximumLineLength
+//>>description: Displays a status indicator for loading state, standard percentage, and other progress indicators.
+// jscs:enable maximumLineLength
+//>>docs: http://api.jqueryui.com/progressbar/
+//>>demos: http://jqueryui.com/progressbar/
+//>>css.structure: ../../themes/base/core.css
+//>>css.structure: ../../themes/base/progressbar.css
+//>>css.theme: ../../themes/base/theme.css
+
+widget$1("ui.progressbar", {
 	version: "1.12.0",
 	options: {
 		classes: {
@@ -8525,6 +8641,9 @@ widget("ui.progressbar", {
 	}
 });
 
+/*!
+ * jQuery Evol Colorpicker
+ */
 var _idx = 0;
 var isIE = false;
 var _ie = isIE ? '-ie' : '';
@@ -8552,7 +8671,8 @@ var toHex3 = function toHex3(c) {
 		return c;
 	}
 };
-widget("evol.colorpicker", {
+
+widget$1("evol.colorpicker", {
 
 	version: '2.1',
 
