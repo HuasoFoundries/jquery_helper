@@ -1,3 +1,5 @@
+define(['exports'], function (exports) { 'use strict';
+
 /*eslint-disable no-unused-vars*/var arr=[];var document$1=window.document;var getProto=Object.getPrototypeOf;var _slice=arr.slice;var concat=arr.concat;var push=arr.push;var indexOf=arr.indexOf;var class2type={};var toString=class2type.toString;var hasOwn=class2type.hasOwnProperty;var fnToString=hasOwn.toString;var ObjectFunctionString=fnToString.call(Object);var support={};function DOMEval(code,doc){doc=doc||document$1;var script=doc.createElement("script");script.text=code;doc.head.appendChild(script).parentNode.removeChild(script);} /* global Symbol */ // Defining this global in .eslintrc.json would create a danger of using the global
 // unguarded in another place, it seems safer to define global only for this module
 var version="3.1.1";
@@ -2280,4 +2282,8 @@ jQuery.serializeJSON = {
  * @return {[type]}         [description]
  */
 
-export default jQuery;
+exports['default'] = jQuery;
+
+Object.defineProperty(exports, '__esModule', { value: true });
+
+});
