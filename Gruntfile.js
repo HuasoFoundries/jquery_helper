@@ -12,12 +12,37 @@ module.exports = function (grunt) {
 		} catch (e) {}
 		return data;
 	}
-
+	var fs = require("fs"),
+		gzip = require("gzip-js");
 
 	grunt.initConfig({
+		pkg: grunt.file.readJSON("package.json"),
+		babel: {
+			options: {
+				sourceMap: "inline",
+				retainLines: true
+			},
+			nodeSmokeTests: {
+				files: {
+					"test/node_smoke_tests/lib/ensure_iterability.js": "test/node_smoke_tests/lib/ensure_iterability_es6.js"
+				}
+			}
+		},
+		compare_size: {
+			files: ["dist/jquery.js", "dist/jquery.min.js"],
+			options: {
+				compress: {
+					gz: function (contents) {
+						return gzip.zip(contents, {}).length;
+					}
+				},
+				cache: "src/.sizecache.json"
+			}
+		},
+
 		build: {
 			es6: {
-				globals: grunt.file.read("src/helpers/noglobal.js"),
+				//globals: grunt.file.read("src/helpers/noglobal.js"),
 				wrapper: grunt.file.read("src/helpers/wrapper_es6.js"),
 				dest: "src/jquery_shim/jquery.es6.js",
 				//srcFolder: __dirname + '/src/jquery_shim',
@@ -45,8 +70,8 @@ module.exports = function (grunt) {
 			},
 
 			full: {
-				globals: grunt.file.read("src/helpers/global.js"),
-				wrapper: grunt.file.read("src/helpers/wrapper_amd.js"),
+				//globals: grunt.file.read("src/helpers/global.js"),
+				wrapper: grunt.file.read("src/wrapper.js"),
 				dest: "dist/jquery.js",
 				srcFolder: __dirname + '/src/jquery_shim',
 				minimum: [
@@ -83,8 +108,8 @@ module.exports = function (grunt) {
 			},
 
 			min: {
-				globals: grunt.file.read("src/helpers/global.js"),
-				wrapper: grunt.file.read("src/helpers/wrapper_amd.js"),
+				//globals: grunt.file.read("src/helpers/global.js"),
+				wrapper: grunt.file.read("src/wrapper.js"),
 				dest: "dist/jquery.min.js",
 				srcFolder: __dirname + '/src/jquery_shim',
 				minimum: [
@@ -126,13 +151,32 @@ module.exports = function (grunt) {
 					sizzle: ["css/hiddenVisibleSelectors", "effects/animatedSelector"]
 				}
 			}
-		}
+		},
+		watch: {
+			files: ["<%= eslint.dev.src %>"],
+			tasks: ["dev"]
+		},
 	});
+
+	grunt.loadNpmTasks('grunt-babel');
+	grunt.loadNpmTasks('grunt-compare-size');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-eslint');
+	grunt.loadNpmTasks('grunt-jsonlint');
+	grunt.loadNpmTasks('grunt-newer');
+	grunt.loadNpmTasks('grunt-npmcopy');
 
 	grunt.loadTasks('grunt_tasks');
 
 
+	grunt.registerTask("test:fast", "node_smoke_tests");
+	grunt.registerTask("test:slow", "promises_aplus_tests");
 
+	grunt.registerTask("test", [
+		"test:fast",
+		"test:slow"
+	]);
 
 
 	grunt.registerTask('concates6', ['concat:hammer', 'concat:material']);

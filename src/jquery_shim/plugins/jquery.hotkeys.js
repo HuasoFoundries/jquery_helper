@@ -11,7 +11,7 @@
  */
 
 define(["../core.js"], function (jQuery) {
-	var $ = jQuery;
+
 
 
 	jQuery.hotkeys = {
@@ -76,7 +76,7 @@ define(["../core.js"], function (jQuery) {
 			"1": "!",
 			"2": "@",
 			"3": "#",
-			"4": "$",
+			"4": "jQuery",
 			"5": "%",
 			"6": "^",
 			"7": "&",
@@ -142,7 +142,7 @@ define(["../core.js"], function (jQuery) {
 				possible[modif + character] = true;
 				possible[modif + jQuery.hotkeys.shiftNums[character]] = true;
 
-				// "$" can be triggered as "Shift+4" or "Shift+$" or just "$"
+				// "jQuery" can be triggered as "Shift+4" or "Shift+jQuery" or just "jQuery"
 				if (modif === "shift+") {
 					possible[jQuery.hotkeys.shiftNums[character]] = true;
 				}

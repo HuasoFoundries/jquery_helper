@@ -1,4 +1,5 @@
 define([
+
 	"../../node_modules/jquery/src/core",
 	"../../node_modules/jquery/src/selector",
 	"../../node_modules/jquery/src/traversing",
@@ -30,8 +31,8 @@ define([
 	"../../node_modules/jquery/src/offset",
 	"../../node_modules/jquery/src/dimensions",
 	"../../node_modules/jquery/src/deprecated",
-	"../../node_modules/jquery/src/exports/amd"
-
+	"../../node_modules/jquery/src/exports/amd",
+	"../../node_modules/jquery/src/exports/global"
 ], function (jQuery) {
 
 	"use strict";

@@ -8,30 +8,30 @@
   and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
 */
 define(["../core.js"], function (jQuery) {
-  var $ = jQuery;
+
 
   "use strict";
 
   // jQuery('form').serializeJSON()
-  $.fn.serializeJSON = function (options) {
-    var f, $form, opts, formAsArray, serializedObject, name, value, _obj, nameWithNoType, type, keys;
-    f = $.serializeJSON;
-    $form = this; // NOTE: the set of matched elements is most likely a form, but it could also be a group of inputs
+  jQuery.fn.serializeJSON = function (options) {
+    var f, jQueryform, opts, formAsArray, serializedObject, name, value, _obj, nameWithNoType, type, keys;
+    f = jQuery.serializeJSON;
+    jQueryform = this; // NOTE: the set of matched elements is most likely a form, but it could also be a group of inputs
     opts = f.setupOpts(options); // calculate values for options {parseNumbers, parseBoolens, parseNulls, ...} with defaults
 
     // Use native `serializeArray` function to get an array of {name, value} objects.
-    formAsArray = $form.serializeArray();
-    f.readCheckboxUncheckedValues(formAsArray, opts, $form); // add objects to the array from unchecked checkboxes if needed
+    formAsArray = jQueryform.serializeArray();
+    f.readCheckboxUncheckedValues(formAsArray, opts, jQueryform); // add objects to the array from unchecked checkboxes if needed
 
     // Convert the formAsArray into a serializedObject with nested keys
     serializedObject = {};
-    $.each(formAsArray, function (i, obj) {
+    jQuery.each(formAsArray, function (i, obj) {
       name = obj.name; // original input name
       value = obj.value; // input value
       _obj = f.extractTypeAndNameWithNoType(name);
       nameWithNoType = _obj.nameWithNoType; // input name with no type (i.e. "foo:string" => "foo")
       type = _obj.type; // type defined from the input name in :type colon notation
-      if (!type) type = f.tryToFindTypeFromDataAttr(name, $form); // type defined in the data-value-type attr
+      if (!type) type = f.tryToFindTypeFromDataAttr(name, jQueryform); // type defined in the data-value-type attr
       f.validateType(name, type, opts); // make sure that the type is one of the valid types if defined
 
       if (type !== 'skip') { // ignore elements with type 'skip'
@@ -43,9 +43,9 @@ define(["../core.js"], function (jQuery) {
     return serializedObject;
   };
 
-  // Use $.serializeJSON as namespace for the auxiliar functions
+  // Use jQuery.serializeJSON as namespace for the auxiliar functions
   // and to define defaults
-  $.serializeJSON = {
+  jQuery.serializeJSON = {
 
     defaultOptions: {
       checkboxUncheckedValue: undefined, // to include that value for unchecked checkboxes (instead of ignoring them)
@@ -79,7 +79,7 @@ define(["../core.js"], function (jQuery) {
           return JSON.parse(str);
         },
         "auto": function (str) {
-          return $.serializeJSON.parseValue(str, null, null, {
+          return jQuery.serializeJSON.parseValue(str, null, null, {
             parseNumbers: true,
             parseBooleans: true,
             parseNulls: true
@@ -94,7 +94,7 @@ define(["../core.js"], function (jQuery) {
     // Merge option defaults into the options
     setupOpts: function (options) {
       var opt, validOpts, defaultOptions, optWithDefault, parseAll, f;
-      f = $.serializeJSON;
+      f = jQuery.serializeJSON;
 
       if (options == null) {
         options = {};
@@ -126,7 +126,7 @@ define(["../core.js"], function (jQuery) {
         parseNulls: parseAll || optWithDefault('parseNulls'),
         parseWithFunction: optWithDefault('parseWithFunction'),
 
-        typeFunctions: $.extend({}, optWithDefault('defaultTypes'), optWithDefault('customTypes')),
+        typeFunctions: jQuery.extend({}, optWithDefault('defaultTypes'), optWithDefault('customTypes')),
 
         useIntKeysAsArrayIndex: optWithDefault('useIntKeysAsArrayIndex')
       };
@@ -135,7 +135,7 @@ define(["../core.js"], function (jQuery) {
     // Given a string, apply the type or the relevant "parse" options, to return the parsed value
     parseValue: function (valStr, inputName, type, opts) {
       var f, parsedVal;
-      f = $.serializeJSON;
+      f = jQuery.serializeJSON;
       parsedVal = valStr; // if no parsing is needed, the returned value will be the same
 
       if (opts.typeFunctions && type && opts.typeFunctions[type]) { // use a type if available
@@ -161,7 +161,7 @@ define(["../core.js"], function (jQuery) {
       return obj === void 0;
     }, // safe check for undefined values
     isValidArrayIndex: function (val) {
-      return /^[0-9]+$/.test(String(val));
+      return /^[0-9]+jQuery/.test(String(val));
     }, // 1,2,3,4 ... are valid array indexes
     isNumeric: function (obj) {
       return obj - parseFloat(obj) >= 0;
@@ -184,18 +184,18 @@ define(["../core.js"], function (jQuery) {
     // using the same format as the jquery.serializeArray function.
     // The value of the unchecked values is determined from the opts.checkboxUncheckedValue
     // and/or the data-unchecked-value attribute of the inputs.
-    readCheckboxUncheckedValues: function (formAsArray, opts, $form) {
-      var selector, $uncheckedCheckboxes, $el, dataUncheckedValue, f;
+    readCheckboxUncheckedValues: function (formAsArray, opts, jQueryform) {
+      var selector, jQueryuncheckedCheckboxes, jQueryel, dataUncheckedValue, f;
       if (opts == null) {
         opts = {};
       }
-      f = $.serializeJSON;
+      f = jQuery.serializeJSON;
 
       selector = 'input[type=checkbox][name]:not(:checked):not([disabled])';
-      $uncheckedCheckboxes = $form.find(selector).add($form.filter(selector));
-      $uncheckedCheckboxes.each(function (i, el) {
-        $el = $(el);
-        dataUncheckedValue = $el.attr('data-unchecked-value');
+      jQueryuncheckedCheckboxes = jQueryform.find(selector).add(jQueryform.filter(selector));
+      jQueryuncheckedCheckboxes.each(function (i, el) {
+        jQueryel = jQuery(el);
+        dataUncheckedValue = jQueryel.attr('data-unchecked-value');
         if (dataUncheckedValue) { // data-unchecked-value has precedence over option opts.checkboxUncheckedValue
           formAsArray.push({
             name: el.name,
@@ -219,7 +219,7 @@ define(["../core.js"], function (jQuery) {
     //   "foo[bar]:null" =>  {nameWithNoType: "foo[bar]", type: "null"}
     extractTypeAndNameWithNoType: function (name) {
       var match;
-      if (match = name.match(/(.*):([^:]+)$/)) {
+      if (match = name.match(/(.*):([^:]+)jQuery/)) {
         return {
           nameWithNoType: match[1],
           type: match[2]
@@ -232,22 +232,22 @@ define(["../core.js"], function (jQuery) {
       }
     },
 
-    // Find an input in the $form with the same name,
+    // Find an input in the jQueryform with the same name,
     // and get the data-value-type attribute.
     // Returns nil if none found. Returns the first data-value-type found if many inputs have the same name.
-    tryToFindTypeFromDataAttr: function (name, $form) {
-      var escapedName, selector, $input, typeFromDataAttr;
-      escapedName = name.replace(/(:|\.|\[|\]|\s)/g, '\\$1'); // every non-standard character need to be escaped by \\
+    tryToFindTypeFromDataAttr: function (name, jQueryform) {
+      var escapedName, selector, jQueryinput, typeFromDataAttr;
+      escapedName = name.replace(/(:|\.|\[|\]|\s)/g, '\\jQuery1'); // every non-standard character need to be escaped by \\
       selector = '[name="' + escapedName + '"]';
-      $input = $form.find(selector).add($form.filter(selector));
-      typeFromDataAttr = $input.attr('data-value-type'); // NOTE: this returns only the first $input element if multiple are matched with the same name (i.e. an "array[]"). So, arrays with different element types specified through the data-value-type attr is not supported.
+      jQueryinput = jQueryform.find(selector).add(jQueryform.filter(selector));
+      typeFromDataAttr = jQueryinput.attr('data-value-type'); // NOTE: this returns only the first jQueryinput element if multiple are matched with the same name (i.e. an "array[]"). So, arrays with different element types specified through the data-value-type attr is not supported.
       return typeFromDataAttr || null;
     },
 
     // Raise an error if the type is not recognized.
     validateType: function (name, type, opts) {
       var validTypes, f;
-      f = $.serializeJSON;
+      f = jQuery.serializeJSON;
       validTypes = f.optionKeys(opts ? opts.typeFunctions : f.defaultOptions.defaultTypes);
       if (!type || validTypes.indexOf(type) !== -1) {
         return true;
@@ -267,9 +267,9 @@ define(["../core.js"], function (jQuery) {
     // "arr[][val]"       => ['arr', '', 'val']
     splitInputNameIntoKeysArray: function (nameWithNoType) {
       var keys, f;
-      f = $.serializeJSON;
+      f = jQuery.serializeJSON;
       keys = nameWithNoType.split('['); // split string into array
-      keys = $.map(keys, function (key) {
+      keys = jQuery.map(keys, function (key) {
         return key.replace(/\]/g, '');
       }); // remove closing brackets
       if (keys[0] === '') {
@@ -300,7 +300,7 @@ define(["../core.js"], function (jQuery) {
       if (opts == null) {
         opts = {};
       }
-      f = $.serializeJSON;
+      f = jQuery.serializeJSON;
       if (f.isUndefined(o)) {
         throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");
       }
@@ -337,12 +337,12 @@ define(["../core.js"], function (jQuery) {
 
         // '' is used to push values into the array "array[]"
         if (nextKey === '') {
-          if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
+          if (f.isUndefined(o[key]) || !jQuery.isArray(o[key])) {
             o[key] = []; // define (or override) as array to push values
           }
         } else {
           if (opts.useIntKeysAsArrayIndex && f.isValidArrayIndex(nextKey)) { // if 1, 2, 3 ... then use an array, where nextKey is the index
-            if (f.isUndefined(o[key]) || !$.isArray(o[key])) {
+            if (f.isUndefined(o[key]) || !jQuery.isArray(o[key])) {
               o[key] = []; // define (or override) as array, to insert values using int keys as array indexes
             }
           } else { // for anything else, use an object, where nextKey is going to be the attribute name

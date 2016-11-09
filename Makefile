@@ -9,14 +9,15 @@ version:
 	@echo $(VERSION)
 	
 jquery:
-	grunt build:full:*:-deprecated:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery
-	grunt build:min:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery
+	grunt build:full:*:-deprecated:-manipulation/_evalUrl:-exports/amd
+	grunt build:min:*:-deprecated:-manipulation/_evalUrl:-exports/amd
+	
+
 
 jquery_es6:
 	grunt build:es6:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-exports/global:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery
 	#-effects:-effects/Tween:-effects/animatedSelector
 	jspm build jquery_shim dist/jquery.esm.js --skip-source-maps --skip-encode-names --format esm
-	jspm build jquery_shim dist/jquery.esm.bundle.js --skip-source-maps --skip-encode-names --format amd --global-name jQuery
 
 build: jquery jquery_es6 material material_helper bootstrap_helper
 
@@ -55,3 +56,4 @@ tag_and_push:
 
 tag: update_version build tag_and_push		
 		
+release: update_version tag_and_push				

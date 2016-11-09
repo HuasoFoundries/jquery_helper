@@ -1,0 +1,22 @@
+"use strict";
+
+var assert = require("assert");
+
+module.exports = function ensureIterability() {
+	require("jsdom").env("", function (errors, window) {
+		assert.ifError(errors);
+
+		var i, 
+		ensureJQuery = require("./ensure_jquery"), 
+		jQuery = require("../../../dist/jquery.js")(window), 
+		elem = jQuery("<div></div><span></span><a></a>"), 
+		result = "";
+
+		ensureJQuery(jQuery);
+
+		for (i of elem) {
+			result += i.nodeName;}
+
+
+		assert.strictEqual(result, "DIVSPANA", "for-of doesn't work on jQuery objects");});};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImVuc3VyZV9pdGVyYWJpbGl0eV9lczYuanMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0FBRUEsSUFBSSxTQUFTLFFBQVMsUUFBVCxDQUFiOztBQUVBLE9BQU8sT0FBUCxHQUFpQixTQUFTLGlCQUFULEdBQTZCO0FBQzdDLFNBQVMsT0FBVCxFQUFtQixHQUFuQixDQUF3QixFQUF4QixFQUE0QixVQUFVLE1BQVYsRUFBa0IsTUFBbEIsRUFBMkI7QUFDdEQsU0FBTyxPQUFQLENBQWdCLE1BQWhCOztBQUVBLE1BQUksQ0FBSjtBQUNDLGlCQUFlLFFBQVMsaUJBQVQsQ0FEaEI7QUFFQyxXQUFTLFFBQVMseUJBQVQsRUFBc0MsTUFBdEMsQ0FGVjtBQUdDLFNBQU8sT0FBUSxpQ0FBUixDQUhSO0FBSUMsV0FBUyxFQUpWOztBQU1BLGVBQWMsTUFBZDs7QUFFQSxPQUFNLENBQU4sSUFBVyxJQUFYLEVBQWtCO0FBQ2pCLGFBQVUsRUFBRSxRQUFaLENBQ0E7OztBQUVELFNBQU8sV0FBUCxDQUFvQixNQUFwQixFQUE0QixVQUE1QixFQUF3Qyx1Q0FBeEMsRUFDQSxDQWhCRCxFQWlCQSxDQWxCRCIsImZpbGUiOiJlbnN1cmVfaXRlcmFiaWxpdHkuanMiLCJzb3VyY2VzQ29udGVudCI6WyJcInVzZSBzdHJpY3RcIjtcblxudmFyIGFzc2VydCA9IHJlcXVpcmUoIFwiYXNzZXJ0XCIgKTtcblxubW9kdWxlLmV4cG9ydHMgPSBmdW5jdGlvbiBlbnN1cmVJdGVyYWJpbGl0eSgpIHtcblx0cmVxdWlyZSggXCJqc2RvbVwiICkuZW52KCBcIlwiLCBmdW5jdGlvbiggZXJyb3JzLCB3aW5kb3cgKSB7XG5cdFx0YXNzZXJ0LmlmRXJyb3IoIGVycm9ycyApO1xuXG5cdFx0dmFyIGksXG5cdFx0XHRlbnN1cmVKUXVlcnkgPSByZXF1aXJlKCBcIi4vZW5zdXJlX2pxdWVyeVwiICksXG5cdFx0XHRqUXVlcnkgPSByZXF1aXJlKCBcIi4uLy4uLy4uL2Rpc3QvanF1ZXJ5LmpzXCIgKSggd2luZG93ICksXG5cdFx0XHRlbGVtID0galF1ZXJ5KCBcIjxkaXY+PC9kaXY+PHNwYW4+PC9zcGFuPjxhPjwvYT5cIiApLFxuXHRcdFx0cmVzdWx0ID0gXCJcIjtcblxuXHRcdGVuc3VyZUpRdWVyeSggalF1ZXJ5ICk7XG5cblx0XHRmb3IgKCBpIG9mIGVsZW0gKSB7XG5cdFx0XHRyZXN1bHQgKz0gaS5ub2RlTmFtZTtcblx0XHR9XG5cblx0XHRhc3NlcnQuc3RyaWN0RXF1YWwoIHJlc3VsdCwgXCJESVZTUEFOQVwiLCBcImZvci1vZiBkb2Vzbid0IHdvcmsgb24galF1ZXJ5IG9iamVjdHNcIiApO1xuXHR9ICk7XG59O1xuIl19

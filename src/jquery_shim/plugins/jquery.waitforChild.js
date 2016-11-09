@@ -6,7 +6,7 @@
  * Released under the MIT license
  */
 define(["../core.js"], function (jQuery) {
-	var $ = jQuery;
+
 
 	'use strict';
 
@@ -17,7 +17,7 @@ define(["../core.js"], function (jQuery) {
 	 * @param  {Boolean}  [once] optional flag to execute the onFound function only on the first matching child
 	 * @return {object} the element, as to keep the return chainable
 	 */
-	$.fn.waitforChild = function (onFound, querySelector, once) {
+	jQuery.fn.waitforChild = function (onFound, querySelector, once) {
 		// allows for an object single parameter
 		if (typeof arguments[0] === 'object') {
 			once = arguments[0].once || false;
@@ -29,33 +29,33 @@ define(["../core.js"], function (jQuery) {
 			onFound = function () {};
 		}
 
-		var $this = this;
+		var jQuerythis = this;
 
 		// If no querySelector was asked, and the element has children, apply the onFound function either to the first or to all of them
-		if (!querySelector && $this.children().length) {
+		if (!querySelector && jQuerythis.children().length) {
 
 			if (once) {
-				onFound($this.children().first());
+				onFound(jQuerythis.children().first());
 
 			} else {
-				$this.children().each(function (key, element) {
-					onFound($(element));
+				jQuerythis.children().each(function (key, element) {
+					onFound(jQuery(element));
 				});
 			}
 
 			// If the element already has matching children, apply the onFound function either to the first or to all of them
-		} else if ($this.find(querySelector).length !== 0) {
+		} else if (jQuerythis.find(querySelector).length !== 0) {
 			if (once) {
-				onFound($this.find(querySelector).first());
+				onFound(jQuerythis.find(querySelector).first());
 
 			} else {
-				$this.find(querySelector).each(function (key, element) {
-					onFound($(element));
+				jQuerythis.find(querySelector).each(function (key, element) {
+					onFound(jQuery(element));
 				});
 			}
 		} else {
-			if ($this.length === 0) {
-				console.warn("Can't attach an observer to a null node", $this);
+			if (jQuerythis.length === 0) {
+				console.warn("Can't attach an observer to a null node", jQuerythis);
 			} else {
 				// Otherwise, set a new MutationObserver and inspect each new inserted child from now on.
 				var observer = new MutationObserver(function (mutations) {
@@ -63,15 +63,15 @@ define(["../core.js"], function (jQuery) {
 					mutations.forEach(function (mutation) {
 						if (mutation.addedNodes) {
 							if (!querySelector) {
-								onFound($(mutation.addedNodes[0]));
+								onFound(jQuery(mutation.addedNodes[0]));
 								if (once) {
 									_this.disconnect();
 								}
 							} else {
 								for (var i = 0; i < mutation.addedNodes.length; ++i) {
 									var addedNode = mutation.addedNodes[i];
-									if ($(addedNode).is(querySelector)) {
-										onFound($(addedNode));
+									if (jQuery(addedNode).is(querySelector)) {
+										onFound(jQuery(addedNode));
 										if (once) {
 											_this.disconnect();
 											break;
@@ -83,7 +83,7 @@ define(["../core.js"], function (jQuery) {
 					});
 				});
 
-				observer.observe($this[0], {
+				observer.observe(jQuerythis[0], {
 					childList: true,
 					subtree: true,
 					attributes: false,
@@ -95,6 +95,6 @@ define(["../core.js"], function (jQuery) {
 
 
 
-		return $this;
+		return jQuerythis;
 	};
 });

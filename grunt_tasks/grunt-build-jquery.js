@@ -24,7 +24,6 @@ module.exports = function (grunt) {
 					return grunt.file.read(srcFolder + fileName);
 				},
 				pkg = require(jqFolder + "/package.json"),
-				globals = this.data.globals,
 				wrapper = this.data.wrapper.split('@CODE');
 
 
@@ -201,11 +200,8 @@ module.exports = function (grunt) {
 					// Avoid breaking semicolons inserted by r.js
 					skipSemiColonInsertion: true,
 					wrap: {
-						start: wrapper[0].replace(/\/\*eslint .* \*\/\n/, ""),
-						end: globals.replace(
-							/\/\*\s*ExcludeStart\s*\*\/[\w\W]*?\/\*\s*ExcludeEnd\s*\*\//ig,
-							""
-						) + wrapper[1]
+						start: wrapper[0].replace(/\/\*\s*eslint(?: |-).*\s*\*\/\n/, ""),
+						end: wrapper[1]
 					},
 					rawText: {},
 
@@ -264,6 +260,16 @@ module.exports = function (grunt) {
 				config.rawText.selector = "define(['./selector-native']);";
 				excluded.splice(index, 1);
 			}
+
+			// Replace exports/global with a noop noConflict
+			if ((index = excluded.indexOf("exports/global")) > -1) {
+				config.rawText["exports/global"] = "define(['../core']," +
+					"function( jQuery ) {\njQuery.noConflict = function() {};\n});";
+				excluded.splice(index, 1);
+			}
+
+			grunt.verbose.writeflags(excluded, "Excluded");
+			grunt.verbose.writeflags(included, "Included");
 
 
 

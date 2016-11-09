@@ -1,4 +1,18 @@
 /*!
+ * jQuery JavaScript Library v1.9.2 -deprecated,-manipulation/_evalUrl,-exports/amd
+ * https://jquery.com/
+ *
+ * Includes Sizzle.js
+ * https://sizzlejs.com/
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license
+ * https://jquery.org/license
+ *
+ * Date: 2016-11-09T19:46Z
+ */
+
+/*!
  * Sizzle CSS Selector Engine v2.3.3
  * https://sizzlejs.com/
  *
@@ -48,8 +62,12 @@
 */
 
 !function(global, factory) {
-    "object" == typeof exports && "undefined" != typeof module ? module.exports = factory() : "function" == typeof define && define.amd ? define(factory) : global.jQuery = factory();
-}(this, function() {
+    "use strict";
+    "object" == typeof module && "object" == typeof module.exports ? module.exports = global.document ? factory(global, !0) : function(w) {
+        if (!w.document) throw new Error("jQuery requires a window with a document");
+        return factory(w);
+    } : factory(global);
+}("undefined" != typeof window ? window : this, function(window, noGlobal) {
     "use strict";
     function DOMEval(code, doc) {
         doc = doc || document;
@@ -515,9 +533,9 @@
     }
     function read(s, converter) {
         var value = config.raw ? s : parseCookieValue(s);
-        return $.isFunction(converter) ? converter(value) : value;
+        return jQuery.isFunction(converter) ? converter(value) : value;
     }
-    var noGlobal = !1, arr = [], document = window.document, getProto = Object.getPrototypeOf, slice = arr.slice, concat = arr.concat, push = arr.push, indexOf = arr.indexOf, class2type = {}, toString = class2type.toString, hasOwn = class2type.hasOwnProperty, fnToString = hasOwn.toString, ObjectFunctionString = fnToString.call(Object), support = {}, version = "3.1.1", jQuery = function(selector, context) {
+    var arr = [], document = window.document, getProto = Object.getPrototypeOf, slice = arr.slice, concat = arr.concat, push = arr.push, indexOf = arr.indexOf, class2type = {}, toString = class2type.toString, hasOwn = class2type.hasOwnProperty, fnToString = hasOwn.toString, ObjectFunctionString = fnToString.call(Object), support = {}, version = "3.1.1", jQuery = function(selector, context) {
         return new jQuery.fn.init(selector, context);
     }, rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g, rmsPrefix = /^-ms-/, rdashAlpha = /-([a-z])/g, fcamelCase = function(all, letter) {
         return letter.toUpperCase();
@@ -3094,8 +3112,11 @@
     }), jQuery.parseJSON = JSON.parse, "function" == typeof define && define.amd && define("jquery", [], function() {
         return jQuery;
     });
-    var $ = jQuery;
-    jQuery.hotkeys = {
+    var _jQuery = window.jQuery, _$ = window.$;
+    jQuery.noConflict = function(deep) {
+        return window.$ === jQuery && (window.$ = _$), deep && window.jQuery === jQuery && (window.jQuery = _jQuery), 
+        jQuery;
+    }, noGlobal || (window.jQuery = window.$ = jQuery), jQuery.hotkeys = {
         version: "0.8",
         specialKeys: {
             8: "backspace",
@@ -3155,7 +3176,7 @@
             "1": "!",
             "2": "@",
             "3": "#",
-            "4": "$",
+            "4": "jQuery",
             "5": "%",
             "6": "^",
             "7": "&",
@@ -3176,9 +3197,9 @@
             add: keyHandler
         };
     });
-    var $ = jQuery, pluses = /\+/g, config = $.cookie = function(key, value, options) {
-        if (void 0 !== value && !$.isFunction(value)) {
-            if (options = $.extend({}, config.defaults, options), "number" == typeof options.expires) {
+    var pluses = /\+/g, config = jQuery.cookie = function(key, value, options) {
+        if (void 0 !== value && !jQuery.isFunction(value)) {
+            if (options = jQuery.extend({}, config.defaults, options), "number" == typeof options.expires) {
                 var days = options.expires, t = options.expires = new Date();
                 t.setTime(+t + 864e5 * days);
             }
@@ -3194,54 +3215,50 @@
         }
         return result;
     };
-    config.defaults = {}, $.removeCookie = function(key, options) {
-        return void 0 === $.cookie(key) ? !1 : ($.cookie(key, "", $.extend({}, options, {
+    return config.defaults = {}, jQuery.removeCookie = function(key, options) {
+        return void 0 === jQuery.cookie(key) ? !1 : (jQuery.cookie(key, "", jQuery.extend({}, options, {
             expires: -1
-        })), !$.cookie(key));
-    };
-    var $ = jQuery;
-    $.fn.waitforChild = function(onFound, querySelector, once) {
+        })), !jQuery.cookie(key));
+    }, jQuery.fn.waitforChild = function(onFound, querySelector, once) {
         "object" == typeof arguments[0] && (once = arguments[0].once || !1, querySelector = arguments[0].querySelector || null, 
         onFound = arguments[0].onFound), onFound || (onFound = function() {});
-        var $this = this;
-        if (!querySelector && $this.children().length) once ? onFound($this.children().first()) : $this.children().each(function(key, element) {
-            onFound($(element));
-        }); else if (0 !== $this.find(querySelector).length) once ? onFound($this.find(querySelector).first()) : $this.find(querySelector).each(function(key, element) {
-            onFound($(element));
-        }); else if (0 === $this.length) console.warn("Can't attach an observer to a null node", $this); else {
+        var jQuerythis = this;
+        if (!querySelector && jQuerythis.children().length) once ? onFound(jQuerythis.children().first()) : jQuerythis.children().each(function(key, element) {
+            onFound(jQuery(element));
+        }); else if (0 !== jQuerythis.find(querySelector).length) once ? onFound(jQuerythis.find(querySelector).first()) : jQuerythis.find(querySelector).each(function(key, element) {
+            onFound(jQuery(element));
+        }); else if (0 === jQuerythis.length) console.warn("Can't attach an observer to a null node", jQuerythis); else {
             var observer = new MutationObserver(function(mutations) {
                 var _this = this;
                 mutations.forEach(function(mutation) {
                     if (mutation.addedNodes) if (querySelector) for (var i = 0; i < mutation.addedNodes.length; ++i) {
                         var addedNode = mutation.addedNodes[i];
-                        if ($(addedNode).is(querySelector) && (onFound($(addedNode)), once)) {
+                        if (jQuery(addedNode).is(querySelector) && (onFound(jQuery(addedNode)), once)) {
                             _this.disconnect();
                             break;
                         }
-                    } else onFound($(mutation.addedNodes[0])), once && _this.disconnect();
+                    } else onFound(jQuery(mutation.addedNodes[0])), once && _this.disconnect();
                 });
             });
-            observer.observe($this[0], {
+            observer.observe(jQuerythis[0], {
                 childList: !0,
                 subtree: !0,
                 attributes: !1,
                 characterData: !1
             });
         }
-        return $this;
-    };
-    var $ = jQuery;
-    $.fn.serializeJSON = function(options) {
-        var f, $form, opts, formAsArray, serializedObject, name, value, _obj, nameWithNoType, type, keys;
-        return f = $.serializeJSON, $form = this, opts = f.setupOpts(options), formAsArray = $form.serializeArray(), 
-        f.readCheckboxUncheckedValues(formAsArray, opts, $form), serializedObject = {}, 
-        $.each(formAsArray, function(i, obj) {
+        return jQuerythis;
+    }, jQuery.fn.serializeJSON = function(options) {
+        var f, jQueryform, opts, formAsArray, serializedObject, name, value, _obj, nameWithNoType, type, keys;
+        return f = jQuery.serializeJSON, jQueryform = this, opts = f.setupOpts(options), 
+        formAsArray = jQueryform.serializeArray(), f.readCheckboxUncheckedValues(formAsArray, opts, jQueryform), 
+        serializedObject = {}, jQuery.each(formAsArray, function(i, obj) {
             name = obj.name, value = obj.value, _obj = f.extractTypeAndNameWithNoType(name), 
-            nameWithNoType = _obj.nameWithNoType, type = _obj.type, type || (type = f.tryToFindTypeFromDataAttr(name, $form)), 
+            nameWithNoType = _obj.nameWithNoType, type = _obj.type, type || (type = f.tryToFindTypeFromDataAttr(name, jQueryform)), 
             f.validateType(name, type, opts), "skip" !== type && (keys = f.splitInputNameIntoKeysArray(nameWithNoType), 
             value = f.parseValue(value, name, type, opts), f.deepSet(serializedObject, keys, value, opts));
         }), serializedObject;
-    }, $.serializeJSON = {
+    }, jQuery.serializeJSON = {
         defaultOptions: {
             checkboxUncheckedValue: void 0,
             parseNumbers: !1,
@@ -3272,7 +3289,7 @@
                     return JSON.parse(str);
                 },
                 auto: function(str) {
-                    return $.serializeJSON.parseValue(str, null, null, {
+                    return jQuery.serializeJSON.parseValue(str, null, null, {
                         parseNumbers: !0,
                         parseBooleans: !0,
                         parseNulls: !0
@@ -3284,7 +3301,7 @@
         },
         setupOpts: function(options) {
             var opt, validOpts, defaultOptions, optWithDefault, parseAll, f;
-            f = $.serializeJSON, null == options && (options = {}), defaultOptions = f.defaultOptions || {}, 
+            f = jQuery.serializeJSON, null == options && (options = {}), defaultOptions = f.defaultOptions || {}, 
             validOpts = [ "checkboxUncheckedValue", "parseNumbers", "parseBooleans", "parseNulls", "parseAll", "parseWithFunction", "customTypes", "defaultTypes", "useIntKeysAsArrayIndex" ];
             for (opt in options) if (-1 === validOpts.indexOf(opt)) throw new Error("serializeJSON ERROR: invalid option '" + opt + "'. Please use one of " + validOpts.join(", "));
             return optWithDefault = function(key) {
@@ -3295,13 +3312,13 @@
                 parseBooleans: parseAll || optWithDefault("parseBooleans"),
                 parseNulls: parseAll || optWithDefault("parseNulls"),
                 parseWithFunction: optWithDefault("parseWithFunction"),
-                typeFunctions: $.extend({}, optWithDefault("defaultTypes"), optWithDefault("customTypes")),
+                typeFunctions: jQuery.extend({}, optWithDefault("defaultTypes"), optWithDefault("customTypes")),
                 useIntKeysAsArrayIndex: optWithDefault("useIntKeysAsArrayIndex")
             };
         },
         parseValue: function(valStr, inputName, type, opts) {
             var f, parsedVal;
-            return f = $.serializeJSON, parsedVal = valStr, opts.typeFunctions && type && opts.typeFunctions[type] ? parsedVal = opts.typeFunctions[type](valStr) : opts.parseNumbers && f.isNumeric(valStr) ? parsedVal = Number(valStr) : !opts.parseBooleans || "true" !== valStr && "false" !== valStr ? opts.parseNulls && "null" == valStr && (parsedVal = null) : parsedVal = "true" === valStr, 
+            return f = jQuery.serializeJSON, parsedVal = valStr, opts.typeFunctions && type && opts.typeFunctions[type] ? parsedVal = opts.typeFunctions[type](valStr) : opts.parseNumbers && f.isNumeric(valStr) ? parsedVal = Number(valStr) : !opts.parseBooleans || "true" !== valStr && "false" !== valStr ? opts.parseNulls && "null" == valStr && (parsedVal = null) : parsedVal = "true" === valStr, 
             opts.parseWithFunction && !type && (parsedVal = opts.parseWithFunction(parsedVal, inputName)), 
             parsedVal;
         },
@@ -3312,7 +3329,7 @@
             return void 0 === obj;
         },
         isValidArrayIndex: function(val) {
-            return /^[0-9]+$/.test(String(val));
+            return /^[0-9]+jQuery/.test(String(val));
         },
         isNumeric: function(obj) {
             return obj - parseFloat(obj) >= 0;
@@ -3323,11 +3340,13 @@
             for (key in obj) keys.push(key);
             return keys;
         },
-        readCheckboxUncheckedValues: function(formAsArray, opts, $form) {
-            var selector, $uncheckedCheckboxes, $el, dataUncheckedValue, f;
-            null == opts && (opts = {}), f = $.serializeJSON, selector = "input[type=checkbox][name]:not(:checked):not([disabled])", 
-            $uncheckedCheckboxes = $form.find(selector).add($form.filter(selector)), $uncheckedCheckboxes.each(function(i, el) {
-                $el = $(el), dataUncheckedValue = $el.attr("data-unchecked-value"), dataUncheckedValue ? formAsArray.push({
+        readCheckboxUncheckedValues: function(formAsArray, opts, jQueryform) {
+            var selector, jQueryuncheckedCheckboxes, jQueryel, dataUncheckedValue, f;
+            null == opts && (opts = {}), f = jQuery.serializeJSON, selector = "input[type=checkbox][name]:not(:checked):not([disabled])", 
+            jQueryuncheckedCheckboxes = jQueryform.find(selector).add(jQueryform.filter(selector)), 
+            jQueryuncheckedCheckboxes.each(function(i, el) {
+                jQueryel = jQuery(el), dataUncheckedValue = jQueryel.attr("data-unchecked-value"), 
+                dataUncheckedValue ? formAsArray.push({
                     name: el.name,
                     value: dataUncheckedValue
                 }) : f.isUndefined(opts.checkboxUncheckedValue) || formAsArray.push({
@@ -3338,7 +3357,7 @@
         },
         extractTypeAndNameWithNoType: function(name) {
             var match;
-            return (match = name.match(/(.*):([^:]+)$/)) ? {
+            return (match = name.match(/(.*):([^:]+)jQuery/)) ? {
                 nameWithNoType: match[1],
                 type: match[2]
             } : {
@@ -3346,31 +3365,31 @@
                 type: null
             };
         },
-        tryToFindTypeFromDataAttr: function(name, $form) {
-            var escapedName, selector, $input, typeFromDataAttr;
-            return escapedName = name.replace(/(:|\.|\[|\]|\s)/g, "\\$1"), selector = '[name="' + escapedName + '"]', 
-            $input = $form.find(selector).add($form.filter(selector)), typeFromDataAttr = $input.attr("data-value-type"), 
+        tryToFindTypeFromDataAttr: function(name, jQueryform) {
+            var escapedName, selector, jQueryinput, typeFromDataAttr;
+            return escapedName = name.replace(/(:|\.|\[|\]|\s)/g, "\\jQuery1"), selector = '[name="' + escapedName + '"]', 
+            jQueryinput = jQueryform.find(selector).add(jQueryform.filter(selector)), typeFromDataAttr = jQueryinput.attr("data-value-type"), 
             typeFromDataAttr || null;
         },
         validateType: function(name, type, opts) {
             var validTypes, f;
-            if (f = $.serializeJSON, validTypes = f.optionKeys(opts ? opts.typeFunctions : f.defaultOptions.defaultTypes), 
+            if (f = jQuery.serializeJSON, validTypes = f.optionKeys(opts ? opts.typeFunctions : f.defaultOptions.defaultTypes), 
             type && -1 === validTypes.indexOf(type)) throw new Error("serializeJSON ERROR: Invalid type " + type + " found in input name '" + name + "', please use one of " + validTypes.join(", "));
             return !0;
         },
         splitInputNameIntoKeysArray: function(nameWithNoType) {
             var keys, f;
-            return f = $.serializeJSON, keys = nameWithNoType.split("["), keys = $.map(keys, function(key) {
+            return f = jQuery.serializeJSON, keys = nameWithNoType.split("["), keys = jQuery.map(keys, function(key) {
                 return key.replace(/\]/g, "");
             }), "" === keys[0] && keys.shift(), keys;
         },
         deepSet: function(o, keys, value, opts) {
             var key, nextKey, tail, lastIdx, lastVal, f;
-            if (null == opts && (opts = {}), f = $.serializeJSON, f.isUndefined(o)) throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");
+            if (null == opts && (opts = {}), f = jQuery.serializeJSON, f.isUndefined(o)) throw new Error("ArgumentError: param 'o' expected to be an object or array, found undefined");
             if (!keys || 0 === keys.length) throw new Error("ArgumentError: param 'keys' expected to be an array with least one element");
             key = keys[0], 1 === keys.length ? "" === key ? o.push(value) : o[key] = value : (nextKey = keys[1], 
             "" === key && (lastIdx = o.length - 1, lastVal = o[lastIdx], key = f.isObject(lastVal) && (f.isUndefined(lastVal[nextKey]) || keys.length > 2) ? lastIdx : lastIdx + 1), 
-            "" === nextKey ? (f.isUndefined(o[key]) || !$.isArray(o[key])) && (o[key] = []) : opts.useIntKeysAsArrayIndex && f.isValidArrayIndex(nextKey) ? (f.isUndefined(o[key]) || !$.isArray(o[key])) && (o[key] = []) : (f.isUndefined(o[key]) || !f.isObject(o[key])) && (o[key] = {}), 
+            "" === nextKey ? (f.isUndefined(o[key]) || !jQuery.isArray(o[key])) && (o[key] = []) : opts.useIntKeysAsArrayIndex && f.isValidArrayIndex(nextKey) ? (f.isUndefined(o[key]) || !jQuery.isArray(o[key])) && (o[key] = []) : (f.isUndefined(o[key]) || !f.isObject(o[key])) && (o[key] = {}), 
             tail = keys.slice(1), f.deepSet(o[key], tail, value, opts));
         }
     }, function($) {
@@ -3384,10 +3403,5 @@
                 }, !1), req;
             }
         });
-    }(jQuery);
-    var _jQuery = window.jQuery, _$ = window.$;
-    return jQuery.noConflict = function(deep) {
-        return window.$ === jQuery && (window.$ = _$), deep && window.jQuery === jQuery && (window.jQuery = _jQuery), 
-        jQuery;
-    }, noGlobal || (window.jQuery = window.$ = jQuery), jQuery;
+    }(jQuery), jQuery;
 });

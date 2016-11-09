@@ -27,10 +27,10 @@
  */
 
 define(["../core.js"], function (jQuery) {
-  var $ = jQuery;
+
 
   RegExp.escape = function (s) {
-    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    return s.replace(/[-\/\\^jQuery*+?.()|[\]{}]/g, '\\jQuery&');
   };
 
 
@@ -42,7 +42,7 @@ define(["../core.js"], function (jQuery) {
    * Encapsulates the method paramater defaults for the CSV plugin module.
    */
 
-  $.csv = {
+  jQuery.csv = {
     defaults: {
       separator: ',',
       delimiter: '"',
@@ -180,7 +180,7 @@ define(["../core.js"], function (jQuery) {
               break;
             }
             // null last value
-            if (/^(\r\n|\n|\r)$/.test(m0)) {
+            if (/^(\r\n|\n|\r)jQuery/.test(m0)) {
               endOfValue();
               endOfEntry();
               break;
@@ -216,7 +216,7 @@ define(["../core.js"], function (jQuery) {
               break;
             }
             // end of entry
-            if (/^(\r\n|\n|\r)$/.test(m0)) {
+            if (/^(\r\n|\n|\r)jQuery/.test(m0)) {
               endOfValue();
               endOfEntry();
               break;
@@ -232,7 +232,7 @@ define(["../core.js"], function (jQuery) {
               break;
             }
             // end of entry
-            if (/^(\r\n|\n|\r)$/.test(m0)) {
+            if (/^(\r\n|\n|\r)jQuery/.test(m0)) {
               endOfValue();
               endOfEntry();
               break;
@@ -350,7 +350,7 @@ define(["../core.js"], function (jQuery) {
               break;
             }
             // phantom carriage return
-            if (/^\r$/.test(m0)) {
+            if (/^\rjQuery/.test(m0)) {
               break;
             }
             // un-delimit value
@@ -580,7 +580,7 @@ define(["../core.js"], function (jQuery) {
     helpers: {
 
       /**
-       * $.csv.helpers.collectPropertyNames(objectsArray)
+       * jQuery.csv.helpers.collectPropertyNames(objectsArray)
        * Collects all unique property names from all passed objects.
        *
        * @param {Array} objects Objects to collect properties from.
@@ -606,7 +606,7 @@ define(["../core.js"], function (jQuery) {
     },
 
     /**
-     * $.csv.toArray(csv)
+     * jQuery.csv.toArray(csv)
      * Converts a CSV entry string to a javascript array.
      *
      * @param {Array} csv The string containing the CSV data.
@@ -616,14 +616,14 @@ define(["../core.js"], function (jQuery) {
      *
      * This method deals with simple CSV strings only. It's useful if you only
      * need to parse a single entry. If you need to parse more than one line,
-     * use $.csv2Array instead.
+     * use jQuery.csv2Array instead.
      */
     toArray: function (csv, options, callback) {
       options = (options !== undefined ? options : {});
       var config = {};
       config.callback = ((callback !== undefined && typeof (callback) === 'function') ? callback : false);
-      config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
-      config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
+      config.separator = 'separator' in options ? options.separator : jQuery.csv.defaults.separator;
+      config.delimiter = 'delimiter' in options ? options.delimiter : jQuery.csv.defaults.delimiter;
       var state = (options.state !== undefined ? options.state : {});
 
       // setup
@@ -635,7 +635,7 @@ define(["../core.js"], function (jQuery) {
         state: state
       };
 
-      var entry = $.csv.parsers.parseEntry(csv, options);
+      var entry = jQuery.csv.parsers.parseEntry(csv, options);
 
       // push the value to a callback if one is defined
       if (!config.callback) {
@@ -646,7 +646,7 @@ define(["../core.js"], function (jQuery) {
     },
 
     /**
-     * $.csv.toArrays(csv)
+     * jQuery.csv.toArrays(csv)
      * Converts a CSV string to a javascript array.
      *
      * @param {String} csv The string containing the raw CSV data.
@@ -662,8 +662,8 @@ define(["../core.js"], function (jQuery) {
       options = (options !== undefined ? options : {});
       var config = {};
       config.callback = ((callback !== undefined && typeof (callback) === 'function') ? callback : false);
-      config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
-      config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
+      config.separator = 'separator' in options ? options.separator : jQuery.csv.defaults.separator;
+      config.delimiter = 'delimiter' in options ? options.delimiter : jQuery.csv.defaults.delimiter;
 
       // setup
       var data = [];
@@ -688,7 +688,7 @@ define(["../core.js"], function (jQuery) {
       }
 
       // parse the data
-      data = $.csv.parsers.parse(csv, options);
+      data = jQuery.csv.parsers.parse(csv, options);
 
       // onPostParse hook
       if (options.onPostParse !== undefined) {
@@ -704,7 +704,7 @@ define(["../core.js"], function (jQuery) {
     },
 
     /**
-     * $.csv.toObjects(csv)
+     * jQuery.csv.toObjects(csv)
      * Converts a CSV string to a javascript object.
      * @param {String} csv The string containing the raw CSV data.
      * @param {Object} [options] An object containing user-defined options.
@@ -719,9 +719,9 @@ define(["../core.js"], function (jQuery) {
       options = (options !== undefined ? options : {});
       var config = {};
       config.callback = ((callback !== undefined && typeof (callback) === 'function') ? callback : false);
-      config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
-      config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
-      config.headers = 'headers' in options ? options.headers : $.csv.defaults.headers;
+      config.separator = 'separator' in options ? options.separator : jQuery.csv.defaults.separator;
+      config.delimiter = 'delimiter' in options ? options.delimiter : jQuery.csv.defaults.delimiter;
+      config.headers = 'headers' in options ? options.headers : jQuery.csv.defaults.headers;
       options.start = 'start' in options ? options.start : 1;
 
       // account for headers
@@ -771,11 +771,11 @@ define(["../core.js"], function (jQuery) {
       }
 
       // parse the csv
-      var headerLine = $.csv.parsers.splitLines(csv, headerOptions);
-      var headers = $.csv.toArray(headerLine[0], options);
+      var headerLine = jQuery.csv.parsers.splitLines(csv, headerOptions);
+      var headers = jQuery.csv.toArray(headerLine[0], options);
 
       // fetch the data
-      lines = $.csv.parsers.splitLines(csv, options);
+      lines = jQuery.csv.parsers.splitLines(csv, options);
 
       // reset the state for re-use
       options.state.colNum = 1;
@@ -787,7 +787,7 @@ define(["../core.js"], function (jQuery) {
 
       // convert data to objects
       for (var i = 0, len = lines.length; i < len; i++) {
-        var entry = $.csv.toArray(lines[i], options);
+        var entry = jQuery.csv.toArray(lines[i], options);
         var object = {};
         for (var j = 0; j < headers.length; j++) {
           object[headers[j]] = entry[j];
@@ -816,7 +816,7 @@ define(["../core.js"], function (jQuery) {
     },
 
     /**
-     * $.csv.fromArrays(arrays)
+     * jQuery.csv.fromArrays(arrays)
      * Converts a javascript array to a CSV String.
      *
      * @param {Array} arrays An array containing an array of CSV entries.
@@ -830,8 +830,8 @@ define(["../core.js"], function (jQuery) {
       options = (options !== undefined ? options : {});
       var config = {};
       config.callback = ((callback !== undefined && typeof (callback) === 'function') ? callback : false);
-      config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
-      config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
+      config.separator = 'separator' in options ? options.separator : jQuery.csv.defaults.separator;
+      config.delimiter = 'delimiter' in options ? options.delimiter : jQuery.csv.defaults.delimiter;
 
       var output = '',
         line,
@@ -868,7 +868,7 @@ define(["../core.js"], function (jQuery) {
     },
 
     /**
-     * $.csv.fromObjects(objects)
+     * jQuery.csv.fromObjects(objects)
      * Converts a javascript dictionary to a CSV string.
      *
      * @param {Object} objects An array of objects containing the data.
@@ -893,15 +893,15 @@ define(["../core.js"], function (jQuery) {
       options = (options !== undefined ? options : {});
       var config = {};
       config.callback = ((callback !== undefined && typeof (callback) === 'function') ? callback : false);
-      config.separator = 'separator' in options ? options.separator : $.csv.defaults.separator;
-      config.delimiter = 'delimiter' in options ? options.delimiter : $.csv.defaults.delimiter;
-      config.headers = 'headers' in options ? options.headers : $.csv.defaults.headers;
+      config.separator = 'separator' in options ? options.separator : jQuery.csv.defaults.separator;
+      config.delimiter = 'delimiter' in options ? options.delimiter : jQuery.csv.defaults.delimiter;
+      config.headers = 'headers' in options ? options.headers : jQuery.csv.defaults.headers;
       config.sortOrder = 'sortOrder' in options ? options.sortOrder : 'declare';
       config.manualOrder = 'manualOrder' in options ? options.manualOrder : [];
       config.transform = options.transform;
 
       if (typeof config.manualOrder === 'string') {
-        config.manualOrder = $.csv.toArray(config.manualOrder, config);
+        config.manualOrder = jQuery.csv.toArray(config.manualOrder, config);
       }
 
       if (config.transform !== undefined) {
@@ -914,7 +914,7 @@ define(["../core.js"], function (jQuery) {
         }
       }
 
-      var props = $.csv.helpers.collectPropertyNames(objects);
+      var props = jQuery.csv.helpers.collectPropertyNames(objects);
 
       if (config.sortOrder === 'alpha') {
         props.sort();
@@ -952,14 +952,14 @@ define(["../core.js"], function (jQuery) {
       }
 
       // push the value to a callback if one is defined
-      return $.csv.fromArrays(output, options, config.callback);
+      return jQuery.csv.fromArrays(output, options, config.callback);
     }
   };
 
   // Maintenance code to maintain backward-compatibility
   // Will be removed in release 1.0
-  $.csvEntry2Array = $.csv.toArray;
-  $.csv2Array = $.csv.toArrays;
-  $.csv2Dictionary = $.csv.toObjects;
+  jQuery.csvEntry2Array = jQuery.csv.toArray;
+  jQuery.csv2Array = jQuery.csv.toArrays;
+  jQuery.csv2Dictionary = jQuery.csv.toObjects;
 
 });
