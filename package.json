@@ -1,6 +1,6 @@
 {
   "name": "jquery_helper",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main": "dist/jquery.js",
   "jsnext:main": "dist/jquery.esm.js",
   "description": "This helper bundles jQuery library plus all the jQuery and jQuery-UI plugins our app uses  in a single monolithic file.",
@@ -72,11 +72,9 @@
   "homepage": "https://github.com/HuasoFoundries/jquery_helper#readme",
   "jspm": {
     "registry": "github",
-    "main": "jquery.min.js",
+    "main": "dist/jquery.min.js",
     "format": "amd",
-    "directories": {
-      "lib": "dist"
-    },
+    "files": ["dist"],
     "dependencies": {},
     "devDependencies": {
       "plugin-babel": "npm:systemjs-plugin-babel@^0.0.17"
