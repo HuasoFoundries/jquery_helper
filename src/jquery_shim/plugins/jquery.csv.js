@@ -26,7 +26,7 @@
  * Copyrighted 2012 by Evan Plaice.
  */
 
-define(["../core.js"], function (jQuery) {
+define(["../jquery.js"], function (jQuery) {
 
 
   RegExp.escape = function (s) {

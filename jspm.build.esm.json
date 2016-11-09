@@ -1,0 +1,10 @@
+{
+
+	"packages": {
+
+		"jquery_shim": {
+			"main": "index.js",
+			"format": "esm"
+		}
+	}
+}

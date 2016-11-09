@@ -9,9 +9,12 @@ version:
 	@echo $(VERSION)
 	
 jquery:
-	grunt build:full:*:-deprecated:-manipulation/_evalUrl:-exports/amd
-	grunt build:min:*:-deprecated:-manipulation/_evalUrl:-exports/amd
+	grunt build:full:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-ajax/xhr:-manipulation/_evalUrl
+	grunt build:min:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-ajax/xhr:-manipulation/_evalUrl
 	
+
+
+	##-ajax,,-event/ajax,-effects,-effects/animatedSelector,-effects/Tween,-deprecated
 
 
 jquery_es6:

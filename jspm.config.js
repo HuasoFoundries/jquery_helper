@@ -53,6 +53,7 @@ SystemJS.config({
       "main": "index.js",
       "format": "esm"
     }
+
   },
   map: {
     "jquery": "dist/jquery.js",

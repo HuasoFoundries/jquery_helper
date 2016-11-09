@@ -5,7 +5,7 @@
  * Copyright 2015 Felipe Figueroa
  * Released under the MIT license
  */
-define(["../core.js"], function (jQuery) {
+define(["../../../node_modules/jquery/src/core"], function (jQuery) {
 
 
 	'use strict';

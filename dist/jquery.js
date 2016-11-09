@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v1.9.2 -deprecated,-manipulation/_evalUrl,-exports/amd
+ * jQuery JavaScript Library v2.0.2 -deprecated,-manipulation/_evalUrl,-exports/amd,-ajax/jsonp,-ajax/load,-ajax/parseXML,-ajax/script,-ajax/var/location,-ajax/var/nonce,-ajax/var/rquery,-ajax/xhr
  * https://jquery.com/
  *
  * Includes Sizzle.js
@@ -9,7 +9,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2016-11-09T19:46Z
+ * Date: 2016-11-09T22:03Z
  */
 
 /*!
@@ -22,44 +22,6 @@
  *
  * Date: 2016-08-08
  */
-
-/*
- * jQuery Hotkeys Plugin
- * Copyright 2010, John Resig
- * Dual licensed under the MIT or GPL Version 2 licenses.
- *
- * Based upon the plugin by Tzury Bar Yochay:
- * http://github.com/tzuryby/hotkeys
- *
- * Original idea by:
- * Binny V A, http://www.openjs.com/scripts/events/keyboard_shortcuts/
- */
-
-/*!
- * jQuery Cookie Plugin v1.4.1
- * https://github.com/carhartl/jquery-cookie
- *
- * Copyright 2013 Klaus Hartl
- * Released under the MIT license
- */
-
-/*!
- * jQuery waitforChild Plugin v0.0.1
- * https://github.com/amenadiel/jquery.waitforChild
- *
- * Copyright 2015 Felipe Figueroa
- * Released under the MIT license
- */
-
-/*!
-  SerializeJSON jQuery plugin.
-  https://github.com/marioizquierdo/jquery.serializeJSON
-  version 2.7.2 (Dec, 2015)
-
-  Copyright (c) 2012, 2015 Mario Izquierdo
-  Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
-  and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
-*/
 
 !function(global, factory) {
     "use strict";
@@ -500,21 +462,6 @@
     }
     function getWindow(elem) {
         return jQuery.isWindow(elem) ? elem : 9 === elem.nodeType && elem.defaultView;
-    }
-    function keyHandler(handleObj) {
-        if ("string" == typeof handleObj.data) {
-            var origHandler = handleObj.handler, keys = handleObj.data.toLowerCase().split(" "), textAcceptingInputTypes = [ "text", "password", "number", "email", "url", "range", "date", "month", "week", "time", "datetime", "datetime-local", "search", "color" ];
-            handleObj.handler = function(event) {
-                if (this === event.target || !(/textarea|select/i.test(event.target.nodeName) || jQuery.inArray(event.target.type, textAcceptingInputTypes) > -1)) {
-                    var special = "keypress" !== event.type && jQuery.hotkeys.specialKeys[event.which], character = String.fromCharCode(event.which).toLowerCase(), modif = "", possible = {};
-                    event.altKey && "alt" !== special && (modif += "alt+"), event.ctrlKey && "ctrl" !== special && (modif += "ctrl+"), 
-                    event.metaKey && !event.ctrlKey && "meta" !== special && (modif += "meta+"), event.shiftKey && "shift" !== special && (modif += "shift+"), 
-                    special ? possible[modif + special] = !0 : (possible[modif + character] = !0, possible[modif + jQuery.hotkeys.shiftNums[character]] = !0, 
-                    "shift+" === modif && (possible[jQuery.hotkeys.shiftNums[character]] = !0));
-                    for (var i = 0, l = keys.length; l > i; i++) if (possible[keys[i]]) return origHandler.apply(this, arguments);
-                }
-            };
-        }
     }
     function encode(s) {
         return config.raw ? s : encodeURIComponent(s);
@@ -3116,110 +3063,7 @@
     jQuery.noConflict = function(deep) {
         return window.$ === jQuery && (window.$ = _$), deep && window.jQuery === jQuery && (window.jQuery = _jQuery), 
         jQuery;
-    }, noGlobal || (window.jQuery = window.$ = jQuery), jQuery.hotkeys = {
-        version: "0.8",
-        specialKeys: {
-            8: "backspace",
-            9: "tab",
-            13: "return",
-            16: "shift",
-            17: "ctrl",
-            18: "alt",
-            19: "pause",
-            20: "capslock",
-            27: "esc",
-            32: "space",
-            33: "pageup",
-            34: "pagedown",
-            35: "end",
-            36: "home",
-            37: "left",
-            38: "up",
-            39: "right",
-            40: "down",
-            45: "insert",
-            46: "del",
-            96: "0",
-            97: "1",
-            98: "2",
-            99: "3",
-            100: "4",
-            101: "5",
-            102: "6",
-            103: "7",
-            104: "8",
-            105: "9",
-            106: "*",
-            107: "+",
-            109: "-",
-            110: ".",
-            111: "/",
-            112: "f1",
-            113: "f2",
-            114: "f3",
-            115: "f4",
-            116: "f5",
-            117: "f6",
-            118: "f7",
-            119: "f8",
-            120: "f9",
-            121: "f10",
-            122: "f11",
-            123: "f12",
-            144: "numlock",
-            145: "scroll",
-            191: "/",
-            224: "meta"
-        },
-        shiftNums: {
-            "`": "~",
-            "1": "!",
-            "2": "@",
-            "3": "#",
-            "4": "jQuery",
-            "5": "%",
-            "6": "^",
-            "7": "&",
-            "8": "*",
-            "9": "(",
-            "0": ")",
-            "-": "_",
-            "=": "+",
-            ";": ": ",
-            "'": '"',
-            ",": "<",
-            ".": ">",
-            "/": "?",
-            "\\": "|"
-        }
-    }, jQuery.each([ "keydown", "keyup", "keypress" ], function() {
-        jQuery.event.special[this] = {
-            add: keyHandler
-        };
-    });
-    var pluses = /\+/g, config = jQuery.cookie = function(key, value, options) {
-        if (void 0 !== value && !jQuery.isFunction(value)) {
-            if (options = jQuery.extend({}, config.defaults, options), "number" == typeof options.expires) {
-                var days = options.expires, t = options.expires = new Date();
-                t.setTime(+t + 864e5 * days);
-            }
-            return document.cookie = [ encode(key), "=", stringifyCookieValue(value), options.expires ? "; expires=" + options.expires.toUTCString() : "", options.path ? "; path=" + options.path : "", options.domain ? "; domain=" + options.domain : "", options.secure ? "; secure" : "" ].join("");
-        }
-        for (var result = key ? void 0 : {}, cookies = document.cookie ? document.cookie.split("; ") : [], i = 0, l = cookies.length; l > i; i++) {
-            var parts = cookies[i].split("="), name = decode(parts.shift()), cookie = parts.join("=");
-            if (key && key === name) {
-                result = read(cookie, value);
-                break;
-            }
-            key || void 0 === (cookie = read(cookie)) || (result[name] = cookie);
-        }
-        return result;
-    };
-    return config.defaults = {}, jQuery.removeCookie = function(key, options) {
-        return void 0 === jQuery.cookie(key) ? !1 : (jQuery.cookie(key, "", jQuery.extend({}, options, {
-            expires: -1
-        })), !jQuery.cookie(key));
-    }, jQuery.fn.waitforChild = function(onFound, querySelector, once) {
+    }, noGlobal || (window.jQuery = window.$ = jQuery), jQuery.fn.waitforChild = function(onFound, querySelector, once) {
         "object" == typeof arguments[0] && (once = arguments[0].once || !1, querySelector = arguments[0].querySelector || null, 
         onFound = arguments[0].onFound), onFound || (onFound = function() {});
         var jQuerythis = this;
@@ -3248,6 +3092,29 @@
             });
         }
         return jQuerythis;
+    };
+    var pluses = /\+/g, config = jQuery.cookie = function(key, value, options) {
+        if (void 0 !== value && !jQuery.isFunction(value)) {
+            if (options = jQuery.extend({}, config.defaults, options), "number" == typeof options.expires) {
+                var days = options.expires, t = options.expires = new Date();
+                t.setTime(+t + 864e5 * days);
+            }
+            return document.cookie = [ encode(key), "=", stringifyCookieValue(value), options.expires ? "; expires=" + options.expires.toUTCString() : "", options.path ? "; path=" + options.path : "", options.domain ? "; domain=" + options.domain : "", options.secure ? "; secure" : "" ].join("");
+        }
+        for (var result = key ? void 0 : {}, cookies = document.cookie ? document.cookie.split("; ") : [], i = 0, l = cookies.length; l > i; i++) {
+            var parts = cookies[i].split("="), name = decode(parts.shift()), cookie = parts.join("=");
+            if (key && key === name) {
+                result = read(cookie, value);
+                break;
+            }
+            key || void 0 === (cookie = read(cookie)) || (result[name] = cookie);
+        }
+        return result;
+    };
+    return config.defaults = {}, jQuery.removeCookie = function(key, options) {
+        return void 0 === jQuery.cookie(key) ? !1 : (jQuery.cookie(key, "", jQuery.extend({}, options, {
+            expires: -1
+        })), !jQuery.cookie(key));
     }, jQuery.fn.serializeJSON = function(options) {
         var f, jQueryform, opts, formAsArray, serializedObject, name, value, _obj, nameWithNoType, type, keys;
         return f = jQuery.serializeJSON, jQueryform = this, opts = f.setupOpts(options), 
@@ -3392,16 +3259,5 @@
             "" === nextKey ? (f.isUndefined(o[key]) || !jQuery.isArray(o[key])) && (o[key] = []) : opts.useIntKeysAsArrayIndex && f.isValidArrayIndex(nextKey) ? (f.isUndefined(o[key]) || !jQuery.isArray(o[key])) && (o[key] = []) : (f.isUndefined(o[key]) || !f.isObject(o[key])) && (o[key] = {}), 
             tail = keys.slice(1), f.deepSet(o[key], tail, value, opts));
         }
-    }, function($) {
-        var originalXhr = $.ajaxSettings.xhr;
-        $.ajaxSetup({
-            progress: function(e) {},
-            xhr: function() {
-                var req = originalXhr(), _this = this;
-                return req && "function" == typeof req.addEventListener && req.addEventListener("progress", function(evt) {
-                    _this.progress && _this.progress(evt);
-                }, !1), req;
-            }
-        });
-    }(jQuery), jQuery;
+    }, jQuery;
 });

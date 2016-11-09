@@ -1,0 +1,10 @@
+{
+
+	"packages": {
+
+		"jquery_shim": {
+			"main": "jquery_shim.js",
+			"format": "amd"
+		}
+	}
+}

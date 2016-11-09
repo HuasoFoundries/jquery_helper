@@ -7,7 +7,7 @@
   Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
   and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
 */
-define(["../core.js"], function (jQuery) {
+define(["../../../node_modules/jquery/src/core"], function (jQuery) {
 
 
   "use strict";

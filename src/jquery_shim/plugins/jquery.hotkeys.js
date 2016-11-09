@@ -10,7 +10,7 @@
  * Binny V A, http://www.openjs.com/scripts/events/keyboard_shortcuts/
  */
 
-define(["../core.js"], function (jQuery) {
+define(["../jquery.js"], function (jQuery) {
 
 
 
