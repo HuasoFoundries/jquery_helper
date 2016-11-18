@@ -3,7 +3,7 @@ VERSION = $(shell cat package.json | sed -n 's/.*"version": "\([^"]*\)",/\1/p')
 SHELL = /usr/bin/env bash
 
 default: build
-.PHONY: default build install tag jquery material
+.PHONY: default build install tag jquery material test release
 
 version:
 	@echo $(VERSION)
@@ -12,9 +12,6 @@ jquery:
 	grunt build:full:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-ajax/xhr:-manipulation/_evalUrl
 	grunt build:min:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-ajax/xhr:-manipulation/_evalUrl
 	
-
-
-	##-ajax,,-event/ajax,-effects,-effects/animatedSelector,-effects/Tween,-deprecated
 
 
 jquery_es6:
@@ -27,6 +24,8 @@ build: jquery jquery_es6 material material_helper bootstrap_helper
 material:	
 	grunt concat
 
+test:
+	grunt test:fast
 	
 
 material_helper:	

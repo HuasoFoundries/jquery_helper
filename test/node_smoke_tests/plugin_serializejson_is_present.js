@@ -13,5 +13,6 @@ require("jsdom").env("", function (errors, window) {
 
 	ensureJQuery(jQuery);
 
-	assert(typeof jQuery.fn.waitforChild === 'function', "jQuery.fn.waitforChild is a function");
+
+	assert(typeof jQuery.fn.serializeJSON === 'function', "jQuery.fn.serializeJSON is an object in CommonJS environment.");
 });
