@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library v2.0.2 -deprecated,-manipulation/_evalUrl,-exports/amd,-ajax/jsonp,-ajax/load,-ajax/parseXML,-ajax/script,-ajax/var/location,-ajax/var/nonce,-ajax/var/rquery,-ajax/xhr
+ * jQuery JavaScript Library v2.0.4 -deprecated,-manipulation/_evalUrl,-exports/amd,-ajax/jsonp,-ajax/load,-ajax/parseXML,-ajax/script,-ajax/var/location,-ajax/var/nonce,-ajax/var/rquery,-ajax/xhr
  * https://jquery.com/
  *
  * Includes Sizzle.js
@@ -9,7 +9,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2016-11-09T22:03Z
+ * Date: 2017-01-03T22:04Z
  */
 
 /*!
