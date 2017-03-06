@@ -5045,7 +5045,7 @@
             function hideDropdown() {
                 isFocused = !1, activates.fadeOut(options.outDuration), activates.removeClass("active"), 
                 origin.removeClass("active"), setTimeout(function() {
-                    activates.css("max-height", "");
+                    activates.css("max-height", "").css("display", "none");
                 }, options.outDuration);
             }
             var origin = $$1(this), options = $$1.extend({}, defaults, option), isFocused = !1, activates = $$1("#" + origin.attr("data-activates"));

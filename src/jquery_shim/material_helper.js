@@ -571,7 +571,7 @@ $$1.fn.dropdown = function (option) {
       activates.removeClass('active');
       origin.removeClass('active');
       setTimeout(function () {
-        activates.css('max-height', '');
+        activates.css('max-height', '').css('display', 'none');
       }, options.outDuration);
     }
 
