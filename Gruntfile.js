@@ -24,7 +24,7 @@ module.exports = function (grunt) {
 			},
 			nodeSmokeTests: {
 				files: {
-					"test/node_smoke_tests/lib/ensure_iterability.js": "test/node_smoke_tests/lib/ensure_iterability_es6.js"
+					"test/ig_jquery/node_smoke_tests/lib/ensure_iterability.js": "test/ig_jquery/node_smoke_tests/lib/ensure_iterability_es6.js"
 				}
 			}
 		},
@@ -152,25 +152,29 @@ module.exports = function (grunt) {
 				}
 			}
 		},
-		watch: {
-			files: ["<%= eslint.dev.src %>"],
-			tasks: ["dev"]
-		},
 	});
 
 	grunt.loadNpmTasks('grunt-babel');
 	grunt.loadNpmTasks('grunt-compare-size');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
-	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-eslint');
-	grunt.loadNpmTasks('grunt-jsonlint');
-	grunt.loadNpmTasks('grunt-newer');
-	grunt.loadNpmTasks('grunt-npmcopy');
+	//grunt.loadNpmTasks('grunt-eslint');
+	//grunt.loadNpmTasks('grunt-jsonlint');
+	//grunt.loadNpmTasks('grunt-newer');
+	//grunt.loadNpmTasks('grunt-npmcopy');
 
 	grunt.loadTasks('grunt_tasks');
 
 
-	grunt.registerTask("test:fast", "node_smoke_tests");
+	grunt.registerTask("test:fast", "jquery_node_smoke_tests");
+
+	grunt.registerTask("test:material", "material_helper_smoke_tests");
+
+	grunt.registerTask("test:bootstrap", "bootstrap_helper_smoke_tests");
+
+
+
+
+
 	grunt.registerTask("test:slow", "promises_aplus_tests");
 
 	grunt.registerTask("test", [

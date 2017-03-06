@@ -4,7 +4,7 @@ module.exports = function (grunt) {
 
 	var fs = require("fs"),
 		spawnTest = require("./lib/spawn_test.js"),
-		testsDir = "./test/ig_jquery/node_smoke_tests/",
+		testsDir = "./test/bootstrap_helper/",
 		nodeSmokeTests = ["babel:nodeSmokeTests"];
 
 	// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
@@ -19,14 +19,14 @@ module.exports = function (grunt) {
 				/\.js$/.test(testFilePath);
 		})
 		.forEach(function (testFilePath) {
-			var taskName = "node_" + testFilePath.replace(/\.js$/, "");
+			var taskName = "bootstrap_" + testFilePath.replace(/\.js$/, "");
 
 			grunt.registerTask(taskName, function () {
-				spawnTest(this.async(), "test/ig_jquery/node_smoke_tests/" + testFilePath);
+				spawnTest(this.async(), "test/bootstrap_helper/" + testFilePath);
 			});
 
 			nodeSmokeTests.push(taskName);
 		});
 
-	grunt.registerTask("jquery_node_smoke_tests", nodeSmokeTests);
+	grunt.registerTask("bootstrap_helper_smoke_tests", nodeSmokeTests);
 };
