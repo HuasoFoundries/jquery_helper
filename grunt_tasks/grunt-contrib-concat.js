@@ -11,6 +11,7 @@ module.exports = function (grunt) {
 
 					// Replaces head with my own code
 					if (filepath.indexOf('src/hammer.prefix.js') !== -1) {
+						grunt.log.writeln('Generating: ' + 'src/libs/hammer.es6.js');
 
 						var modified_src = "var $_GLOBAL = typeof window !== 'undefined' ? window : ";
 						modified_src = modified_src + '\n' + "typeof global !== 'undefined' ? global :    Function('return this')();";
@@ -23,7 +24,7 @@ module.exports = function (grunt) {
 
 					} else if (filepath.indexOf('src/hammer.suffix.js') !== -1) {
 
-						grunt.log.writeln('CREATING: ' + 'src/libs/hammer.es6.js');
+
 						return "export {Hammer};" + '\n' + "export default Hammer;";
 					} else {
 						return src.replace('window', '$_GLOBAL');
@@ -54,6 +55,10 @@ module.exports = function (grunt) {
 					block: true
 				},
 				process: function (src, filepath) {
+
+					if (filepath.indexOf('hammer_initial') !== -1) {
+						grunt.log.writeln('Generating: ' + 'src/libs/materialize_hammer_fns.js');
+					}
 					var explodedpath = filepath.split('/'),
 						filename = explodedpath.pop().replace('.js', ''),
 						modified_src = '',
@@ -133,6 +138,12 @@ module.exports = function (grunt) {
 					block: true
 				},
 				process: function (src, filepath) {
+
+					if (filepath.indexOf('materialize_initial.js') !== -1) {
+
+						grunt.log.writeln('Generating ', 'src/jquery_shim/jquery_ui/materialize.js');
+					}
+
 					var explodedpath = filepath.split('/'),
 						filename = explodedpath.pop().replace('.js', ''),
 						modified_src = '',

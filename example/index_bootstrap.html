@@ -58,12 +58,21 @@
 
         jQuery("ul, li").disableSelection();
 
-        jQuery("#datepicker_ini").datepicker({
-            "dateFormat": "dd/mm/yy"
-        });
+        var today = new Date();
         jQuery("#datepicker_fin").datepicker({
-            "dateFormat": "dd/mm/yy"
-        });
+            "dateFormat": "dd/mm/yy",
+            changeMonth: true,
+            changeYear: true
+        }).datepicker("setDate", today);
+
+        today.setMonth(today.getMonth() - 1);
+
+        jQuery("#datepicker_ini").datepicker({
+            "dateFormat": "dd/mm/yy",
+            changeMonth: true,
+            changeYear: true,
+        }).datepicker("setDate", today);
+
 
         jQuery("#resizable").resizable({
                 maxHeight: 250,
@@ -101,11 +110,14 @@
     <div id="resizable" class="ui-widget-content">
         <h4 class="ui-widget-header">Resize larger / smaller</h4>
     </div>
-    <p>Initial Date:
-        <input type="text" id="datepicker_ini">
-    </p>
-    <p>Final Date:
-        <input type="text" id="datepicker_fin">
+    <p>
+        <br>
+        <label for="datepicker_ini">Initial Date:
+            <input type="text" id="datepicker_ini">
+        </label>
+        <label for="datepicker_fin">Final Date:
+            <input type="text" id="datepicker_fin">
+        </label>
     </p>
 </body>
 
