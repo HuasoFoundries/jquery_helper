@@ -104,8 +104,8 @@ module.exports = function (grunt) {
 
 						grunt.log.writeln('Generating ', 'src/jquery_shim/jquery_ui/velocity.js');
 
-						var modified_src = (src.split('return function (global, window, document, undefined) {')[1])
-							.split('}((window.jQuery || window.Zepto || window), window, document);');
+						var modified_src = (src.split('return function(global, window, document, undefined) {')[1])
+							.split('}((window.jQuery || window.Zepto || window), window, (window ? window.document : undefined));');
 
 
 						var intercept_return_final = modified_src[0].replace('return Velocity;', '').split('var DURATION_DEFAULT');
@@ -117,7 +117,12 @@ module.exports = function (grunt) {
 
 
 
-						return modified_src.replace(/\|\| rAFShim/g, '').replace(/\/\*[^\*\/]+\*\//g, '');
+						var penultimo = modified_src.replace(/\|\| rAFShim/g, '').replace(/\/\*[^\*\/]+\*\//g, '');
+
+						return penultimo
+							.replace(/Data/g, 'VData')
+							.replace(/\$\./g, 'jQuery.')
+							.replace(/\$\(/g, 'jQuery(');
 
 					} else {
 						return src;
@@ -176,6 +181,7 @@ module.exports = function (grunt) {
 				"node_modules/materialize-css/js/cards.js",
 				"node_modules/materialize-css/js/chips.js",
 				"node_modules/materialize-css/js/buttons.js",
+				"node_modules/materialize-css/js/forms.js",
 				"src/helpers/waves.js"
 			],
 			// the location of the resulting JS file

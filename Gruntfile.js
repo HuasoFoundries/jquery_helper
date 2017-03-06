@@ -119,23 +119,18 @@ module.exports = function (grunt) {
 					"selector"
 				],
 				rjsconfig: {
-					generateSourceMaps: false,
+					generateSourceMaps: true,
+					preserveLicenseComments: false,
 					optimize: "uglify",
 					uglify: {
-						mangle: true,
-						screw_ie8: true,
-						stats: true,
-						lint: true,
-						verbose: true,
-						compress: {
-							dead_code: true,
-							unused: true,
-							join_vars: true
-
-						},
+						//Example of a specialized config. If you are fine
+						//with the default options, no need to specify
+						//any of these properties.
 						output: {
-							beautify: false
-						}
+							beautify: true
+						},
+						mangle: false,
+						width: 300
 					}
 
 				},
@@ -164,23 +159,18 @@ module.exports = function (grunt) {
 					"selector"
 				],
 				rjsconfig: {
-					generateSourceMaps: false,
+					generateSourceMaps: true,
+					preserveLicenseComments: false,
 					optimize: "uglify",
 					uglify: {
-						mangle: true,
-						screw_ie8: true,
-						stats: true,
-						lint: true,
-						verbose: true,
-						compress: {
-							dead_code: true,
-							unused: true,
-							join_vars: true
-
-						},
+						//Example of a specialized config. If you are fine
+						//with the default options, no need to specify
+						//any of these properties.
 						output: {
-							beautify: false
-						}
+							beautify: true
+						},
+						mangle: false,
+						width: 300
 					}
 
 				},

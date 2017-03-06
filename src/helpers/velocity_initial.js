@@ -1,5 +1,7 @@
 /*! VelocityJS.org (1.2.3). (C) 2014 Julian Shapiro. MIT @license: en.wikipedia.org/wiki/MIT_License */
-import $ from 'jquery';
+import jQuery from 'jquery';
+var $ = jQuery,
+    navigator = window.navigator;
 
 const requestAnimationFrame = function (callback, element) {
         var currTime = new Date().getTime();
@@ -81,7 +83,7 @@ function sanitizeElements(elements) {
     /* Unwrap jQuery/Zepto objects. */
     if (Type.isWrapped(elements)) {
         elements = [].slice.call(elements);
-        /* Wrap a single element in an array so that $.each() can iterate with the element instead of its node's children. */
+        /* Wrap a single element in an array so that jQuery.each() can iterate with the element instead of its node's children. */
     } else if (Type.isNode(elements)) {
         elements = [elements];
     }
@@ -105,7 +107,7 @@ var Type = {
     /* Copyright Martin Bohm. MIT License: https://gist.github.com/Tomalak/818a78a226a0738eaade */
     isNodeList: function (variable) {
         return typeof variable === "object" &&
-            /^\[object (HTMLCollection|NodeList|Object)\]$/.test(Object.prototype.toString.call(variable)) &&
+            /^\[object (HTMLCollection|NodeList|Object)\]jQuery/.test(Object.prototype.toString.call(variable)) &&
             variable.length !== undefined &&
             (variable.length === 0 || (typeof variable[0] === "object" && variable[0].nodeType > 0));
     },

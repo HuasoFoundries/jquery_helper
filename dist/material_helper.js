@@ -1,241 +1,296 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('jquery')) :
-    typeof define === 'function' && define.amd ? define(['exports', 'jquery'], factory) :
-    (factory((global.material_helper = global.material_helper || {}),global.$));
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('jquery')) :
+  typeof define === 'function' && define.amd ? define(['exports', 'jquery'], factory) :
+  (factory((global.material_helper = global.material_helper || {}),global.$));
 }(this, (function (exports,$) { 'use strict';
 
 $ = 'default' in $ ? $['default'] : $;
 
-/*! VelocityJS.org (1.2.3). (C) 2014 Julian Shapiro. MIT @license: en.wikipedia.org/wiki/MIT_License */var requestAnimationFrame=function requestAnimationFrame(callback,element){var currTime=new Date().getTime();var timeToCall=Math.max(0,16-(currTime-lastTime));var id=window.setTimeout(function(){callback(currTime+timeToCall);},timeToCall);lastTime=currTime+timeToCall;return id;}; var cancelAnimationFrame=function cancelAnimationFrame(id){clearTimeout(id);};(function(self,raf,caf){var lastTime=0;var vendors=['ms','moz','webkit','o'];for(var x=0;x<vendors.length&&!self.requestAnimationFrame;++x){self.requestAnimationFrame=self[vendors[x]+'RequestAnimationFrame'];self.cancelAnimationFrame=self[vendors[x]+'CancelAnimationFrame']||self[vendors[x]+'CancelRequestAnimationFrame'];}if(!self.requestAnimationFrame)self.requestAnimationFrame=raf;if(!self.cancelAnimationFrame)self.cancelAnimationFrame=caf;})(window,requestAnimationFrame,cancelAnimationFrame); /* IE detection. Gist: https://gist.github.com/julianshapiro/9098609 */var IE=function(docobj){if(docobj.documentMode){return docobj.documentMode;}else {for(var i=7;i>4;i--){var div=docobj.createElement("div");div.innerHTML="<!--[if IE "+i+"]><span></span><![endif]-->";if(div.getElementsByTagName("span").length){div=null;return i;}}}return undefined;}(window.document);function compactSparseArray(array){var index=-1,length=array?array.length:0,result=[];while(++index<length){var value=array[index];if(value){result.push(value);}}return result;}function sanitizeElements(elements){ /* Unwrap jQuery/Zepto objects. */if(Type.isWrapped(elements)){elements=[].slice.call(elements); /* Wrap a single element in an array so that $.each() can iterate with the element instead of its node's children. */}else if(Type.isNode(elements)){elements=[elements];}return elements;}var Type={isString:function isString(variable){return typeof variable==="string";},isArray:Array.isArray||function(variable){return Object.prototype.toString.call(variable)==="[object Array]";},isFunction:function isFunction(variable){return Object.prototype.toString.call(variable)==="[object Function]";},isNode:function isNode(variable){return variable&&variable.nodeType;}, /* Copyright Martin Bohm. MIT License: https://gist.github.com/Tomalak/818a78a226a0738eaade */isNodeList:function isNodeList(variable){return typeof variable==="object"&&/^\[object (HTMLCollection|NodeList|Object)\]$/.test(Object.prototype.toString.call(variable))&&variable.length!==undefined&&(variable.length===0||typeof variable[0]==="object"&&variable[0].nodeType>0);}, /* Determine if variable is a wrapped jQuery or Zepto element. */isWrapped:function isWrapped(variable){return variable&&(variable.jquery||window.Zepto&&window.Zepto.zepto.isZ(variable));},isSVG:function isSVG(variable){return window.SVGElement&&variable instanceof window.SVGElement;},isEmptyObject:function isEmptyObject(variable){for(var name in variable){return false;}return true;}};var DURATION_DEFAULT=400; var EASING_DEFAULT="swing"; /*************
-        State
-    *************/var Velocity={State:{isMobile:/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),isAndroid:/Android/i.test(navigator.userAgent),isGingerbread:/Android 2\.3\.[3-7]/i.test(navigator.userAgent),isChrome:window.chrome,isFirefox:/Firefox/i.test(navigator.userAgent),prefixElement:document.createElement("div"),prefixMatches:{},scrollAnchor:null,scrollPropertyLeft:null,scrollPropertyTop:null,isTicking:false,calls:[]},CSS:{},Utilities:$,Redirects:{},Easings:{},Promise:window.Promise,defaults:{queue:"",duration:DURATION_DEFAULT,easing:EASING_DEFAULT,begin:undefined,complete:undefined,progress:undefined,display:undefined,visibility:undefined,loop:false,delay:false,mobileHA:true,_cacheValues:true},init:function init(element){$.data(element,"velocity",{isSVG:Type.isSVG(element),isAnimating:false, /* A reference to the element's live computedStyle object. Learn more here: https://developer.mozilla.org/en/docs/Web/API/window.getComputedStyle */computedStyle:null,tweensContainer:null,rootPropertyValueCache:{},transformCache:{}});}, /* A parallel to jQuery's $.css(), used for getting/setting Velocity's hooked CSS properties. */hook:null,mock:false,version:{major:1,minor:2,patch:2},debug:false}; /* Retrieve the appropriate scroll anchor and property name for the browser: https://developer.mozilla.org/en-US/docs/Web/API/Window.scrollY */if(window.pageYOffset!==undefined){Velocity.State.scrollAnchor=window;Velocity.State.scrollPropertyLeft="pageXOffset";Velocity.State.scrollPropertyTop="pageYOffset";}else {Velocity.State.scrollAnchor=document.documentElement||document.body.parentNode||document.body;Velocity.State.scrollPropertyLeft="scrollLeft";Velocity.State.scrollPropertyTop="scrollTop";}function Data(element){var response=$.data(element,"velocity");return response===null?undefined:response;} /**************
-        Easing
-    **************/function generateStep(steps){return function(p){return Math.round(p*steps)*(1/steps);};} /* Bezier curve function generator. Copyright Gaetan Renaudeau. MIT License: http://en.wikipedia.org/wiki/MIT_License */function generateBezier(mX1,mY1,mX2,mY2){var NEWTON_ITERATIONS=4,NEWTON_MIN_SLOPE=0.001,SUBDIVISION_PRECISION=0.0000001,SUBDIVISION_MAX_ITERATIONS=10,kSplineTableSize=11,kSampleStepSize=1.0/(kSplineTableSize-1.0),float32ArraySupported="Float32Array" in window;if(arguments.length!==4){return false;}for(var i=0;i<4;++i){if(typeof arguments[i]!=="number"||isNaN(arguments[i])||!isFinite(arguments[i])){return false;}}mX1=Math.min(mX1,1);mX2=Math.min(mX2,1);mX1=Math.max(mX1,0);mX2=Math.max(mX2,0);var mSampleValues=float32ArraySupported?new Float32Array(kSplineTableSize):new Array(kSplineTableSize);function A(aA1,aA2){return 1.0-3.0*aA2+3.0*aA1;}function B(aA1,aA2){return 3.0*aA2-6.0*aA1;}function C(aA1){return 3.0*aA1;}function calcBezier(aT,aA1,aA2){return ((A(aA1,aA2)*aT+B(aA1,aA2))*aT+C(aA1))*aT;}function getSlope(aT,aA1,aA2){return 3.0*A(aA1,aA2)*aT*aT+2.0*B(aA1,aA2)*aT+C(aA1);}function newtonRaphsonIterate(aX,aGuessT){for(var i=0;i<NEWTON_ITERATIONS;++i){var currentSlope=getSlope(aGuessT,mX1,mX2);if(currentSlope===0.0)return aGuessT;var currentX=calcBezier(aGuessT,mX1,mX2)-aX;aGuessT-=currentX/currentSlope;}return aGuessT;}function calcSampleValues(){for(var i=0;i<kSplineTableSize;++i){mSampleValues[i]=calcBezier(i*kSampleStepSize,mX1,mX2);}}function binarySubdivide(aX,aA,aB){var currentX,currentT,i=0;do {currentT=aA+(aB-aA)/2.0;currentX=calcBezier(currentT,mX1,mX2)-aX;if(currentX>0.0){aB=currentT;}else {aA=currentT;}}while(Math.abs(currentX)>SUBDIVISION_PRECISION&&++i<SUBDIVISION_MAX_ITERATIONS);return currentT;}function getTForX(aX){var intervalStart=0.0,currentSample=1,lastSample=kSplineTableSize-1;for(;currentSample!=lastSample&&mSampleValues[currentSample]<=aX;++currentSample){intervalStart+=kSampleStepSize;}--currentSample;var dist=(aX-mSampleValues[currentSample])/(mSampleValues[currentSample+1]-mSampleValues[currentSample]),guessForT=intervalStart+dist*kSampleStepSize,initialSlope=getSlope(guessForT,mX1,mX2);if(initialSlope>=NEWTON_MIN_SLOPE){return newtonRaphsonIterate(aX,guessForT);}else if(initialSlope==0.0){return guessForT;}else {return binarySubdivide(aX,intervalStart,intervalStart+kSampleStepSize);}}var _precomputed=false;function precompute(){_precomputed=true;if(mX1!=mY1||mX2!=mY2)calcSampleValues();}var f=function f(aX){if(!_precomputed)precompute();if(mX1===mY1&&mX2===mY2)return aX;if(aX===0)return 0;if(aX===1)return 1;return calcBezier(getTForX(aX),mY1,mY2);};f.getControlPoints=function(){return [{x:mX1,y:mY1},{x:mX2,y:mY2}];};var str="generateBezier("+[mX1,mY1,mX2,mY2]+")";f.toString=function(){return str;};return f;} /* Runge-Kutta spring physics function generator. Adapted from Framer.js, copyright Koen Bok. MIT License: http://en.wikipedia.org/wiki/MIT_License */var generateSpringRK4=function(){function springAccelerationForState(state){return -state.tension*state.x-state.friction*state.v;}function springEvaluateStateWithDerivative(initialState,dt,derivative){var state={x:initialState.x+derivative.dx*dt,v:initialState.v+derivative.dv*dt,tension:initialState.tension,friction:initialState.friction};return {dx:state.v,dv:springAccelerationForState(state)};}function springIntegrateState(state,dt){var a={dx:state.v,dv:springAccelerationForState(state)},b=springEvaluateStateWithDerivative(state,dt*0.5,a),c=springEvaluateStateWithDerivative(state,dt*0.5,b),d=springEvaluateStateWithDerivative(state,dt,c),dxdt=1.0/6.0*(a.dx+2.0*(b.dx+c.dx)+d.dx),dvdt=1.0/6.0*(a.dv+2.0*(b.dv+c.dv)+d.dv);state.x=state.x+dxdt*dt;state.v=state.v+dvdt*dt;return state;}return function springRK4Factory(tension,friction,duration){var initState={x:-1,v:0,tension:null,friction:null},path=[0],time_lapsed=0,tolerance=1/10000,DT=16/1000,have_duration,dt,last_state;tension=parseFloat(tension)||500;friction=parseFloat(friction)||20;duration=duration||null;initState.tension=tension;initState.friction=friction;have_duration=duration!==null;if(have_duration){time_lapsed=springRK4Factory(tension,friction);dt=time_lapsed/duration*DT;}else {dt=DT;}while(true){ /* Next/step function .*/last_state=springIntegrateState(last_state||initState,dt);path.push(1+last_state.x);time_lapsed+=16;if(!(Math.abs(last_state.x)>tolerance&&Math.abs(last_state.v)>tolerance)){break;}}return !have_duration?time_lapsed:function(percentComplete){return path[percentComplete*(path.length-1)|0];};};}();Velocity.Easings={linear:function linear(p){return p;},swing:function swing(p){return 0.5-Math.cos(p*Math.PI)/2;},spring:function spring(p){return 1-Math.cos(p*4.5*Math.PI)*Math.exp(-p*6);}};$.each([["ease",[0.25,0.1,0.25,1.0]],["ease-in",[0.42,0.0,1.00,1.0]],["ease-out",[0.00,0.0,0.58,1.0]],["ease-in-out",[0.42,0.0,0.58,1.0]],["easeInSine",[0.47,0,0.745,0.715]],["easeOutSine",[0.39,0.575,0.565,1]],["easeInOutSine",[0.445,0.05,0.55,0.95]],["easeInQuad",[0.55,0.085,0.68,0.53]],["easeOutQuad",[0.25,0.46,0.45,0.94]],["easeInOutQuad",[0.455,0.03,0.515,0.955]],["easeInCubic",[0.55,0.055,0.675,0.19]],["easeOutCubic",[0.215,0.61,0.355,1]],["easeInOutCubic",[0.645,0.045,0.355,1]],["easeInQuart",[0.895,0.03,0.685,0.22]],["easeOutQuart",[0.165,0.84,0.44,1]],["easeInOutQuart",[0.77,0,0.175,1]],["easeInQuint",[0.755,0.05,0.855,0.06]],["easeOutQuint",[0.23,1,0.32,1]],["easeInOutQuint",[0.86,0,0.07,1]],["easeInExpo",[0.95,0.05,0.795,0.035]],["easeOutExpo",[0.19,1,0.22,1]],["easeInOutExpo",[1,0,0,1]],["easeInCirc",[0.6,0.04,0.98,0.335]],["easeOutCirc",[0.075,0.82,0.165,1]],["easeInOutCirc",[0.785,0.135,0.15,0.86]]],function(i,easingArray){Velocity.Easings[easingArray[0]]=generateBezier.apply(null,easingArray[1]);});function getEasing(value,duration){var easing=value; /* The easing option can either be a string that references a pre-registered easing,
-           or it can be a two-/four-item array of integers to be converted into a bezier/spring function. */if(Type.isString(value)){if(!Velocity.Easings[value]){easing=false;}}else if(Type.isArray(value)&&value.length===1){easing=generateStep.apply(null,value);}else if(Type.isArray(value)&&value.length===2){easing=generateSpringRK4.apply(null,value.concat([duration]));}else if(Type.isArray(value)&&value.length===4){easing=generateBezier.apply(null,value);}else {easing=false;}if(easing===false){if(Velocity.Easings[Velocity.defaults.easing]){easing=Velocity.defaults.easing;}else {easing=EASING_DEFAULT;}}return easing;} /*****************
-        CSS Stack
-    *****************/var CSS=Velocity.CSS={ /*************
-            RegEx
-        *************/RegEx:{isHex:/^#([A-f\d]{3}){1,2}$/i,valueUnwrap:/^[A-z]+\((.*)\)$/i,wrappedValueAlreadyExtracted:/[0-9.]+ [0-9.]+ [0-9.]+( [0-9.]+)?/,valueSplit:/([A-z]+\(.+\))|(([A-z0-9#-.]+?)(?=\s|$))/ig}, /************
-            Lists
-        ************/Lists:{colors:["fill","stroke","stopColor","color","backgroundColor","borderColor","borderTopColor","borderRightColor","borderBottomColor","borderLeftColor","outlineColor"],transformsBase:["translateX","translateY","scale","scaleX","scaleY","skewX","skewY","rotateZ"],transforms3D:["transformPerspective","translateZ","scaleZ","rotateX","rotateY"]}, /************
-            Hooks
-        ************/Hooks:{ /********************
-                Registration
-            ********************/templates:{"textShadow":["Color X Y Blur","black 0px 0px 0px"],"boxShadow":["Color X Y Blur Spread","black 0px 0px 0px 0px"],"clip":["Top Right Bottom Left","0px 0px 0px 0px"],"backgroundPosition":["X Y","0% 0%"],"transformOrigin":["X Y Z","50% 50% 0px"],"perspectiveOrigin":["X Y","50% 50%"]},registered:{},register:function register(){for(var i=0;i<CSS.Lists.colors.length;i++){var rgbComponents=CSS.Lists.colors[i]==="color"?"0 0 0 1":"255 255 255 1";CSS.Hooks.templates[CSS.Lists.colors[i]]=["Red Green Blue Alpha",rgbComponents];}var rootProperty,hookTemplate,hookNames;if(IE){for(rootProperty in CSS.Hooks.templates){hookTemplate=CSS.Hooks.templates[rootProperty];hookNames=hookTemplate[0].split(" ");var defaultValues=hookTemplate[1].match(CSS.RegEx.valueSplit);if(hookNames[0]==="Color"){hookNames.push(hookNames.shift());defaultValues.push(defaultValues.shift());CSS.Hooks.templates[rootProperty]=[hookNames.join(" "),defaultValues.join(" ")];}}}for(rootProperty in CSS.Hooks.templates){hookTemplate=CSS.Hooks.templates[rootProperty];hookNames=hookTemplate[0].split(" ");for(var i in hookNames){var fullHookName=rootProperty+hookNames[i],hookPosition=i;CSS.Hooks.registered[fullHookName]=[rootProperty,hookPosition];}}}, /*****************************
-               Injection and Extraction
-            *****************************/getRoot:function getRoot(property){var hookData=CSS.Hooks.registered[property];if(hookData){return hookData[0];}else {return property;}},cleanRootPropertyValue:function cleanRootPropertyValue(rootProperty,rootPropertyValue){if(CSS.RegEx.valueUnwrap.test(rootPropertyValue)){rootPropertyValue=rootPropertyValue.match(CSS.RegEx.valueUnwrap)[1];}if(CSS.Values.isCSSNullValue(rootPropertyValue)){rootPropertyValue=CSS.Hooks.templates[rootProperty][1];}return rootPropertyValue;},extractValue:function extractValue(fullHookName,rootPropertyValue){var hookData=CSS.Hooks.registered[fullHookName];if(hookData){var hookRoot=hookData[0],hookPosition=hookData[1];rootPropertyValue=CSS.Hooks.cleanRootPropertyValue(hookRoot,rootPropertyValue);return rootPropertyValue.toString().match(CSS.RegEx.valueSplit)[hookPosition];}else {return rootPropertyValue;}},injectValue:function injectValue(fullHookName,hookValue,rootPropertyValue){var hookData=CSS.Hooks.registered[fullHookName];if(hookData){var hookRoot=hookData[0],hookPosition=hookData[1],rootPropertyValueParts,rootPropertyValueUpdated;rootPropertyValue=CSS.Hooks.cleanRootPropertyValue(hookRoot,rootPropertyValue);rootPropertyValueParts=rootPropertyValue.toString().match(CSS.RegEx.valueSplit);rootPropertyValueParts[hookPosition]=hookValue;rootPropertyValueUpdated=rootPropertyValueParts.join(" ");return rootPropertyValueUpdated;}else {return rootPropertyValue;}}}, /*******************
-           Normalizations
-        *******************/Normalizations:{registered:{clip:function clip(type,element,propertyValue){switch(type){case "name":return "clip";case "extract":var extracted;if(CSS.RegEx.wrappedValueAlreadyExtracted.test(propertyValue)){extracted=propertyValue;}else {extracted=propertyValue.toString().match(CSS.RegEx.valueUnwrap);extracted=extracted?extracted[1].replace(/,(\s+)?/g," "):propertyValue;}return extracted;case "inject":return "rect("+propertyValue+")";}},blur:function blur(type,element,propertyValue){switch(type){case "name":return Velocity.State.isFirefox?"filter":"-webkit-filter";case "extract":var extracted=parseFloat(propertyValue);if(!(extracted||extracted===0)){var blurComponent=propertyValue.toString().match(/blur\(([0-9]+[A-z]+)\)/i);if(blurComponent){extracted=blurComponent[1];}else {extracted=0;}}return extracted;case "inject":if(!parseFloat(propertyValue)){return "none";}else {return "blur("+propertyValue+")";}}},opacity:function opacity(type,element,propertyValue){if(IE<=8){switch(type){case "name":return "filter";case "extract":var extracted=propertyValue.toString().match(/alpha\(opacity=(.*)\)/i);if(extracted){propertyValue=extracted[1]/100;}else {propertyValue=1;}return propertyValue;case "inject":element.style.zoom=1;if(parseFloat(propertyValue)>=1){return "";}else {return "alpha(opacity="+parseInt(parseFloat(propertyValue)*100,10)+")";}}}else {switch(type){case "name":return "opacity";case "extract":return propertyValue;case "inject":return propertyValue;}}}}, /*****************************
-                Batched Registrations
-            *****************************/register:function register(){ /*****************
-                    Transforms
-                *****************/ /* Note: IE9 and Android Gingerbread have support for 2D -- but not 3D -- transforms. Since animating unsupported
-                   transform properties results in the browser ignoring the *entire* transform string, we prevent these 3D values
-                   from being normalized for these browsers so that tweening skips these properties altogether
-                   (since it will ignore them as being unsupported by the browser.) */if(!(IE<=9)&&!Velocity.State.isGingerbread){CSS.Lists.transformsBase=CSS.Lists.transformsBase.concat(CSS.Lists.transforms3D);}for(var i=0;i<CSS.Lists.transformsBase.length;i++){(function(){var transformName=CSS.Lists.transformsBase[i];CSS.Normalizations.registered[transformName]=function(type,element,propertyValue){switch(type){case "name":return "transform";case "extract":if(Data(element)===undefined||Data(element).transformCache[transformName]===undefined){return (/^scale/i.test(transformName)?1:0);}else {return Data(element).transformCache[transformName].replace(/[()]/g,"");}case "inject":var invalid=false; /* If an individual transform property contains an unsupported unit type, the browser ignores the *entire* transform property.
-                                       Thus, protect users from themselves by skipping setting for transform values supplied with invalid unit types. */switch(transformName.substr(0,transformName.length-1)){case "translate":invalid=!/(%|px|em|rem|vw|vh|\d)$/i.test(propertyValue);break;case "scal":case "scale": /* Chrome on Android has a bug in which scaled elements blur if their initial scale
-                                               value is below 1 (which can happen with forcefeeding). Thus, we detect a yet-unset scale property
-                                               and ensure that its first value is always 1. More info: http://stackoverflow.com/questions/10417890/css3-animations-with-transform-causes-blurred-elements-on-webkit/10417962#10417962 */if(Velocity.State.isAndroid&&Data(element).transformCache[transformName]===undefined&&propertyValue<1){propertyValue=1;}invalid=!/(\d)$/i.test(propertyValue);break;case "skew":invalid=!/(deg|\d)$/i.test(propertyValue);break;case "rotate":invalid=!/(deg|\d)$/i.test(propertyValue);break;}if(!invalid){Data(element).transformCache[transformName]="("+propertyValue+")";}return Data(element).transformCache[transformName];}};})();} /*************
-                    Colors
-                *************/ /* Since Velocity only animates a single numeric value per property, color animation is achieved by hooking the individual RGBA components of CSS color properties.
-                   Accordingly, color values must be normalized (e.g. "#ff0000", "red", and "rgb(255, 0, 0)" ==> "255 0 0 1") so that their components can be injected/extracted by CSS.Hooks logic. */for(var i=0;i<CSS.Lists.colors.length;i++){(function(){var colorName=CSS.Lists.colors[i];CSS.Normalizations.registered[colorName]=function(type,element,propertyValue){switch(type){case "name":return colorName; /* Convert all color values into the rgb format. (Old IE can return hex values and color names instead of rgb/rgba.) */case "extract":var extracted;if(CSS.RegEx.wrappedValueAlreadyExtracted.test(propertyValue)){extracted=propertyValue;}else {var converted,colorNames={black:"rgb(0, 0, 0)",blue:"rgb(0, 0, 255)",gray:"rgb(128, 128, 128)",green:"rgb(0, 128, 0)",red:"rgb(255, 0, 0)",white:"rgb(255, 255, 255)"};if(/^[A-z]+$/i.test(propertyValue)){if(colorNames[propertyValue]!==undefined){converted=colorNames[propertyValue];}else {converted=colorNames.black;}}else if(CSS.RegEx.isHex.test(propertyValue)){converted="rgb("+CSS.Values.hexToRgb(propertyValue).join(" ")+")";}else if(!/^rgba?\(/i.test(propertyValue)){converted=colorNames.black;} /* Remove the surrounding "rgb/rgba()" string then replace commas with spaces and strip
-                                           repeated spaces (in case the value included spaces to begin with). */extracted=(converted||propertyValue).toString().match(CSS.RegEx.valueUnwrap)[1].replace(/,(\s+)?/g," ");}if(!(IE<=8)&&extracted.split(" ").length===3){extracted+=" 1";}return extracted;case "inject":if(IE<=8){if(propertyValue.split(" ").length===4){propertyValue=propertyValue.split(/\s+/).slice(0,3).join(" ");}}else if(propertyValue.split(" ").length===3){propertyValue+=" 1";} /* Re-insert the browser-appropriate wrapper("rgb/rgba()"), insert commas, and strip off decimal units
-                                       on all values but the fourth (R, G, and B only accept whole numbers). */return (IE<=8?"rgb":"rgba")+"("+propertyValue.replace(/\s+/g,",").replace(/\.(\d)+(?=,)/g,"")+")";}};})();}}}, /************************
-           CSS Property Names
-        ************************/Names:{camelCase:function camelCase(property){return property.replace(/-(\w)/g,function(match,subMatch){return subMatch.toUpperCase();});}, /* For SVG elements, some properties (namely, dimensional ones) are GET/SET via the element's HTML attributes (instead of via CSS styles). */SVGAttribute:function SVGAttribute(property){var SVGAttributes="width|height|x|y|cx|cy|r|rx|ry|x1|x2|y1|y2";if(IE||Velocity.State.isAndroid&&!Velocity.State.isChrome){SVGAttributes+="|transform";}return new RegExp("^("+SVGAttributes+")$","i").test(property);},prefixCheck:function prefixCheck(property){if(Velocity.State.prefixMatches[property]){return [Velocity.State.prefixMatches[property],true];}else {var vendors=["","Webkit","Moz","ms","O"];for(var i=0,vendorsLength=vendors.length;i<vendorsLength;i++){var propertyPrefixed;if(i===0){propertyPrefixed=property;}else {propertyPrefixed=vendors[i]+property.replace(/^\w/,function(match){return match.toUpperCase();});}if(Type.isString(Velocity.State.prefixElement.style[propertyPrefixed])){Velocity.State.prefixMatches[property]=propertyPrefixed;return [propertyPrefixed,true];}}return [property,false];}}}, /************************
-           CSS Property Values
-        ************************/Values:{ /* Hex to RGB conversion. Copyright Tim Down: http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb */hexToRgb:function hexToRgb(hex){var shortformRegex=/^#?([a-f\d])([a-f\d])([a-f\d])$/i,longformRegex=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i,rgbParts;hex=hex.replace(shortformRegex,function(m,r,g,b){return r+r+g+g+b+b;});rgbParts=longformRegex.exec(hex);return rgbParts?[parseInt(rgbParts[1],16),parseInt(rgbParts[2],16),parseInt(rgbParts[3],16)]:[0,0,0];},isCSSNullValue:function isCSSNullValue(value){ /* Null-value checking is performed to default the special strings to 0 (for the sake of tweening) or their hook
-                   templates as defined as CSS.Hooks (for the sake of hook injection/extraction). */return value==0||/^(none|auto|transparent|(rgba\(0, ?0, ?0, ?0\)))$/i.test(value);},getUnitType:function getUnitType(property){if(/^(rotate|skew)/i.test(property)){return "deg";}else if(/(^(scale|scaleX|scaleY|scaleZ|alpha|flexGrow|flexHeight|zIndex|fontWeight)$)|((opacity|red|green|blue|alpha)$)/i.test(property)){return "";}else {return "px";}}, /* Note: This function is used for correctly setting the non-"none" display value in certain Velocity redirects, such as fadeIn/Out. */getDisplayType:function getDisplayType(element){var tagName=element&&element.tagName.toString().toLowerCase();if(/^(b|big|i|small|tt|abbr|acronym|cite|code|dfn|em|kbd|strong|samp|var|a|bdo|br|img|map|object|q|script|span|sub|sup|button|input|label|select|textarea)$/i.test(tagName)){return "inline";}else if(/^(li)$/i.test(tagName)){return "list-item";}else if(/^(tr)$/i.test(tagName)){return "table-row";}else if(/^(table)$/i.test(tagName)){return "table";}else if(/^(tbody)$/i.test(tagName)){return "table-row-group";}else {return "block";}}, /* The class add/remove functions are used to temporarily apply a "velocity-animating" class to elements while they're animating. */addClass:function addClass(element,className){if(element.classList){element.classList.add(className);}else {element.className+=(element.className.length?" ":"")+className;}},removeClass:function removeClass(element,className){if(element.classList){element.classList.remove(className);}else {element.className=element.className.toString().replace(new RegExp("(^|\\s)"+className.split(" ").join("|")+"(\\s|$)","gi")," ");}}}, /****************************
-           Style Getting & Setting
-        ****************************/getPropertyValue:function getPropertyValue(element,property,rootPropertyValue,forceStyleLookup){ /* Note: Retrieving the value of a CSS property cannot simply be performed by checking an element's
-               style attribute (which only reflects user-defined values). Instead, the browser must be queried for a property's
-               *computed* value. You can read more about getComputedStyle here: https://developer.mozilla.org/en/docs/Web/API/window.getComputedStyle */function computePropertyValue(element,property){ /* When box-sizing isn't set to border-box, height and width style values are incorrectly computed when an
-                   element's scrollbars are visible (which expands the element's dimensions). Thus, we defer to the more accurate
-                   offsetHeight/Width property, which includes the total dimensions for interior, border, padding, and scrollbar.
-                   We subtract border and padding to get the sum of interior + scrollbar. */var computedValue=0;if(IE<=8){computedValue=$.css(element,property);}else {var revertDisplay=function revertDisplay(){if(toggleDisplay){CSS.setPropertyValue(element,"display","none");}};var toggleDisplay=false;if(/^(width|height)$/.test(property)&&CSS.getPropertyValue(element,"display")===0){toggleDisplay=true;CSS.setPropertyValue(element,"display",CSS.Values.getDisplayType(element));}if(!forceStyleLookup){if(property==="height"&&CSS.getPropertyValue(element,"boxSizing").toString().toLowerCase()!=="border-box"){var contentBoxHeight=element.offsetHeight-(parseFloat(CSS.getPropertyValue(element,"borderTopWidth"))||0)-(parseFloat(CSS.getPropertyValue(element,"borderBottomWidth"))||0)-(parseFloat(CSS.getPropertyValue(element,"paddingTop"))||0)-(parseFloat(CSS.getPropertyValue(element,"paddingBottom"))||0);revertDisplay();return contentBoxHeight;}else if(property==="width"&&CSS.getPropertyValue(element,"boxSizing").toString().toLowerCase()!=="border-box"){var contentBoxWidth=element.offsetWidth-(parseFloat(CSS.getPropertyValue(element,"borderLeftWidth"))||0)-(parseFloat(CSS.getPropertyValue(element,"borderRightWidth"))||0)-(parseFloat(CSS.getPropertyValue(element,"paddingLeft"))||0)-(parseFloat(CSS.getPropertyValue(element,"paddingRight"))||0);revertDisplay();return contentBoxWidth;}}var computedStyle;if(Data(element)===undefined){computedStyle=window.getComputedStyle(element,null);}else if(!Data(element).computedStyle){computedStyle=Data(element).computedStyle=window.getComputedStyle(element,null);}else {computedStyle=Data(element).computedStyle;}if(property==="borderColor"){property="borderTopColor";}if(IE===9&&property==="filter"){computedValue=computedStyle.getPropertyValue(property);}else {computedValue=computedStyle[property];}if(computedValue===""||computedValue===null){computedValue=element.style[property];}revertDisplay();} /* An example of why numeric conversion is necessary: When an element with "position:absolute" has an untouched "left"
-                   property, which reverts to "auto", left's value is 0 relative to its parent element, but is often non-zero relative
-                   to its *containing* (not parent) element, which is the nearest "position:relative" ancestor or the viewport (and always the viewport in the case of "position:fixed"). */if(computedValue==="auto"&&/^(top|right|bottom|left)$/i.test(property)){var position=computePropertyValue(element,"position");if(position==="fixed"||position==="absolute"&&/top|left/i.test(property)){computedValue=$(element).position()[property]+"px";}}return computedValue;}var propertyValue;if(CSS.Hooks.registered[property]){var hook=property,hookRoot=CSS.Hooks.getRoot(hook);if(rootPropertyValue===undefined){rootPropertyValue=CSS.getPropertyValue(element,CSS.Names.prefixCheck(hookRoot)[0]);}if(CSS.Normalizations.registered[hookRoot]){rootPropertyValue=CSS.Normalizations.registered[hookRoot]("extract",element,rootPropertyValue);}propertyValue=CSS.Hooks.extractValue(hook,rootPropertyValue);}else if(CSS.Normalizations.registered[property]){var normalizedPropertyName,normalizedPropertyValue;normalizedPropertyName=CSS.Normalizations.registered[property]("name",element);if(normalizedPropertyName!=="transform"){normalizedPropertyValue=computePropertyValue(element,CSS.Names.prefixCheck(normalizedPropertyName)[0]);if(CSS.Values.isCSSNullValue(normalizedPropertyValue)&&CSS.Hooks.templates[property]){normalizedPropertyValue=CSS.Hooks.templates[property][1];}}propertyValue=CSS.Normalizations.registered[property]("extract",element,normalizedPropertyValue);}if(!/^[\d-]/.test(propertyValue)){if(Data(element)&&Data(element).isSVG&&CSS.Names.SVGAttribute(property)){ /* Since the height/width attribute values must be set manually, they don't reflect computed values.
-                       Thus, we use use getBBox() to ensure we always get values for elements with undefined height/width attributes. */if(/^(height|width)$/i.test(property)){try{propertyValue=element.getBBox()[property];}catch(error){propertyValue=0;}}else {propertyValue=element.getAttribute(property);}}else {propertyValue=computePropertyValue(element,CSS.Names.prefixCheck(property)[0]);}}if(CSS.Values.isCSSNullValue(propertyValue)){propertyValue=0;}if(Velocity.debug>=2)console.log("Get "+property+": "+propertyValue);return propertyValue;},setPropertyValue:function setPropertyValue(element,property,propertyValue,rootPropertyValue,scrollData){var propertyName=property;if(property==="scroll"){if(scrollData.container){scrollData.container["scroll"+scrollData.direction]=propertyValue;}else {if(scrollData.direction==="Left"){window.scrollTo(propertyValue,scrollData.alternateValue);}else {window.scrollTo(scrollData.alternateValue,propertyValue);}}}else {if(CSS.Normalizations.registered[property]&&CSS.Normalizations.registered[property]("name",element)==="transform"){CSS.Normalizations.registered[property]("inject",element,propertyValue);propertyName="transform";propertyValue=Data(element).transformCache[property];}else {if(CSS.Hooks.registered[property]){var hookName=property,hookRoot=CSS.Hooks.getRoot(property);rootPropertyValue=rootPropertyValue||CSS.getPropertyValue(element,hookRoot);propertyValue=CSS.Hooks.injectValue(hookName,propertyValue,rootPropertyValue);property=hookRoot;}if(CSS.Normalizations.registered[property]){propertyValue=CSS.Normalizations.registered[property]("inject",element,propertyValue);property=CSS.Normalizations.registered[property]("name",element);}propertyName=CSS.Names.prefixCheck(property)[0]; /* A try/catch is used for IE<=8, which throws an error when "invalid" CSS values are set, e.g. a negative width.
-                       Try/catch is avoided for other browsers since it incurs a performance overhead. */if(IE<=8){try{element.style[propertyName]=propertyValue;}catch(error){if(Velocity.debug)console.log("Browser does not support ["+propertyValue+"] for ["+propertyName+"]");}}else if(Data(element)&&Data(element).isSVG&&CSS.Names.SVGAttribute(property)){element.setAttribute(property,propertyValue);}else {element.style[propertyName]=propertyValue;}if(Velocity.debug>=2)console.log("Set "+property+" ("+propertyName+"): "+propertyValue);}}return [propertyName,propertyValue];},flushTransformCache:function flushTransformCache(element){var transformString=""; /* Certain browsers require that SVG transforms be applied as an attribute. However, the SVG transform attribute takes a modified version of CSS's transform string
-               (units are dropped and, except for skewX/Y, subproperties are merged into their master property -- e.g. scaleX and scaleY are merged into scale(X Y). */if((IE||Velocity.State.isAndroid&&!Velocity.State.isChrome)&&Data(element).isSVG){var getTransformFloat=function getTransformFloat(transformProperty){return parseFloat(CSS.getPropertyValue(element,transformProperty));}; /* Create an object to organize all the transforms that we'll apply to the SVG element. To keep the logic simple,
-                   we process *all* transform properties -- even those that may not be explicitly applied (since they default to their zero-values anyway). */var SVGTransforms={translate:[getTransformFloat("translateX"),getTransformFloat("translateY")],skewX:[getTransformFloat("skewX")],skewY:[getTransformFloat("skewY")],scale:getTransformFloat("scale")!==1?[getTransformFloat("scale"),getTransformFloat("scale")]:[getTransformFloat("scaleX"),getTransformFloat("scaleY")],rotate:[getTransformFloat("rotateZ"),0,0]};$.each(Data(element).transformCache,function(transformName){ /* Except for with skewX/Y, revert the axis-specific transform subproperties to their axis-free master
-                       properties so that they match up with SVG's accepted transform properties. */if(/^translate/i.test(transformName)){transformName="translate";}else if(/^scale/i.test(transformName)){transformName="scale";}else if(/^rotate/i.test(transformName)){transformName="rotate";}if(SVGTransforms[transformName]){transformString+=transformName+"("+SVGTransforms[transformName].join(" ")+")"+" ";delete SVGTransforms[transformName];}});}else {var transformValue,perspective;$.each(Data(element).transformCache,function(transformName){transformValue=Data(element).transformCache[transformName];if(transformName==="transformPerspective"){perspective=transformValue;return true;}if(IE===9&&transformName==="rotateZ"){transformName="rotate";}transformString+=transformName+transformValue+" ";});if(perspective){transformString="perspective"+perspective+" "+transformString;}}CSS.setPropertyValue(element,"transform",transformString);}};CSS.Hooks.register();CSS.Normalizations.register();Velocity.hook=function(elements,arg2,arg3){var value=undefined;elements=sanitizeElements(elements);$.each(elements,function(i,element){if(Data(element)===undefined){Velocity.init(element);}if(arg3===undefined){if(value===undefined){value=Velocity.CSS.getPropertyValue(element,arg2);}}else { /* sPV returns an array of the normalized propertyName/propertyValue pair used to update the DOM. */var adjustedSet=Velocity.CSS.setPropertyValue(element,arg2,arg3);if(adjustedSet[0]==="transform"){Velocity.CSS.flushTransformCache(element);}value=adjustedSet;}});return value;}; /*****************
-        Animation
-    *****************/var animate=function animate(){ /******************
-            Call Chain
-        ******************/function getChain(){if(isUtility){return promiseData.promise||null; /* Otherwise, if we're using $.fn, return the jQuery-/Zepto-wrapped element set. */}else {return elementsWrapped;}} /*************************
-           Arguments Assignment
-        *************************/var syntacticSugar=arguments[0]&&(arguments[0].p||$.isPlainObject(arguments[0].properties)&&!arguments[0].properties.names||Type.isString(arguments[0].properties)), /* Whether Velocity was called via the utility function (as opposed to on a jQuery/Zepto object). */isUtility, /* When Velocity is called via the utility function ($.Velocity()/Velocity()), elements are explicitly
-               passed in as the first parameter. Thus, argument positioning varies. We normalize them here. */elementsWrapped,argumentIndex;var elements,propertiesMap,options; /* Detect jQuery/Zepto elements being animated via the $.fn method. */if(Type.isWrapped(this)){isUtility=false;argumentIndex=0;elements=this;elementsWrapped=this;}else {isUtility=true;argumentIndex=1;elements=syntacticSugar?arguments[0].elements||arguments[0].e:arguments[0];}elements=sanitizeElements(elements);if(!elements){return;}if(syntacticSugar){propertiesMap=arguments[0].properties||arguments[0].p;options=arguments[0].options||arguments[0].o;}else {propertiesMap=arguments[argumentIndex];options=arguments[argumentIndex+1];}var elementsLength=elements.length,elementsIndex=0; /***************************
-            Argument Overloading
-        ***************************/if(!/^(stop|finish|finishAll)$/i.test(propertiesMap)&&!$.isPlainObject(options)){var startingArgumentPosition=argumentIndex+1;options={};for(var i=startingArgumentPosition;i<arguments.length;i++){if(!Type.isArray(arguments[i])&&(/^(fast|normal|slow)$/i.test(arguments[i])||/^\d/.test(arguments[i]))){options.duration=arguments[i];}else if(Type.isString(arguments[i])||Type.isArray(arguments[i])){options.easing=arguments[i];}else if(Type.isFunction(arguments[i])){options.complete=arguments[i];}}} /***************
-            Promises
-        ***************/var promiseData={promise:null,resolver:null,rejecter:null}; /* If this call was made via the utility function (which is the default method of invocation when jQuery/Zepto are not being used), and if
-           promise support was detected, create a promise object for this call and store references to its resolver and rejecter methods. The resolve
-           method is used when a call completes naturally or is prematurely stopped by the user. In both cases, completeCall() handles the associated
-           call cleanup and promise resolving logic. The reject method is used when an invalid set of arguments is passed into a Velocity call. */if(isUtility&&Velocity.Promise){promiseData.promise=new Velocity.Promise(function(resolve,reject){promiseData.resolver=resolve;promiseData.rejecter=reject;});} /*********************
-           Action Detection
-        *********************/var action;switch(propertiesMap){case "scroll":action="scroll";break;case "reverse":action="reverse";break;case "finish":case "finishAll":case "stop": /*******************
-                    Action: Stop
-                *******************/$.each(elements,function(i,element){if(Data(element)&&Data(element).delayTimer){clearTimeout(Data(element).delayTimer.setTimeout);if(Data(element).delayTimer.next){Data(element).delayTimer.next();}delete Data(element).delayTimer;}if(propertiesMap==="finishAll"&&(options===true||Type.isString(options))){$.each($.queue(element,Type.isString(options)?options:""),function(_,item){if(Type.isFunction(item)){item();}});$.queue(element,Type.isString(options)?options:"",[]);}});var callsToStop=[]; /* Note: The stop command runs prior to Velocity's Queueing phase since its behavior is intended to take effect *immediately*,
-                   regardless of the element's current queue state. */$.each(Velocity.State.calls,function(i,activeCall){if(activeCall){$.each(activeCall[1],function(k,activeElement){var queueName=options===undefined?"":options;if(queueName!==true&&activeCall[2].queue!==queueName&&!(options===undefined&&activeCall[2].queue===false)){return true;}$.each(elements,function(l,element){if(element===activeElement){if(options===true||Type.isString(options)){$.each($.queue(element,Type.isString(options)?options:""),function(_,item){if(Type.isFunction(item)){item(null,true);}});$.queue(element,Type.isString(options)?options:"",[]);}if(propertiesMap==="stop"){if(Data(element)&&Data(element).tweensContainer&&queueName!==false){$.each(Data(element).tweensContainer,function(m,activeTween){activeTween.endValue=activeTween.currentValue;});}callsToStop.push(i);}else if(propertiesMap==="finish"||propertiesMap==="finishAll"){activeCall[2].duration=1;}}});});}});if(propertiesMap==="stop"){$.each(callsToStop,function(i,j){completeCall(j,true);});if(promiseData.promise){promiseData.resolver(elements);}}return getChain();default:if($.isPlainObject(propertiesMap)&&!Type.isEmptyObject(propertiesMap)){action="start"; /****************
-                    Redirects
-                ****************/}else if(Type.isString(propertiesMap)&&Velocity.Redirects[propertiesMap]){var opts=$.extend({},options),durationOriginal=opts.duration,delayOriginal=opts.delay||0;if(opts.backwards===true){elements=$.extend(true,[],elements).reverse();}$.each(elements,function(elementIndex,element){if(parseFloat(opts.stagger)){opts.delay=delayOriginal+parseFloat(opts.stagger)*elementIndex;}else if(Type.isFunction(opts.stagger)){opts.delay=delayOriginal+opts.stagger.call(element,elementIndex,elementsLength);} /* If the drag option was passed in, successively increase/decrease (depending on the presense of opts.backwards)
-                           the duration of each element's animation, using floors to prevent producing very short durations. */if(opts.drag){opts.duration=parseFloat(durationOriginal)||(/^(callout|transition)/.test(propertiesMap)?1000:DURATION_DEFAULT); /* For each element, take the greater duration of: A) animation completion percentage relative to the original duration,
-                               B) 75% of the original duration, or C) a 200ms fallback (in case duration is already set to a low value).
-                               The end result is a baseline of 75% of the redirect's duration that increases/decreases as the end of the element set is approached. */opts.duration=Math.max(opts.duration*(opts.backwards?1-elementIndex/elementsLength:(elementIndex+1)/elementsLength),opts.duration*0.75,200);}Velocity.Redirects[propertiesMap].call(element,element,opts||{},elementIndex,elementsLength,elements,promiseData.promise?promiseData:undefined);});return getChain();}else {var abortError="Velocity: First argument ("+propertiesMap+") was not a property map, a known action, or a registered redirect. Aborting.";if(promiseData.promise){promiseData.rejecter(new Error(abortError));}else {console.log(abortError);}return getChain();}} /**************************
-            Call-Wide Variables
-        **************************/var callUnitConversionData={lastParent:null,lastPosition:null,lastFontSize:null,lastPercentToPxWidth:null,lastPercentToPxHeight:null,lastEmToPx:null,remToPx:null,vwToPx:null,vhToPx:null};var call=[]; /************************
-           Element Processing
-        ************************/ /* Element processing consists of three parts -- data processing that cannot go stale and data processing that *can* go stale (i.e. third-party style modifications):
-           1) Pre-Queueing: Element-wide variables, including the element's data storage, are instantiated. Call options are prepared. If triggered, the Stop action is executed.
-           2) Queueing: The logic that runs once this call has reached its point of execution in the element's $.queue() stack. Most logic is placed here to avoid risking it becoming stale.
-           3) Pushing: Consolidation of the tween data followed by its push onto the $ in-progress calls container.
-        */function processElement(){ /*************************
-               Part I: Pre-Queueing
-            *************************/ /***************************
-               Element-Wide Variables
-            ***************************/var element=this,opts=$.extend({},Velocity.defaults,options),tweensContainer={},elementUnitConversionData; /******************
-               Element Init
-            ******************/if(Data(element)===undefined){Velocity.init(element);} /******************
-               Option: Delay
-            ******************/if(parseFloat(opts.delay)&&opts.queue!==false){$.queue(element,opts.queue,function(next){Velocity.velocityQueueEntryFlag=true;Data(element).delayTimer={setTimeout:setTimeout(next,parseFloat(opts.delay)),next:next};});} /*********************
-               Option: Duration
-            *********************/switch(opts.duration.toString().toLowerCase()){case "fast":opts.duration=200;break;case "normal":opts.duration=DURATION_DEFAULT;break;case "slow":opts.duration=600;break;default:opts.duration=parseFloat(opts.duration)||1;} /************************
-               Global Option: Mock
-            ************************/if(Velocity.mock!==false){if(Velocity.mock===true){opts.duration=opts.delay=1;}else {opts.duration*=parseFloat(Velocity.mock)||1;opts.delay*=parseFloat(Velocity.mock)||1;}} /*******************
-               Option: Easing
-            *******************/opts.easing=getEasing(opts.easing,opts.duration); /**********************
-               Option: Callbacks
-            **********************/if(opts.begin&&!Type.isFunction(opts.begin)){opts.begin=null;}if(opts.progress&&!Type.isFunction(opts.progress)){opts.progress=null;}if(opts.complete&&!Type.isFunction(opts.complete)){opts.complete=null;} /*********************************
-               Option: Display & Visibility
-            *********************************/ /* Refer to Velocity's documentation (VelocityJS.org/#displayAndVisibility) for a description of the display and visibility options' behavior. */if(opts.display!==undefined&&opts.display!==null){opts.display=opts.display.toString().toLowerCase();if(opts.display==="auto"){opts.display=Velocity.CSS.Values.getDisplayType(element);}}if(opts.visibility!==undefined&&opts.visibility!==null){opts.visibility=opts.visibility.toString().toLowerCase();} /**********************
-               Option: mobileHA
-            **********************/ /* Note: You can read more about the use of mobileHA in Velocity's documentation: VelocityJS.org/#mobileHA. */opts.mobileHA=opts.mobileHA&&Velocity.State.isMobile&&!Velocity.State.isGingerbread; /***********************
-               Part II: Queueing
-            ***********************/function buildQueue(next){ /*******************
-                   Option: Begin
-                *******************/if(opts.begin&&elementsIndex===0){try{opts.begin.call(elements,elements);}catch(error){setTimeout(function(){throw error;},1);}} /*****************************************
-                   Tween Data Construction (for Scroll)
-                *****************************************/if(action==="scroll"){var scrollDirection=/^x$/i.test(opts.axis)?"Left":"Top",scrollOffset=parseFloat(opts.offset)||0,scrollPositionCurrent,scrollPositionCurrentAlternate,scrollPositionEnd;if(opts.container){if(Type.isWrapped(opts.container)||Type.isNode(opts.container)){opts.container=opts.container[0]||opts.container;scrollPositionCurrent=opts.container["scroll"+scrollDirection]; /* $.position() values are relative to the container's currently viewable area (without taking into account the container's true dimensions
-                               -- say, for example, if the container was not overflowing). Thus, the scroll end value is the sum of the child element's position *and*
-                               the scroll container's current scroll position. */scrollPositionEnd=scrollPositionCurrent+$(element).position()[scrollDirection.toLowerCase()]+scrollOffset;}else {opts.container=null;}}else {scrollPositionCurrent=Velocity.State.scrollAnchor[Velocity.State["scrollProperty"+scrollDirection]];scrollPositionCurrentAlternate=Velocity.State.scrollAnchor[Velocity.State["scrollProperty"+(scrollDirection==="Left"?"Top":"Left")]];scrollPositionEnd=$(element).offset()[scrollDirection.toLowerCase()]+scrollOffset;}tweensContainer={scroll:{rootPropertyValue:false,startValue:scrollPositionCurrent,currentValue:scrollPositionCurrent,endValue:scrollPositionEnd,unitType:"",easing:opts.easing,scrollData:{container:opts.container,direction:scrollDirection,alternateValue:scrollPositionCurrentAlternate}},element:element};if(Velocity.debug)console.log("tweensContainer (scroll): ",tweensContainer.scroll,element); /******************************************
-                   Tween Data Construction (for Reverse)
-                ******************************************/ /* Note: Reverse calls do not need to be consecutively chained onto a currently-animating element in order to operate on cached values;
-                   there is no harm to reverse being called on a potentially stale data cache since reverse's behavior is simply defined
-                   as reverting to the element's values as they were prior to the previous *Velocity* call. */}else if(action==="reverse"){if(!Data(element).tweensContainer){$.dequeue(element,opts.queue);return;}else { /*********************
-                           Options Parsing
-                        *********************/if(Data(element).opts.display==="none"){Data(element).opts.display="auto";}if(Data(element).opts.visibility==="hidden"){Data(element).opts.visibility="visible";}Data(element).opts.loop=false;Data(element).opts.begin=null;Data(element).opts.complete=null;if(!options.easing){delete opts.easing;}if(!options.duration){delete opts.duration;}opts=$.extend({},Data(element).opts,opts); /*************************************
-                           Tweens Container Reconstruction
-                        *************************************/var lastTweensContainer=$.extend(true,{},Data(element).tweensContainer);for(var lastTween in lastTweensContainer){if(lastTween!=="element"){var lastStartValue=lastTweensContainer[lastTween].startValue;lastTweensContainer[lastTween].startValue=lastTweensContainer[lastTween].currentValue=lastTweensContainer[lastTween].endValue;lastTweensContainer[lastTween].endValue=lastStartValue;if(!Type.isEmptyObject(options)){lastTweensContainer[lastTween].easing=opts.easing;}if(Velocity.debug)console.log("reverse tweensContainer ("+lastTween+"): "+JSON.stringify(lastTweensContainer[lastTween]),element);}}tweensContainer=lastTweensContainer;} /*****************************************
-                   Tween Data Construction (for Start)
-                *****************************************/}else if(action==="start"){var lastTweensContainer;var property;var valueData,endValue,easing,startValue;var rootProperty,rootPropertyValue;var separatedValue,endValueUnitType,startValueUnitType,operator;var axis;(function(){ /***************************
-                       Tween Data Calculation
-                    ***************************/ /* Property map values can either take the form of 1) a single value representing the end value,
-                       or 2) an array in the form of [ endValue, [, easing] [, startValue] ].
-                       The optional third parameter is a forcefed startValue to be used instead of querying the DOM for
-                       the element's current value. Read Velocity's docmentation to learn more about forcefeeding: VelocityJS.org/#forcefeeding */var parsePropertyValue=function parsePropertyValue(valueData,skipResolvingEasing){var endValue=undefined,easing=undefined,startValue=undefined;if(Type.isArray(valueData)){endValue=valueData[0];if(!Type.isArray(valueData[1])&&/^[\d-]/.test(valueData[1])||Type.isFunction(valueData[1])||CSS.RegEx.isHex.test(valueData[1])){startValue=valueData[1];}else if(Type.isString(valueData[1])&&!CSS.RegEx.isHex.test(valueData[1])||Type.isArray(valueData[1])){easing=skipResolvingEasing?valueData[1]:getEasing(valueData[1],opts.duration);if(valueData[2]!==undefined){startValue=valueData[2];}}}else {endValue=valueData;}if(!skipResolvingEasing){easing=easing||opts.easing;}if(Type.isFunction(endValue)){endValue=endValue.call(element,elementsIndex,elementsLength);}if(Type.isFunction(startValue)){startValue=startValue.call(element,elementsIndex,elementsLength);}return [endValue||0,easing,startValue];};if(Data(element).tweensContainer&&Data(element).isAnimating===true){lastTweensContainer=Data(element).tweensContainer;}$.each(propertiesMap,function(property,value){if(RegExp("^"+CSS.Lists.colors.join("$|^")+"$").test(property)){var valueData=parsePropertyValue(value,true),endValue=valueData[0],easing=valueData[1],startValue=valueData[2];if(CSS.RegEx.isHex.test(endValue)){var colorComponents=["Red","Green","Blue"],endValueRGB=CSS.Values.hexToRgb(endValue),startValueRGB=startValue?CSS.Values.hexToRgb(startValue):undefined;for(var i=0;i<colorComponents.length;i++){var dataArray=[endValueRGB[i]];if(easing){dataArray.push(easing);}if(startValueRGB!==undefined){dataArray.push(startValueRGB[i]);}propertiesMap[property+colorComponents[i]]=dataArray;}delete propertiesMap[property];}}});var _loop=function _loop(){ /**************************
-                           Start Value Sourcing
-                        **************************/valueData=parsePropertyValue(propertiesMap[property]);endValue=valueData[0];easing=valueData[1];startValue=valueData[2];property=CSS.Names.camelCase(property);rootProperty=CSS.Hooks.getRoot(property);rootPropertyValue=false;if(!Data(element).isSVG&&rootProperty!=="tween"&&CSS.Names.prefixCheck(rootProperty)[1]===false&&CSS.Normalizations.registered[rootProperty]===undefined){if(Velocity.debug)console.log("Skipping ["+rootProperty+"] due to a lack of browser support.");return 'continue';}if((opts.display!==undefined&&opts.display!==null&&opts.display!=="none"||opts.visibility!==undefined&&opts.visibility!=="hidden")&&/opacity|filter/.test(property)&&!startValue&&endValue!==0){startValue=0;} /* If values have been transferred from the previous Velocity call, extract the endValue and rootPropertyValue
-                           for all of the current call's properties that were *also* animated in the previous call. */if(opts._cacheValues&&lastTweensContainer&&lastTweensContainer[property]){if(startValue===undefined){startValue=lastTweensContainer[property].endValue+lastTweensContainer[property].unitType;}rootPropertyValue=Data(element).rootPropertyValueCache[rootProperty];}else {if(CSS.Hooks.registered[property]){if(startValue===undefined){rootPropertyValue=CSS.getPropertyValue(element,rootProperty);startValue=CSS.getPropertyValue(element,property,rootPropertyValue);}else {rootPropertyValue=CSS.Hooks.templates[rootProperty][1];}}else if(startValue===undefined){startValue=CSS.getPropertyValue(element,property);}} /**************************
-                           Value Data Extraction
-                        **************************/operator=false;function separateValue(property,value){var unitType,numericValue;numericValue=(value||"0").toString().toLowerCase().replace(/[%A-z]+$/,function(match){unitType=match;return "";});if(!unitType){unitType=CSS.Values.getUnitType(property);}return [numericValue,unitType];}separatedValue=separateValue(property,startValue);startValue=separatedValue[0];startValueUnitType=separatedValue[1];separatedValue=separateValue(property,endValue);endValue=separatedValue[0].replace(/^([+-\/*])=/,function(match,subMatch){operator=subMatch;return "";});endValueUnitType=separatedValue[1];startValue=parseFloat(startValue)||0;endValue=parseFloat(endValue)||0; /***************************************
-                           Property-Specific Value Conversion
-                        ***************************************/if(endValueUnitType==="%"){ /* A %-value fontSize/lineHeight is relative to the parent's fontSize (as opposed to the parent's dimensions),
-                               which is identical to the em unit's behavior, so we piggyback off of that. */if(/^(fontSize|lineHeight)$/.test(property)){endValue=endValue/100;endValueUnitType="em";}else if(/^scale/.test(property)){endValue=endValue/100;endValueUnitType="";}else if(/(Red|Green|Blue)$/i.test(property)){endValue=endValue/100*255;endValueUnitType="";}} /***************************
-                           Unit Ratio Calculation
-                        ***************************/ /* When queried, the browser returns (most) CSS property values in pixels. Therefore, if an endValue with a unit type of
-                           %, em, or rem is animated toward, startValue must be converted from pixels into the same unit type as endValue in order
-                           for value manipulation logic (increment/decrement) to proceed. Further, if the startValue was forcefed or transferred
-                           from a previous call, startValue may also not be in pixels. Unit conversion logic therefore consists of two steps:
-                           1) Calculating the ratio of %/em/rem/vh/vw relative to pixels
-                           2) Converting startValue into the same unit of measurement as endValue based on these ratios. */function calculateUnitRatios(){ /************************
-                                Same Ratio Checks
-                            ************************/var sameRatioIndicators={myParent:element.parentNode||document.body,position:CSS.getPropertyValue(element,"position"),fontSize:CSS.getPropertyValue(element,"fontSize")},samePercentRatio=sameRatioIndicators.position===callUnitConversionData.lastPosition&&sameRatioIndicators.myParent===callUnitConversionData.lastParent,sameEmRatio=sameRatioIndicators.fontSize===callUnitConversionData.lastFontSize;callUnitConversionData.lastParent=sameRatioIndicators.myParent;callUnitConversionData.lastPosition=sameRatioIndicators.position;callUnitConversionData.lastFontSize=sameRatioIndicators.fontSize; /***************************
-                               Element-Specific Units
-                            ***************************/var measurement=100,unitRatios={};if(!sameEmRatio||!samePercentRatio){var dummy=Data(element).isSVG?document.createElementNS("http://www.w3.org/2000/svg","rect"):document.createElement("div");Velocity.init(dummy);sameRatioIndicators.myParent.appendChild(dummy); /* To accurately and consistently calculate conversion ratios, the element's cascaded overflow and box-sizing are stripped.
-                                   Similarly, since width/height can be artificially constrained by their min-/max- equivalents, these are controlled for as well. */$.each(["overflow","overflowX","overflowY"],function(i,property){Velocity.CSS.setPropertyValue(dummy,property,"hidden");});Velocity.CSS.setPropertyValue(dummy,"position",sameRatioIndicators.position);Velocity.CSS.setPropertyValue(dummy,"fontSize",sameRatioIndicators.fontSize);Velocity.CSS.setPropertyValue(dummy,"boxSizing","content-box");$.each(["minWidth","maxWidth","width","minHeight","maxHeight","height"],function(i,property){Velocity.CSS.setPropertyValue(dummy,property,measurement+"%");});Velocity.CSS.setPropertyValue(dummy,"paddingLeft",measurement+"em");unitRatios.percentToPxWidth=callUnitConversionData.lastPercentToPxWidth=(parseFloat(CSS.getPropertyValue(dummy,"width",null,true))||1)/measurement;unitRatios.percentToPxHeight=callUnitConversionData.lastPercentToPxHeight=(parseFloat(CSS.getPropertyValue(dummy,"height",null,true))||1)/measurement;unitRatios.emToPx=callUnitConversionData.lastEmToPx=(parseFloat(CSS.getPropertyValue(dummy,"paddingLeft"))||1)/measurement;sameRatioIndicators.myParent.removeChild(dummy);}else {unitRatios.emToPx=callUnitConversionData.lastEmToPx;unitRatios.percentToPxWidth=callUnitConversionData.lastPercentToPxWidth;unitRatios.percentToPxHeight=callUnitConversionData.lastPercentToPxHeight;} /***************************
-                               Element-Agnostic Units
-                            ***************************/if(callUnitConversionData.remToPx===null){callUnitConversionData.remToPx=parseFloat(CSS.getPropertyValue(document.body,"fontSize"))||16;}if(callUnitConversionData.vwToPx===null){callUnitConversionData.vwToPx=parseFloat(window.innerWidth)/100;callUnitConversionData.vhToPx=parseFloat(window.innerHeight)/100;}unitRatios.remToPx=callUnitConversionData.remToPx;unitRatios.vwToPx=callUnitConversionData.vwToPx;unitRatios.vhToPx=callUnitConversionData.vhToPx;if(Velocity.debug>=1)console.log("Unit ratios: "+JSON.stringify(unitRatios),element);return unitRatios;} /********************
-                           Unit Conversion
-                        ********************/ /* The * and / operators, which are not passed in with an associated unit, inherently use startValue's unit. Skip value and unit conversion. */if(/[\/*]/.test(operator)){endValueUnitType=startValueUnitType;}else if(startValueUnitType!==endValueUnitType&&startValue!==0){ /* Unit conversion is also skipped when endValue is 0, but *startValueUnitType* must be used for tween values to remain accurate. */if(endValue===0){endValueUnitType=startValueUnitType;}else {elementUnitConversionData=elementUnitConversionData||calculateUnitRatios(); /* Note: W3C spec mandates that all of margin and padding's properties (even top and bottom) are %-relative to the *width* of the parent element. */axis=/margin|padding|left|right|width|text|word|letter/i.test(property)||/X$/.test(property)||property==="x"?"x":"y";switch(startValueUnitType){case "%": /* Note: translateX and translateY are the only properties that are %-relative to an element's own dimensions -- not its parent's dimensions.
-                                           Velocity does not include a special conversion process to account for this behavior. Therefore, animating translateX/Y from a % value
-                                           to a non-% value will produce an incorrect start value. Fortunately, this sort of cross-unit conversion is rarely done by users in practice. */startValue*=axis==="x"?elementUnitConversionData.percentToPxWidth:elementUnitConversionData.percentToPxHeight;break;case "px":break;default:startValue*=elementUnitConversionData[startValueUnitType+"ToPx"];}switch(endValueUnitType){case "%":startValue*=1/(axis==="x"?elementUnitConversionData.percentToPxWidth:elementUnitConversionData.percentToPxHeight);break;case "px":break;default:startValue*=1/elementUnitConversionData[endValueUnitType+"ToPx"];}}} /*********************
-                           Relative Values
-                        *********************/ /* Note: Relative *percent values* do not behave how most people think; while one would expect "+=50%"
-                           to increase the property 1.5x its current value, it in fact increases the percent units in absolute terms:
-                           50 points is added on top of the current % value. */switch(operator){case "+":endValue=startValue+endValue;break;case "-":endValue=startValue-endValue;break;case "*":endValue=startValue*endValue;break;case "/":endValue=startValue/endValue;break;} /**************************
-                           tweensContainer Push
-                        **************************/tweensContainer[property]={rootPropertyValue:rootPropertyValue,startValue:startValue,currentValue:startValue,endValue:endValue,unitType:endValueUnitType,easing:easing};if(Velocity.debug)console.log("tweensContainer ("+property+"): "+JSON.stringify(tweensContainer[property]),element);};for(property in propertiesMap){var _ret2=_loop();if(_ret2==='continue')continue;}tweensContainer.element=element;})();} /*****************
-                    Call Push
-                *****************/if(tweensContainer.element){CSS.Values.addClass(element,"velocity-animating");call.push(tweensContainer);if(opts.queue===""){Data(element).tweensContainer=tweensContainer;Data(element).opts=opts;}Data(element).isAnimating=true;if(elementsIndex===elementsLength-1){Velocity.State.calls.push([call,elements,opts,null,promiseData.resolver]);if(Velocity.State.isTicking===false){Velocity.State.isTicking=true;tick();}}else {elementsIndex++;}}}if(opts.queue===false){if(opts.delay){setTimeout(buildQueue,opts.delay);}else {buildQueue();}}else {$.queue(element,opts.queue,function(next,clearQueue){if(clearQueue===true){if(promiseData.promise){promiseData.resolver(elements);}return true;}Velocity.velocityQueueEntryFlag=true;buildQueue(next);});} /*********************
-                Auto-Dequeuing
-            *********************/ /* As per jQuery's $.queue() behavior, to fire the first non-custom-queue entry on an element, the element
-               must be dequeued if its queue stack consists *solely* of the current call. (This can be determined by checking
-               for the "inprogress" item that jQuery prepends to active queue stack arrays.) Regardless, whenever the element's
-               queue is further appended with additional items -- including $.delay()'s or even $.animate() calls, the queue's
-               first entry is automatically fired. This behavior contrasts that of custom queues, which never auto-fire. */ /* Note: Unfortunately, most people don't fully grasp jQuery's powerful, yet quirky, $.queue() function.
-               Lean more here: http://stackoverflow.com/questions/1058158/can-somebody-explain-jquery-queue-to-me */if((opts.queue===""||opts.queue==="fx")&&$.queue(element)[0]!=="inprogress"){$.dequeue(element);}} /**************************
-           Element Set Iteration
-        **************************/$.each(elements,function(i,element){if(Type.isNode(element)){processElement.call(element);}}); /******************
-           Option: Loop
-        ******************/var opts=$.extend({},Velocity.defaults,options),reverseCallsCount;opts.loop=parseInt(opts.loop);reverseCallsCount=opts.loop*2-1;if(opts.loop){for(var x=0;x<reverseCallsCount;x++){ /* Since the logic for the reverse action occurs inside Queueing and therefore this call's options object
-                   isn't parsed until then as well, the current call's delay option must be explicitly passed into the reverse
-                   call so that the delay logic that occurs inside *Pre-Queueing* can process it. */var reverseOptions={delay:opts.delay,progress:opts.progress};if(x===reverseCallsCount-1){reverseOptions.display=opts.display;reverseOptions.visibility=opts.visibility;reverseOptions.complete=opts.complete;}animate(elements,"reverse",reverseOptions);}} /***************
-            Chaining
-        ***************/return getChain();};Velocity=$.extend(animate,Velocity);Velocity.animate=animate; /**************
-        Timing
-    **************/var ticker=window.requestAnimationFrame; /* Inactive browser tabs pause rAF, which results in all active animations immediately sprinting to their completion states when the tab refocuses.
-       To get around this, we dynamically switch rAF to setTimeout (which the browser *doesn't* pause) when the tab loses focus. We skip this for mobile
-       devices to avoid wasting battery power on inactive tabs. */if(!Velocity.State.isMobile&&document.hidden!==undefined){document.addEventListener("visibilitychange",function(){if(document.hidden){ticker=function ticker(callback){return setTimeout(function(){callback(true);},16);};tick();}else {ticker=window.requestAnimationFrame;}});} /************
-        Tick
-    ************/function tick(timestamp){if(timestamp){var timeCurrent=new Date().getTime(); /********************
-               Call Iteration
-            ********************/var callsLength=Velocity.State.calls.length;if(callsLength>10000){Velocity.State.calls=compactSparseArray(Velocity.State.calls);}for(var i=0;i<callsLength;i++){if(!Velocity.State.calls[i]){continue;} /************************
-                   Call-Wide Variables
-                ************************/var callContainer=Velocity.State.calls[i],call=callContainer[0],opts=callContainer[2],timeStart=callContainer[3],firstTick=!!timeStart,tweenDummyValue=null;if(!timeStart){timeStart=Velocity.State.calls[i][3]=timeCurrent-16;}var percentComplete=Math.min((timeCurrent-timeStart)/opts.duration,1); /**********************
-                   Element Iteration
-                **********************/for(var j=0,callLength=call.length;j<callLength;j++){var tweensContainer=call[j],element=tweensContainer.element;if(!Data(element)){continue;}var transformPropertyExists=false; /**********************************
-                       Display & Visibility Toggling
-                    **********************************/if(opts.display!==undefined&&opts.display!==null&&opts.display!=="none"){if(opts.display==="flex"){var flexValues=["-webkit-box","-moz-box","-ms-flexbox","-webkit-flex"];$.each(flexValues,function(i,flexValue){CSS.setPropertyValue(element,"display",flexValue);});}CSS.setPropertyValue(element,"display",opts.display);}if(opts.visibility!==undefined&&opts.visibility!=="hidden"){CSS.setPropertyValue(element,"visibility",opts.visibility);} /************************
-                       Property Iteration
-                    ************************/for(var property in tweensContainer){if(property!=="element"){var tween=tweensContainer[property],currentValue, /* Easing can either be a pre-genereated function or a string that references a pre-registered easing
-                                   on the Velocity.Easings object. In either case, return the appropriate easing *function*. */easing=Type.isString(tween.easing)?Velocity.Easings[tween.easing]:tween.easing; /******************************
-                               Current Value Calculation
-                            ******************************/if(percentComplete===1){currentValue=tween.endValue;}else {var tweenDelta=tween.endValue-tween.startValue;currentValue=tween.startValue+tweenDelta*easing(percentComplete,opts,tweenDelta);if(!firstTick&&currentValue===tween.currentValue){continue;}}tween.currentValue=currentValue;if(property==="tween"){tweenDummyValue=currentValue;}else { /******************
-                                   Hooks: Part I
-                                ******************/if(CSS.Hooks.registered[property]){var hookRoot=CSS.Hooks.getRoot(property),rootPropertyValueCache=Data(element).rootPropertyValueCache[hookRoot];if(rootPropertyValueCache){tween.rootPropertyValue=rootPropertyValueCache;}} /*****************
-                                    DOM Update
-                                *****************/var adjustedSetData=CSS.setPropertyValue(element,property,tween.currentValue+(parseFloat(currentValue)===0?"":tween.unitType),tween.rootPropertyValue,tween.scrollData); /*******************
-                                   Hooks: Part II
-                                *******************/if(CSS.Hooks.registered[property]){if(CSS.Normalizations.registered[hookRoot]){Data(element).rootPropertyValueCache[hookRoot]=CSS.Normalizations.registered[hookRoot]("extract",null,adjustedSetData[1]);}else {Data(element).rootPropertyValueCache[hookRoot]=adjustedSetData[1];}} /***************
-                                   Transforms
-                                ***************/if(adjustedSetData[0]==="transform"){transformPropertyExists=true;}}}} /****************
-                        mobileHA
-                    ****************/if(opts.mobileHA){if(Data(element).transformCache.translate3d===undefined){Data(element).transformCache.translate3d="(0px, 0px, 0px)";transformPropertyExists=true;}}if(transformPropertyExists){CSS.flushTransformCache(element);}}if(opts.display!==undefined&&opts.display!=="none"){Velocity.State.calls[i][2].display=false;}if(opts.visibility!==undefined&&opts.visibility!=="hidden"){Velocity.State.calls[i][2].visibility=false;}if(opts.progress){opts.progress.call(callContainer[1],callContainer[1],percentComplete,Math.max(0,timeStart+opts.duration-timeCurrent),timeStart,tweenDummyValue);}if(percentComplete===1){completeCall(i);}}}if(Velocity.State.isTicking){ticker(tick);}} /**********************
-        Call Completion
-    **********************/function completeCall(callIndex,isStopped){if(!Velocity.State.calls[callIndex]){return false;}var call=Velocity.State.calls[callIndex][0],elements=Velocity.State.calls[callIndex][1],opts=Velocity.State.calls[callIndex][2],resolver=Velocity.State.calls[callIndex][4];var remainingCallsExist=false; /*************************
-           Element Finalization
-        *************************/for(var i=0,callLength=call.length;i<callLength;i++){var element=call[i].element;if(!isStopped&&!opts.loop){if(opts.display==="none"){CSS.setPropertyValue(element,"display",opts.display);}if(opts.visibility==="hidden"){CSS.setPropertyValue(element,"visibility",opts.visibility);}}if(opts.loop!==true&&($.queue(element)[1]===undefined||!/\.velocityQueueEntryFlag/i.test($.queue(element)[1]))){if(Data(element)){Data(element).isAnimating=false;Data(element).rootPropertyValueCache={};var transformHAPropertyExists=false;$.each(CSS.Lists.transforms3D,function(i,transformName){var defaultValue=/^scale/.test(transformName)?1:0,currentValue=Data(element).transformCache[transformName];if(Data(element).transformCache[transformName]!==undefined&&new RegExp("^\\("+defaultValue+"[^.]").test(currentValue)){transformHAPropertyExists=true;delete Data(element).transformCache[transformName];}});if(opts.mobileHA){transformHAPropertyExists=true;delete Data(element).transformCache.translate3d;}if(transformHAPropertyExists){CSS.flushTransformCache(element);}CSS.Values.removeClass(element,"velocity-animating");}} /*********************
-               Option: Complete
-            *********************/if(!isStopped&&opts.complete&&!opts.loop&&i===callLength-1){try{opts.complete.call(elements,elements);}catch(error){setTimeout(function(){throw error;},1);}} /**********************
-               Promise Resolving
-            **********************/if(resolver&&opts.loop!==true){resolver(elements);} /****************************
-               Option: Loop (Infinite)
-            ****************************/if(Data(element)&&opts.loop===true&&!isStopped){ /* If a rotateX/Y/Z property is being animated to 360 deg with loop:true, swap tween start/end values to enable
-                   continuous iterative rotation looping. (Otherise, the element would just rotate back and forth.) */$.each(Data(element).tweensContainer,function(propertyName,tweenContainer){if(/^rotate/.test(propertyName)&&parseFloat(tweenContainer.endValue)===360){tweenContainer.endValue=0;tweenContainer.startValue=360;}if(/^backgroundPosition/.test(propertyName)&&parseFloat(tweenContainer.endValue)===100&&tweenContainer.unitType==="%"){tweenContainer.endValue=0;tweenContainer.startValue=100;}});Velocity(element,"reverse",{loop:true,delay:opts.delay});} /***************
-               Dequeueing
-            ***************/if(opts.queue!==false){$.dequeue(element,opts.queue);}} /************************
-           Calls Array Cleanup
-        ************************/ /* Since this call is complete, set it to false so that the rAF tick skips it. This array is later compacted via compactSparseArray().
-          (For performance reasons, the call is set to false instead of being deleted from the array: http://www.html5rocks.com/en/tutorials/speed/v8/) */Velocity.State.calls[callIndex]=false;for(var j=0,callsLength=Velocity.State.calls.length;j<callsLength;j++){if(Velocity.State.calls[j]!==false){remainingCallsExist=true;break;}}if(remainingCallsExist===false){Velocity.State.isTicking=false;delete Velocity.State.calls;Velocity.State.calls=[];}} /******************
-        Frameworks
-    ******************/$.Velocity=Velocity;if($!==window){$.fn.velocity=animate;$.fn.velocity.defaults=Velocity.defaults;} /***********************
-       Packaged Redirects
-    ***********************/$.each(["Down","Up"],function(i,direction){Velocity.Redirects["slide"+direction]=function(element,options,elementsIndex,elementsSize,elements,promiseData){var opts=$.extend({},options),begin=opts.begin,complete=opts.complete,computedValues={height:"",marginTop:"",marginBottom:"",paddingTop:"",paddingBottom:""},inlineValues={};if(opts.display===undefined){opts.display=direction==="Down"?Velocity.CSS.Values.getDisplayType(element)==="inline"?"inline-block":"block":"none";}opts.begin=function(){begin&&begin.call(elements,elements);for(var property in computedValues){inlineValues[property]=element.style[property];var propertyValue=Velocity.CSS.getPropertyValue(element,property);computedValues[property]=direction==="Down"?[propertyValue,0]:[0,propertyValue];}inlineValues.overflow=element.style.overflow;element.style.overflow="hidden";};opts.complete=function(){for(var property in inlineValues){element.style[property]=inlineValues[property];}complete&&complete.call(elements,elements);promiseData&&promiseData.resolver(elements);};Velocity(element,computedValues,opts);};});$.each(["In","Out"],function(i,direction){Velocity.Redirects["fade"+direction]=function(element,options,elementsIndex,elementsSize,elements,promiseData){var opts=$.extend({},options),propertiesMap={opacity:direction==="In"?1:0},originalComplete=opts.complete;if(elementsIndex!==elementsSize-1){opts.complete=opts.begin=null;}else {opts.complete=function(){if(originalComplete){originalComplete.call(elements,elements);}promiseData&&promiseData.resolver(elements);};}if(opts.display===undefined){opts.display=direction==="In"?"auto":"none";}Velocity(this,propertiesMap,opts);};});$.easing={linear:function linear(p){return p;},swing:function swing(p){return 0.5-Math.cos(p*Math.PI)/2;},jswing:function jswing(p){return 0.5-Math.cos(p*Math.PI)/2;},easeInOutMaterial:function easeInOutMaterial(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t+b;return c/4*((t-=2)*t*t+2)+b;},_default:"swing"};$.extend($.easing,{def:'easeOutQuad',swing:function swing(x,t,b,c,d){ //alert($.easing.default);
+/*! VelocityJS.org (1.2.3). (C) 2014 Julian Shapiro. MIT @license: en.wikipedia.org/wiki/MIT_License */var $$2=$; var navigator=window.navigator;var requestAnimationFrame=function requestAnimationFrame(callback,element){var currTime=new Date().getTime();var timeToCall=Math.max(0,16-(currTime-lastTime));var id=window.setTimeout(function(){callback(currTime+timeToCall);},timeToCall);lastTime=currTime+timeToCall;return id;}; var cancelAnimationFrame=function cancelAnimationFrame(id){clearTimeout(id);};(function(self,raf,caf){var lastTime=0;var vendors=['ms','moz','webkit','o'];for(var x=0;x<vendors.length&&!self.requestAnimationFrame;++x){self.requestAnimationFrame=self[vendors[x]+'RequestAnimationFrame'];self.cancelAnimationFrame=self[vendors[x]+'CancelAnimationFrame']||self[vendors[x]+'CancelRequestAnimationFrame'];}if(!self.requestAnimationFrame)self.requestAnimationFrame=raf;if(!self.cancelAnimationFrame)self.cancelAnimationFrame=caf;})(window,requestAnimationFrame,cancelAnimationFrame); /* IE detection. Gist: https://gist.github.com/julianshapiro/9098609 */var IE=function(docobj){if(docobj.documentMode){return docobj.documentMode;}else {for(var i=7;i>4;i--){var div=docobj.createElement("div");div.innerHTML="<!--[if IE "+i+"]><span></span><![endif]-->";if(div.getElementsByTagName("span").length){div=null;return i;}}}return undefined;}(window.document);function compactSparseArray(array){var index=-1,length=array?array.length:0,result=[];while(++index<length){var value=array[index];if(value){result.push(value);}}return result;}function sanitizeElements(elements){ /* Unwrap jQuery/Zepto objects. */if(Type.isWrapped(elements)){elements=[].slice.call(elements); /* Wrap a single element in an array so that jQuery.each() can iterate with the element instead of its node's children. */}else if(Type.isNode(elements)){elements=[elements];}return elements;}var Type={isString:function isString(variable){return typeof variable==="string";},isArray:Array.isArray||function(variable){return Object.prototype.toString.call(variable)==="[object Array]";},isFunction:function isFunction(variable){return Object.prototype.toString.call(variable)==="[object Function]";},isNode:function isNode(variable){return variable&&variable.nodeType;}, /* Copyright Martin Bohm. MIT License: https://gist.github.com/Tomalak/818a78a226a0738eaade */isNodeList:function isNodeList(variable){return typeof variable==="object"&&/^\[object (HTMLCollection|NodeList|Object)\]jQuery/.test(Object.prototype.toString.call(variable))&&variable.length!==undefined&&(variable.length===0||typeof variable[0]==="object"&&variable[0].nodeType>0);}, /* Determine if variable is a wrapped jQuery or Zepto element. */isWrapped:function isWrapped(variable){return variable&&(variable.jquery||window.Zepto&&window.Zepto.zepto.isZ(variable));},isSVG:function isSVG(variable){return window.SVGElement&&variable instanceof window.SVGElement;},isEmptyObject:function isEmptyObject(variable){for(var name in variable){return false;}return true;}};var DURATION_DEFAULT=400; var EASING_DEFAULT="swing"; /*************
+		 State
+		 *************/var Velocity={State:{isMobile:/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),isAndroid:/Android/i.test(navigator.userAgent),isGingerbread:/Android 2\.3\.[3-7]/i.test(navigator.userAgent),isChrome:window.chrome,isFirefox:/Firefox/i.test(navigator.userAgent),prefixElement:document.createElement("div"),prefixMatches:{},scrollAnchor:null,scrollPropertyLeft:null,scrollPropertyTop:null,isTicking:false,calls:[],delayedElements:{count:0}},CSS:{},Utilities:$$2,Redirects:{},Easings:{},Promise:window.Promise,defaults:{queue:"",duration:DURATION_DEFAULT,easing:EASING_DEFAULT,begin:undefined,complete:undefined,progress:undefined,display:undefined,visibility:undefined,loop:false,delay:false,mobileHA:true,_cacheValues:true,promiseRejectEmpty:true},init:function init(element){$.data(element,"velocity",{isSVG:Type.isSVG(element),isAnimating:false, /* A reference to the element's live computedStyle object. Learn more here: https://developer.mozilla.org/en/docs/Web/API/window.getComputedStyle */computedStyle:null,tweensContainer:null,rootPropertyValueCache:{},transformCache:{}});}, /* A parallel to jQuery's jQuery.css(), used for getting/setting Velocity's hooked CSS properties. */hook:null,mock:false,version:{major:1,minor:4,patch:3},debug:false,timestamp:true,pauseAll:function pauseAll(queueName){var currentTime=new Date().getTime();$.each(Velocity.State.calls,function(i,activeCall){if(activeCall){if(queueName!==undefined&&(activeCall[2].queue!==queueName||activeCall[2].queue===false)){return true;}activeCall[5]={resume:false};}});$.each(Velocity.State.delayedElements,function(k,element){if(!element){return;}pauseDelayOnElement(element,currentTime);});},resumeAll:function resumeAll(queueName){var currentTime=new Date().getTime();$.each(Velocity.State.calls,function(i,activeCall){if(activeCall){if(queueName!==undefined&&(activeCall[2].queue!==queueName||activeCall[2].queue===false)){return true;}if(activeCall[5]){activeCall[5].resume=true;}}});$.each(Velocity.State.delayedElements,function(k,element){if(!element){return;}resumeDelayOnElement(element,currentTime);});}}; /* Retrieve the appropriate scroll anchor and property name for the browser: https://developer.mozilla.org/en-US/docs/Web/API/Window.scrollY */if(window.pageYOffset!==undefined){Velocity.State.scrollAnchor=window;Velocity.State.scrollPropertyLeft="pageXOffset";Velocity.State.scrollPropertyTop="pageYOffset";}else {Velocity.State.scrollAnchor=document.documentElement||document.body.parentNode||document.body;Velocity.State.scrollPropertyLeft="scrollLeft";Velocity.State.scrollPropertyTop="scrollTop";}function VData(element){var response=$.data(element,"velocity");return response===null?undefined:response;} /**************
+		 Delay Timer
+		 **************/function pauseDelayOnElement(element,currentTime){var data=VData(element);if(data&&data.delayTimer&&!data.delayPaused){data.delayRemaining=data.delay-currentTime+data.delayBegin;data.delayPaused=true;clearTimeout(data.delayTimer.setTimeout);}}function resumeDelayOnElement(element,currentTime){var data=VData(element);if(data&&data.delayTimer&&data.delayPaused){data.delayPaused=false;data.delayTimer.setTimeout=setTimeout(data.delayTimer.next,data.delayRemaining);}} /**************
+		 Easing
+		 **************/function generateStep(steps){return function(p){return Math.round(p*steps)*(1/steps);};} /* Bezier curve function generator. Copyright Gaetan Renaudeau. MIT License: http://en.wikipedia.org/wiki/MIT_License */function generateBezier(mX1,mY1,mX2,mY2){var NEWTON_ITERATIONS=4,NEWTON_MIN_SLOPE=0.001,SUBDIVISION_PRECISION=0.0000001,SUBDIVISION_MAX_ITERATIONS=10,kSplineTableSize=11,kSampleStepSize=1.0/(kSplineTableSize-1.0),float32ArraySupported="Float32Array" in window;if(arguments.length!==4){return false;}for(var i=0;i<4;++i){if(typeof arguments[i]!=="number"||isNaN(arguments[i])||!isFinite(arguments[i])){return false;}}mX1=Math.min(mX1,1);mX2=Math.min(mX2,1);mX1=Math.max(mX1,0);mX2=Math.max(mX2,0);var mSampleValues=float32ArraySupported?new Float32Array(kSplineTableSize):new Array(kSplineTableSize);function A(aA1,aA2){return 1.0-3.0*aA2+3.0*aA1;}function B(aA1,aA2){return 3.0*aA2-6.0*aA1;}function C(aA1){return 3.0*aA1;}function calcBezier(aT,aA1,aA2){return ((A(aA1,aA2)*aT+B(aA1,aA2))*aT+C(aA1))*aT;}function getSlope(aT,aA1,aA2){return 3.0*A(aA1,aA2)*aT*aT+2.0*B(aA1,aA2)*aT+C(aA1);}function newtonRaphsonIterate(aX,aGuessT){for(var i=0;i<NEWTON_ITERATIONS;++i){var currentSlope=getSlope(aGuessT,mX1,mX2);if(currentSlope===0.0){return aGuessT;}var currentX=calcBezier(aGuessT,mX1,mX2)-aX;aGuessT-=currentX/currentSlope;}return aGuessT;}function calcSampleValues(){for(var i=0;i<kSplineTableSize;++i){mSampleValues[i]=calcBezier(i*kSampleStepSize,mX1,mX2);}}function binarySubdivide(aX,aA,aB){var currentX,currentT,i=0;do {currentT=aA+(aB-aA)/2.0;currentX=calcBezier(currentT,mX1,mX2)-aX;if(currentX>0.0){aB=currentT;}else {aA=currentT;}}while(Math.abs(currentX)>SUBDIVISION_PRECISION&&++i<SUBDIVISION_MAX_ITERATIONS);return currentT;}function getTForX(aX){var intervalStart=0.0,currentSample=1,lastSample=kSplineTableSize-1;for(;currentSample!==lastSample&&mSampleValues[currentSample]<=aX;++currentSample){intervalStart+=kSampleStepSize;}--currentSample;var dist=(aX-mSampleValues[currentSample])/(mSampleValues[currentSample+1]-mSampleValues[currentSample]),guessForT=intervalStart+dist*kSampleStepSize,initialSlope=getSlope(guessForT,mX1,mX2);if(initialSlope>=NEWTON_MIN_SLOPE){return newtonRaphsonIterate(aX,guessForT);}else if(initialSlope===0.0){return guessForT;}else {return binarySubdivide(aX,intervalStart,intervalStart+kSampleStepSize);}}var _precomputed=false;function precompute(){_precomputed=true;if(mX1!==mY1||mX2!==mY2){calcSampleValues();}}var f=function f(aX){if(!_precomputed){precompute();}if(mX1===mY1&&mX2===mY2){return aX;}if(aX===0){return 0;}if(aX===1){return 1;}return calcBezier(getTForX(aX),mY1,mY2);};f.getControlPoints=function(){return [{x:mX1,y:mY1},{x:mX2,y:mY2}];};var str="generateBezier("+[mX1,mY1,mX2,mY2]+")";f.toString=function(){return str;};return f;} /* Runge-Kutta spring physics function generator. Adapted from Framer.js, copyright Koen Bok. MIT License: http://en.wikipedia.org/wiki/MIT_License */var generateSpringRK4=function(){function springAccelerationForState(state){return -state.tension*state.x-state.friction*state.v;}function springEvaluateStateWithDerivative(initialState,dt,derivative){var state={x:initialState.x+derivative.dx*dt,v:initialState.v+derivative.dv*dt,tension:initialState.tension,friction:initialState.friction};return {dx:state.v,dv:springAccelerationForState(state)};}function springIntegrateState(state,dt){var a={dx:state.v,dv:springAccelerationForState(state)},b=springEvaluateStateWithDerivative(state,dt*0.5,a),c=springEvaluateStateWithDerivative(state,dt*0.5,b),d=springEvaluateStateWithDerivative(state,dt,c),dxdt=1.0/6.0*(a.dx+2.0*(b.dx+c.dx)+d.dx),dvdt=1.0/6.0*(a.dv+2.0*(b.dv+c.dv)+d.dv);state.x=state.x+dxdt*dt;state.v=state.v+dvdt*dt;return state;}return function springRK4Factory(tension,friction,duration){var initState={x:-1,v:0,tension:null,friction:null},path=[0],time_lapsed=0,tolerance=1/10000,DT=16/1000,have_duration,dt,last_state;tension=parseFloat(tension)||500;friction=parseFloat(friction)||20;duration=duration||null;initState.tension=tension;initState.friction=friction;have_duration=duration!==null;if(have_duration){time_lapsed=springRK4Factory(tension,friction);dt=time_lapsed/duration*DT;}else {dt=DT;}while(true){ /* Next/step function .*/last_state=springIntegrateState(last_state||initState,dt);path.push(1+last_state.x);time_lapsed+=16;if(!(Math.abs(last_state.x)>tolerance&&Math.abs(last_state.v)>tolerance)){break;}}return !have_duration?time_lapsed:function(percentComplete){return path[percentComplete*(path.length-1)|0];};};}();Velocity.Easings={linear:function linear(p){return p;},swing:function swing(p){return 0.5-Math.cos(p*Math.PI)/2;},spring:function spring(p){return 1-Math.cos(p*4.5*Math.PI)*Math.exp(-p*6);}};$.each([["ease",[0.25,0.1,0.25,1.0]],["ease-in",[0.42,0.0,1.00,1.0]],["ease-out",[0.00,0.0,0.58,1.0]],["ease-in-out",[0.42,0.0,0.58,1.0]],["easeInSine",[0.47,0,0.745,0.715]],["easeOutSine",[0.39,0.575,0.565,1]],["easeInOutSine",[0.445,0.05,0.55,0.95]],["easeInQuad",[0.55,0.085,0.68,0.53]],["easeOutQuad",[0.25,0.46,0.45,0.94]],["easeInOutQuad",[0.455,0.03,0.515,0.955]],["easeInCubic",[0.55,0.055,0.675,0.19]],["easeOutCubic",[0.215,0.61,0.355,1]],["easeInOutCubic",[0.645,0.045,0.355,1]],["easeInQuart",[0.895,0.03,0.685,0.22]],["easeOutQuart",[0.165,0.84,0.44,1]],["easeInOutQuart",[0.77,0,0.175,1]],["easeInQuint",[0.755,0.05,0.855,0.06]],["easeOutQuint",[0.23,1,0.32,1]],["easeInOutQuint",[0.86,0,0.07,1]],["easeInExpo",[0.95,0.05,0.795,0.035]],["easeOutExpo",[0.19,1,0.22,1]],["easeInOutExpo",[1,0,0,1]],["easeInCirc",[0.6,0.04,0.98,0.335]],["easeOutCirc",[0.075,0.82,0.165,1]],["easeInOutCirc",[0.785,0.135,0.15,0.86]]],function(i,easingArray){Velocity.Easings[easingArray[0]]=generateBezier.apply(null,easingArray[1]);});function getEasing(value,duration){var easing=value; /* The easing option can either be a string that references a pre-registered easing,
+			 or it can be a two-/four-item array of integers to be converted into a bezier/spring function. */if(Type.isString(value)){if(!Velocity.Easings[value]){easing=false;}}else if(Type.isArray(value)&&value.length===1){easing=generateStep.apply(null,value);}else if(Type.isArray(value)&&value.length===2){easing=generateSpringRK4.apply(null,value.concat([duration]));}else if(Type.isArray(value)&&value.length===4){easing=generateBezier.apply(null,value);}else {easing=false;}if(easing===false){if(Velocity.Easings[Velocity.defaults.easing]){easing=Velocity.defaults.easing;}else {easing=EASING_DEFAULT;}}return easing;} /*****************
+		 CSS Stack
+		 *****************/var CSS=Velocity.CSS={ /*************
+			 RegEx
+			 *************/RegEx:{isHex:/^#([A-f\d]{3}){1,2}$/i,valueUnwrap:/^[A-z]+\((.*)\)$/i,wrappedValueAlreadyExtracted:/[0-9.]+ [0-9.]+ [0-9.]+( [0-9.]+)?/,valueSplit:/([A-z]+\(.+\))|(([A-z0-9#-.]+?)(?=\s|$))/ig}, /************
+			 Lists
+			 ************/Lists:{colors:["fill","stroke","stopColor","color","backgroundColor","borderColor","borderTopColor","borderRightColor","borderBottomColor","borderLeftColor","outlineColor"],transformsBase:["translateX","translateY","scale","scaleX","scaleY","skewX","skewY","rotateZ"],transforms3D:["transformPerspective","translateZ","scaleZ","rotateX","rotateY"],units:["%", // relative
+"em","ex","ch","rem", // font relative
+"vw","vh","vmin","vmax", // viewport relative
+"cm","mm","Q","in","pc","pt","px", // absolute lengths
+"deg","grad","rad","turn", // angles
+"s","ms" // time
+],colorNames:{"aliceblue":"240,248,255","antiquewhite":"250,235,215","aquamarine":"127,255,212","aqua":"0,255,255","azure":"240,255,255","beige":"245,245,220","bisque":"255,228,196","black":"0,0,0","blanchedalmond":"255,235,205","blueviolet":"138,43,226","blue":"0,0,255","brown":"165,42,42","burlywood":"222,184,135","cadetblue":"95,158,160","chartreuse":"127,255,0","chocolate":"210,105,30","coral":"255,127,80","cornflowerblue":"100,149,237","cornsilk":"255,248,220","crimson":"220,20,60","cyan":"0,255,255","darkblue":"0,0,139","darkcyan":"0,139,139","darkgoldenrod":"184,134,11","darkgray":"169,169,169","darkgrey":"169,169,169","darkgreen":"0,100,0","darkkhaki":"189,183,107","darkmagenta":"139,0,139","darkolivegreen":"85,107,47","darkorange":"255,140,0","darkorchid":"153,50,204","darkred":"139,0,0","darksalmon":"233,150,122","darkseagreen":"143,188,143","darkslateblue":"72,61,139","darkslategray":"47,79,79","darkturquoise":"0,206,209","darkviolet":"148,0,211","deeppink":"255,20,147","deepskyblue":"0,191,255","dimgray":"105,105,105","dimgrey":"105,105,105","dodgerblue":"30,144,255","firebrick":"178,34,34","floralwhite":"255,250,240","forestgreen":"34,139,34","fuchsia":"255,0,255","gainsboro":"220,220,220","ghostwhite":"248,248,255","gold":"255,215,0","goldenrod":"218,165,32","gray":"128,128,128","grey":"128,128,128","greenyellow":"173,255,47","green":"0,128,0","honeydew":"240,255,240","hotpink":"255,105,180","indianred":"205,92,92","indigo":"75,0,130","ivory":"255,255,240","khaki":"240,230,140","lavenderblush":"255,240,245","lavender":"230,230,250","lawngreen":"124,252,0","lemonchiffon":"255,250,205","lightblue":"173,216,230","lightcoral":"240,128,128","lightcyan":"224,255,255","lightgoldenrodyellow":"250,250,210","lightgray":"211,211,211","lightgrey":"211,211,211","lightgreen":"144,238,144","lightpink":"255,182,193","lightsalmon":"255,160,122","lightseagreen":"32,178,170","lightskyblue":"135,206,250","lightslategray":"119,136,153","lightsteelblue":"176,196,222","lightyellow":"255,255,224","limegreen":"50,205,50","lime":"0,255,0","linen":"250,240,230","magenta":"255,0,255","maroon":"128,0,0","mediumaquamarine":"102,205,170","mediumblue":"0,0,205","mediumorchid":"186,85,211","mediumpurple":"147,112,219","mediumseagreen":"60,179,113","mediumslateblue":"123,104,238","mediumspringgreen":"0,250,154","mediumturquoise":"72,209,204","mediumvioletred":"199,21,133","midnightblue":"25,25,112","mintcream":"245,255,250","mistyrose":"255,228,225","moccasin":"255,228,181","navajowhite":"255,222,173","navy":"0,0,128","oldlace":"253,245,230","olivedrab":"107,142,35","olive":"128,128,0","orangered":"255,69,0","orange":"255,165,0","orchid":"218,112,214","palegoldenrod":"238,232,170","palegreen":"152,251,152","paleturquoise":"175,238,238","palevioletred":"219,112,147","papayawhip":"255,239,213","peachpuff":"255,218,185","peru":"205,133,63","pink":"255,192,203","plum":"221,160,221","powderblue":"176,224,230","purple":"128,0,128","red":"255,0,0","rosybrown":"188,143,143","royalblue":"65,105,225","saddlebrown":"139,69,19","salmon":"250,128,114","sandybrown":"244,164,96","seagreen":"46,139,87","seashell":"255,245,238","sienna":"160,82,45","silver":"192,192,192","skyblue":"135,206,235","slateblue":"106,90,205","slategray":"112,128,144","snow":"255,250,250","springgreen":"0,255,127","steelblue":"70,130,180","tan":"210,180,140","teal":"0,128,128","thistle":"216,191,216","tomato":"255,99,71","turquoise":"64,224,208","violet":"238,130,238","wheat":"245,222,179","whitesmoke":"245,245,245","white":"255,255,255","yellowgreen":"154,205,50","yellow":"255,255,0"}}, /************
+			 Hooks
+			 ************/Hooks:{ /********************
+				 Registration
+				 ********************/templates:{"textShadow":["Color X Y Blur","black 0px 0px 0px"],"boxShadow":["Color X Y Blur Spread","black 0px 0px 0px 0px"],"clip":["Top Right Bottom Left","0px 0px 0px 0px"],"backgroundPosition":["X Y","0% 0%"],"transformOrigin":["X Y Z","50% 50% 0px"],"perspectiveOrigin":["X Y","50% 50%"]},registered:{},register:function register(){for(var i=0;i<CSS.Lists.colors.length;i++){var rgbComponents=CSS.Lists.colors[i]==="color"?"0 0 0 1":"255 255 255 1";CSS.Hooks.templates[CSS.Lists.colors[i]]=["Red Green Blue Alpha",rgbComponents];}var rootProperty,hookTemplate,hookNames;if(IE){for(rootProperty in CSS.Hooks.templates){if(!CSS.Hooks.templates.hasOwnProperty(rootProperty)){continue;}hookTemplate=CSS.Hooks.templates[rootProperty];hookNames=hookTemplate[0].split(" ");var defaultValues=hookTemplate[1].match(CSS.RegEx.valueSplit);if(hookNames[0]==="Color"){hookNames.push(hookNames.shift());defaultValues.push(defaultValues.shift());CSS.Hooks.templates[rootProperty]=[hookNames.join(" "),defaultValues.join(" ")];}}}for(rootProperty in CSS.Hooks.templates){if(!CSS.Hooks.templates.hasOwnProperty(rootProperty)){continue;}hookTemplate=CSS.Hooks.templates[rootProperty];hookNames=hookTemplate[0].split(" ");for(var j in hookNames){if(!hookNames.hasOwnProperty(j)){continue;}var fullHookName=rootProperty+hookNames[j],hookPosition=j;CSS.Hooks.registered[fullHookName]=[rootProperty,hookPosition];}}}, /*****************************
+				 Injection and Extraction
+				 *****************************/getRoot:function getRoot(property){var hookVData=CSS.Hooks.registered[property];if(hookVData){return hookVData[0];}else {return property;}},getUnit:function getUnit(str,start){var unit=(str.substr(start||0,5).match(/^[a-z%]+/)||[])[0]||"";if(unit&&CSS.Lists.units.indexOf(unit)>=0){return unit;}return "";},fixColors:function fixColors(str){return str.replace(/(rgba?\(\s*)?(\b[a-z]+\b)/g,function($0,$1,$2){if(CSS.Lists.colorNames.hasOwnProperty($2)){return ($1?$1:"rgba(")+CSS.Lists.colorNames[$2]+($1?"":",1)");}return $1+$2;});},cleanRootPropertyValue:function cleanRootPropertyValue(rootProperty,rootPropertyValue){if(CSS.RegEx.valueUnwrap.test(rootPropertyValue)){rootPropertyValue=rootPropertyValue.match(CSS.RegEx.valueUnwrap)[1];}if(CSS.Values.isCSSNullValue(rootPropertyValue)){rootPropertyValue=CSS.Hooks.templates[rootProperty][1];}return rootPropertyValue;},extractValue:function extractValue(fullHookName,rootPropertyValue){var hookVData=CSS.Hooks.registered[fullHookName];if(hookVData){var hookRoot=hookVData[0],hookPosition=hookVData[1];rootPropertyValue=CSS.Hooks.cleanRootPropertyValue(hookRoot,rootPropertyValue);return rootPropertyValue.toString().match(CSS.RegEx.valueSplit)[hookPosition];}else {return rootPropertyValue;}},injectValue:function injectValue(fullHookName,hookValue,rootPropertyValue){var hookVData=CSS.Hooks.registered[fullHookName];if(hookVData){var hookRoot=hookVData[0],hookPosition=hookVData[1],rootPropertyValueParts,rootPropertyValueUpdated;rootPropertyValue=CSS.Hooks.cleanRootPropertyValue(hookRoot,rootPropertyValue);rootPropertyValueParts=rootPropertyValue.toString().match(CSS.RegEx.valueSplit);rootPropertyValueParts[hookPosition]=hookValue;rootPropertyValueUpdated=rootPropertyValueParts.join(" ");return rootPropertyValueUpdated;}else {return rootPropertyValue;}}}, /*******************
+			 Normalizations
+			 *******************/Normalizations:{registered:{clip:function clip(type,element,propertyValue){switch(type){case "name":return "clip";case "extract":var extracted;if(CSS.RegEx.wrappedValueAlreadyExtracted.test(propertyValue)){extracted=propertyValue;}else {extracted=propertyValue.toString().match(CSS.RegEx.valueUnwrap);extracted=extracted?extracted[1].replace(/,(\s+)?/g," "):propertyValue;}return extracted;case "inject":return "rect("+propertyValue+")";}},blur:function blur(type,element,propertyValue){switch(type){case "name":return Velocity.State.isFirefox?"filter":"-webkit-filter";case "extract":var extracted=parseFloat(propertyValue);if(!(extracted||extracted===0)){var blurComponent=propertyValue.toString().match(/blur\(([0-9]+[A-z]+)\)/i);if(blurComponent){extracted=blurComponent[1];}else {extracted=0;}}return extracted;case "inject":if(!parseFloat(propertyValue)){return "none";}else {return "blur("+propertyValue+")";}}},opacity:function opacity(type,element,propertyValue){if(IE<=8){switch(type){case "name":return "filter";case "extract":var extracted=propertyValue.toString().match(/alpha\(opacity=(.*)\)/i);if(extracted){propertyValue=extracted[1]/100;}else {propertyValue=1;}return propertyValue;case "inject":element.style.zoom=1;if(parseFloat(propertyValue)>=1){return "";}else {return "alpha(opacity="+parseInt(parseFloat(propertyValue)*100,10)+")";}}}else {switch(type){case "name":return "opacity";case "extract":return propertyValue;case "inject":return propertyValue;}}}}, /*****************************
+				 Batched Registrations
+				 *****************************/register:function register(){ /*****************
+					 Transforms
+					 *****************/ /* Note: IE9 and Android Gingerbread have support for 2D -- but not 3D -- transforms. Since animating unsupported
+					 transform properties results in the browser ignoring the *entire* transform string, we prevent these 3D values
+					 from being normalized for these browsers so that tweening skips these properties altogether
+					 (since it will ignore them as being unsupported by the browser.) */if((!IE||IE>9)&&!Velocity.State.isGingerbread){CSS.Lists.transformsBase=CSS.Lists.transformsBase.concat(CSS.Lists.transforms3D);}for(var i=0;i<CSS.Lists.transformsBase.length;i++){(function(){var transformName=CSS.Lists.transformsBase[i];CSS.Normalizations.registered[transformName]=function(type,element,propertyValue){switch(type){case "name":return "transform";case "extract":if(VData(element)===undefined||VData(element).transformCache[transformName]===undefined){return (/^scale/i.test(transformName)?1:0);}return VData(element).transformCache[transformName].replace(/[()]/g,"");case "inject":var invalid=false; /* If an individual transform property contains an unsupported unit type, the browser ignores the *entire* transform property.
+										 Thus, protect users from themselves by skipping setting for transform values supplied with invalid unit types. */switch(transformName.substr(0,transformName.length-1)){case "translate":invalid=!/(%|px|em|rem|vw|vh|\d)$/i.test(propertyValue);break;case "scal":case "scale": /* Chrome on Android has a bug in which scaled elements blur if their initial scale
+												 value is below 1 (which can happen with forcefeeding). Thus, we detect a yet-unset scale property
+												 and ensure that its first value is always 1. More info: http://stackoverflow.com/questions/10417890/css3-animations-with-transform-causes-blurred-elements-on-webkit/10417962#10417962 */if(Velocity.State.isAndroid&&VData(element).transformCache[transformName]===undefined&&propertyValue<1){propertyValue=1;}invalid=!/(\d)$/i.test(propertyValue);break;case "skew":invalid=!/(deg|\d)$/i.test(propertyValue);break;case "rotate":invalid=!/(deg|\d)$/i.test(propertyValue);break;}if(!invalid){VData(element).transformCache[transformName]="("+propertyValue+")";}return VData(element).transformCache[transformName];}};})();} /*************
+					 Colors
+					 *************/ /* Since Velocity only animates a single numeric value per property, color animation is achieved by hooking the individual RGBA components of CSS color properties.
+					 Accordingly, color values must be normalized (e.g. "#ff0000", "red", and "rgb(255, 0, 0)" ==> "255 0 0 1") so that their components can be injected/extracted by CSS.Hooks logic. */for(var j=0;j<CSS.Lists.colors.length;j++){(function(){var colorName=CSS.Lists.colors[j];CSS.Normalizations.registered[colorName]=function(type,element,propertyValue){switch(type){case "name":return colorName; /* Convert all color values into the rgb format. (Old IE can return hex values and color names instead of rgb/rgba.) */case "extract":var extracted;if(CSS.RegEx.wrappedValueAlreadyExtracted.test(propertyValue)){extracted=propertyValue;}else {var converted,colorNames={black:"rgb(0, 0, 0)",blue:"rgb(0, 0, 255)",gray:"rgb(128, 128, 128)",green:"rgb(0, 128, 0)",red:"rgb(255, 0, 0)",white:"rgb(255, 255, 255)"};if(/^[A-z]+$/i.test(propertyValue)){if(colorNames[propertyValue]!==undefined){converted=colorNames[propertyValue];}else {converted=colorNames.black;}}else if(CSS.RegEx.isHex.test(propertyValue)){converted="rgb("+CSS.Values.hexToRgb(propertyValue).join(" ")+")";}else if(!/^rgba?\(/i.test(propertyValue)){converted=colorNames.black;} /* Remove the surrounding "rgb/rgba()" string then replace commas with spaces and strip
+											 repeated spaces (in case the value included spaces to begin with). */extracted=(converted||propertyValue).toString().match(CSS.RegEx.valueUnwrap)[1].replace(/,(\s+)?/g," ");}if((!IE||IE>8)&&extracted.split(" ").length===3){extracted+=" 1";}return extracted;case "inject":if(/^rgb/.test(propertyValue)){return propertyValue;}if(IE<=8){if(propertyValue.split(" ").length===4){propertyValue=propertyValue.split(/\s+/).slice(0,3).join(" ");}}else if(propertyValue.split(" ").length===3){propertyValue+=" 1";} /* Re-insert the browser-appropriate wrapper("rgb/rgba()"), insert commas, and strip off decimal units
+										 on all values but the fourth (R, G, and B only accept whole numbers). */return (IE<=8?"rgb":"rgba")+"("+propertyValue.replace(/\s+/g,",").replace(/\.(\d)+(?=,)/g,"")+")";}};})();} /**************
+					 Dimensions
+					 **************/function augmentDimension(name,element,wantInner){var isBorderBox=CSS.getPropertyValue(element,"boxSizing").toString().toLowerCase()==="border-box";if(isBorderBox===(wantInner||false)){ /* in box-sizing mode, the CSS width / height accessors already give the outerWidth / outerHeight. */var i,value,augment=0,sides=name==="width"?["Left","Right"]:["Top","Bottom"],fields=["padding"+sides[0],"padding"+sides[1],"border"+sides[0]+"Width","border"+sides[1]+"Width"];for(i=0;i<fields.length;i++){value=parseFloat(CSS.getPropertyValue(element,fields[i]));if(!isNaN(value)){augment+=value;}}return wantInner?-augment:augment;}return 0;}function getDimension(name,wantInner){return function(type,element,propertyValue){switch(type){case "name":return name;case "extract":return parseFloat(propertyValue)+augmentDimension(name,element,wantInner);case "inject":return parseFloat(propertyValue)-augmentDimension(name,element,wantInner)+"px";}};}CSS.Normalizations.registered.innerWidth=getDimension("width",true);CSS.Normalizations.registered.innerHeight=getDimension("height",true);CSS.Normalizations.registered.outerWidth=getDimension("width");CSS.Normalizations.registered.outerHeight=getDimension("height");}}, /************************
+			 CSS Property Names
+			 ************************/Names:{camelCase:function camelCase(property){return property.replace(/-(\w)/g,function(match,subMatch){return subMatch.toUpperCase();});}, /* For SVG elements, some properties (namely, dimensional ones) are GET/SET via the element's HTML attributes (instead of via CSS styles). */SVGAttribute:function SVGAttribute(property){var SVGAttributes="width|height|x|y|cx|cy|r|rx|ry|x1|x2|y1|y2";if(IE||Velocity.State.isAndroid&&!Velocity.State.isChrome){SVGAttributes+="|transform";}return new RegExp("^("+SVGAttributes+")$","i").test(property);},prefixCheck:function prefixCheck(property){if(Velocity.State.prefixMatches[property]){return [Velocity.State.prefixMatches[property],true];}else {var vendors=["","Webkit","Moz","ms","O"];for(var i=0,vendorsLength=vendors.length;i<vendorsLength;i++){var propertyPrefixed;if(i===0){propertyPrefixed=property;}else {propertyPrefixed=vendors[i]+property.replace(/^\w/,function(match){return match.toUpperCase();});}if(Type.isString(Velocity.State.prefixElement.style[propertyPrefixed])){Velocity.State.prefixMatches[property]=propertyPrefixed;return [propertyPrefixed,true];}}return [property,false];}}}, /************************
+			 CSS Property Values
+			 ************************/Values:{ /* Hex to RGB conversion. Copyright Tim Down: http://stackoverflow.com/questions/5623838/rgb-to-hex-and-hex-to-rgb */hexToRgb:function hexToRgb(hex){var shortformRegex=/^#?([a-f\d])([a-f\d])([a-f\d])$/i,longformRegex=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i,rgbParts;hex=hex.replace(shortformRegex,function(m,r,g,b){return r+r+g+g+b+b;});rgbParts=longformRegex.exec(hex);return rgbParts?[parseInt(rgbParts[1],16),parseInt(rgbParts[2],16),parseInt(rgbParts[3],16)]:[0,0,0];},isCSSNullValue:function isCSSNullValue(value){ /* Null-value checking is performed to default the special strings to 0 (for the sake of tweening) or their hook
+					 templates as defined as CSS.Hooks (for the sake of hook injection/extraction). */return !value||/^(none|auto|transparent|(rgba\(0, ?0, ?0, ?0\)))$/i.test(value);},getUnitType:function getUnitType(property){if(/^(rotate|skew)/i.test(property)){return "deg";}else if(/(^(scale|scaleX|scaleY|scaleZ|alpha|flexGrow|flexHeight|zIndex|fontWeight)$)|((opacity|red|green|blue|alpha)$)/i.test(property)){return "";}else {return "px";}}, /* Note: This function is used for correctly setting the non-"none" display value in certain Velocity redirects, such as fadeIn/Out. */getDisplayType:function getDisplayType(element){var tagName=element&&element.tagName.toString().toLowerCase();if(/^(b|big|i|small|tt|abbr|acronym|cite|code|dfn|em|kbd|strong|samp|var|a|bdo|br|img|map|object|q|script|span|sub|sup|button|input|label|select|textarea)$/i.test(tagName)){return "inline";}else if(/^(li)$/i.test(tagName)){return "list-item";}else if(/^(tr)$/i.test(tagName)){return "table-row";}else if(/^(table)$/i.test(tagName)){return "table";}else if(/^(tbody)$/i.test(tagName)){return "table-row-group";}else {return "block";}}, /* The class add/remove functions are used to temporarily apply a "velocity-animating" class to elements while they're animating. */addClass:function addClass(element,className){if(element){if(element.classList){element.classList.add(className);}else if(Type.isString(element.className)){ // Element.className is around 15% faster then set/getAttribute
+element.className+=(element.className.length?" ":"")+className;}else { // Work around for IE strict mode animating SVG - and anything else that doesn't behave correctly - the same way jQuery does it
+var currentClass=element.getAttribute(IE<=7?"className":"class")||"";element.setAttribute("class",currentClass+(currentClass?" ":"")+className);}}},removeClass:function removeClass(element,className){if(element){if(element.classList){element.classList.remove(className);}else if(Type.isString(element.className)){ // Element.className is around 15% faster then set/getAttribute
+// TODO: Need some jsperf tests on performance - can we get rid of the regex and maybe use split / array manipulation?
+element.className=element.className.toString().replace(new RegExp("(^|\\s)"+className.split(" ").join("|")+"(\\s|$)","gi")," ");}else { // Work around for IE strict mode animating SVG - and anything else that doesn't behave correctly - the same way jQuery does it
+var currentClass=element.getAttribute(IE<=7?"className":"class")||"";element.setAttribute("class",currentClass.replace(new RegExp("(^|\s)"+className.split(" ").join("|")+"(\s|$)","gi")," "));}}}}, /****************************
+			 Style Getting & Setting
+			 ****************************/getPropertyValue:function getPropertyValue(element,property,rootPropertyValue,forceStyleLookup){ /* Note: Retrieving the value of a CSS property cannot simply be performed by checking an element's
+				 style attribute (which only reflects user-defined values). Instead, the browser must be queried for a property's
+				 *computed* value. You can read more about getComputedStyle here: https://developer.mozilla.org/en/docs/Web/API/window.getComputedStyle */function computePropertyValue(element,property){ /* When box-sizing isn't set to border-box, height and width style values are incorrectly computed when an
+					 element's scrollbars are visible (which expands the element's dimensions). Thus, we defer to the more accurate
+					 offsetHeight/Width property, which includes the total dimensions for interior, border, padding, and scrollbar.
+					 We subtract border and padding to get the sum of interior + scrollbar. */var computedValue=0;if(IE<=8){computedValue=$.css(element,property);}else {var toggleDisplay=false;if(/^(width|height)$/.test(property)&&CSS.getPropertyValue(element,"display")===0){toggleDisplay=true;CSS.setPropertyValue(element,"display",CSS.Values.getDisplayType(element));}var revertDisplay=function revertDisplay(){if(toggleDisplay){CSS.setPropertyValue(element,"display","none");}};if(!forceStyleLookup){if(property==="height"&&CSS.getPropertyValue(element,"boxSizing").toString().toLowerCase()!=="border-box"){var contentBoxHeight=element.offsetHeight-(parseFloat(CSS.getPropertyValue(element,"borderTopWidth"))||0)-(parseFloat(CSS.getPropertyValue(element,"borderBottomWidth"))||0)-(parseFloat(CSS.getPropertyValue(element,"paddingTop"))||0)-(parseFloat(CSS.getPropertyValue(element,"paddingBottom"))||0);revertDisplay();return contentBoxHeight;}else if(property==="width"&&CSS.getPropertyValue(element,"boxSizing").toString().toLowerCase()!=="border-box"){var contentBoxWidth=element.offsetWidth-(parseFloat(CSS.getPropertyValue(element,"borderLeftWidth"))||0)-(parseFloat(CSS.getPropertyValue(element,"borderRightWidth"))||0)-(parseFloat(CSS.getPropertyValue(element,"paddingLeft"))||0)-(parseFloat(CSS.getPropertyValue(element,"paddingRight"))||0);revertDisplay();return contentBoxWidth;}}var computedStyle;if(VData(element)===undefined){computedStyle=window.getComputedStyle(element,null);}else if(!VData(element).computedStyle){computedStyle=VData(element).computedStyle=window.getComputedStyle(element,null);}else {computedStyle=VData(element).computedStyle;}if(property==="borderColor"){property="borderTopColor";}if(IE===9&&property==="filter"){computedValue=computedStyle.getPropertyValue(property);}else {computedValue=computedStyle[property];}if(computedValue===""||computedValue===null){computedValue=element.style[property];}revertDisplay();} /* An example of why numeric conversion is necessary: When an element with "position:absolute" has an untouched "left"
+					 property, which reverts to "auto", left's value is 0 relative to its parent element, but is often non-zero relative
+					 to its *containing* (not parent) element, which is the nearest "position:relative" ancestor or the viewport (and always the viewport in the case of "position:fixed"). */if(computedValue==="auto"&&/^(top|right|bottom|left)$/i.test(property)){var position=computePropertyValue(element,"position");if(position==="fixed"||position==="absolute"&&/top|left/i.test(property)){computedValue=$(element).position()[property]+"px";}}return computedValue;}var propertyValue;if(CSS.Hooks.registered[property]){var hook=property,hookRoot=CSS.Hooks.getRoot(hook);if(rootPropertyValue===undefined){rootPropertyValue=CSS.getPropertyValue(element,CSS.Names.prefixCheck(hookRoot)[0]);}if(CSS.Normalizations.registered[hookRoot]){rootPropertyValue=CSS.Normalizations.registered[hookRoot]("extract",element,rootPropertyValue);}propertyValue=CSS.Hooks.extractValue(hook,rootPropertyValue);}else if(CSS.Normalizations.registered[property]){var normalizedPropertyName,normalizedPropertyValue;normalizedPropertyName=CSS.Normalizations.registered[property]("name",element);if(normalizedPropertyName!=="transform"){normalizedPropertyValue=computePropertyValue(element,CSS.Names.prefixCheck(normalizedPropertyName)[0]);if(CSS.Values.isCSSNullValue(normalizedPropertyValue)&&CSS.Hooks.templates[property]){normalizedPropertyValue=CSS.Hooks.templates[property][1];}}propertyValue=CSS.Normalizations.registered[property]("extract",element,normalizedPropertyValue);}if(!/^[\d-]/.test(propertyValue)){var data=VData(element);if(data&&data.isSVG&&CSS.Names.SVGAttribute(property)){ /* Since the height/width attribute values must be set manually, they don't reflect computed values.
+						 Thus, we use use getBBox() to ensure we always get values for elements with undefined height/width attributes. */if(/^(height|width)$/i.test(property)){try{propertyValue=element.getBBox()[property];}catch(error){propertyValue=0;}}else {propertyValue=element.getAttribute(property);}}else {propertyValue=computePropertyValue(element,CSS.Names.prefixCheck(property)[0]);}}if(CSS.Values.isCSSNullValue(propertyValue)){propertyValue=0;}if(Velocity.debug>=2){console.log("Get "+property+": "+propertyValue);}return propertyValue;},setPropertyValue:function setPropertyValue(element,property,propertyValue,rootPropertyValue,scrollVData){var propertyName=property;if(property==="scroll"){if(scrollVData.container){scrollVData.container["scroll"+scrollVData.direction]=propertyValue;}else {if(scrollVData.direction==="Left"){window.scrollTo(propertyValue,scrollVData.alternateValue);}else {window.scrollTo(scrollVData.alternateValue,propertyValue);}}}else {if(CSS.Normalizations.registered[property]&&CSS.Normalizations.registered[property]("name",element)==="transform"){CSS.Normalizations.registered[property]("inject",element,propertyValue);propertyName="transform";propertyValue=VData(element).transformCache[property];}else {if(CSS.Hooks.registered[property]){var hookName=property,hookRoot=CSS.Hooks.getRoot(property);rootPropertyValue=rootPropertyValue||CSS.getPropertyValue(element,hookRoot);propertyValue=CSS.Hooks.injectValue(hookName,propertyValue,rootPropertyValue);property=hookRoot;}if(CSS.Normalizations.registered[property]){propertyValue=CSS.Normalizations.registered[property]("inject",element,propertyValue);property=CSS.Normalizations.registered[property]("name",element);}propertyName=CSS.Names.prefixCheck(property)[0]; /* A try/catch is used for IE<=8, which throws an error when "invalid" CSS values are set, e.g. a negative width.
+						 Try/catch is avoided for other browsers since it incurs a performance overhead. */if(IE<=8){try{element.style[propertyName]=propertyValue;}catch(error){if(Velocity.debug){console.log("Browser does not support ["+propertyValue+"] for ["+propertyName+"]");}}}else {var data=VData(element);if(data&&data.isSVG&&CSS.Names.SVGAttribute(property)){element.setAttribute(property,propertyValue);}else {element.style[propertyName]=propertyValue;}}if(Velocity.debug>=2){console.log("Set "+property+" ("+propertyName+"): "+propertyValue);}}}return [propertyName,propertyValue];},flushTransformCache:function flushTransformCache(element){var transformString="",data=VData(element); /* Certain browsers require that SVG transforms be applied as an attribute. However, the SVG transform attribute takes a modified version of CSS's transform string
+				 (units are dropped and, except for skewX/Y, subproperties are merged into their master property -- e.g. scaleX and scaleY are merged into scale(X Y). */if((IE||Velocity.State.isAndroid&&!Velocity.State.isChrome)&&data&&data.isSVG){var getTransformFloat=function getTransformFloat(transformProperty){return parseFloat(CSS.getPropertyValue(element,transformProperty));}; /* Create an object to organize all the transforms that we'll apply to the SVG element. To keep the logic simple,
+					 we process *all* transform properties -- even those that may not be explicitly applied (since they default to their zero-values anyway). */var SVGTransforms={translate:[getTransformFloat("translateX"),getTransformFloat("translateY")],skewX:[getTransformFloat("skewX")],skewY:[getTransformFloat("skewY")],scale:getTransformFloat("scale")!==1?[getTransformFloat("scale"),getTransformFloat("scale")]:[getTransformFloat("scaleX"),getTransformFloat("scaleY")],rotate:[getTransformFloat("rotateZ"),0,0]};$.each(VData(element).transformCache,function(transformName){ /* Except for with skewX/Y, revert the axis-specific transform subproperties to their axis-free master
+						 properties so that they match up with SVG's accepted transform properties. */if(/^translate/i.test(transformName)){transformName="translate";}else if(/^scale/i.test(transformName)){transformName="scale";}else if(/^rotate/i.test(transformName)){transformName="rotate";}if(SVGTransforms[transformName]){transformString+=transformName+"("+SVGTransforms[transformName].join(" ")+")"+" ";delete SVGTransforms[transformName];}});}else {var transformValue,perspective;$.each(VData(element).transformCache,function(transformName){transformValue=VData(element).transformCache[transformName];if(transformName==="transformPerspective"){perspective=transformValue;return true;}if(IE===9&&transformName==="rotateZ"){transformName="rotate";}transformString+=transformName+transformValue+" ";});if(perspective){transformString="perspective"+perspective+" "+transformString;}}CSS.setPropertyValue(element,"transform",transformString);}};CSS.Hooks.register();CSS.Normalizations.register();Velocity.hook=function(elements,arg2,arg3){var value;elements=sanitizeElements(elements);$.each(elements,function(i,element){if(VData(element)===undefined){Velocity.init(element);}if(arg3===undefined){if(value===undefined){value=CSS.getPropertyValue(element,arg2);}}else { /* sPV returns an array of the normalized propertyName/propertyValue pair used to update the DOM. */var adjustedSet=CSS.setPropertyValue(element,arg2,arg3);if(adjustedSet[0]==="transform"){Velocity.CSS.flushTransformCache(element);}value=adjustedSet;}});return value;}; /*****************
+		 Animation
+		 *****************/var animate=function animate(){var opts; /******************
+			 Call Chain
+			 ******************/function getChain(){if(isUtility){return promiseVData.promise||null; /* Otherwise, if we're using jQuery.fn, return the jQuery-/Zepto-wrapped element set. */}else {return elementsWrapped;}} /*************************
+			 Arguments Assignment
+			 *************************/var syntacticSugar=arguments[0]&&(arguments[0].p||$.isPlainObject(arguments[0].properties)&&!arguments[0].properties.names||Type.isString(arguments[0].properties)), /* Whether Velocity was called via the utility function (as opposed to on a jQuery/Zepto object). */isUtility, /* When Velocity is called via the utility function (jQuery.Velocity()/Velocity()), elements are explicitly
+					 passed in as the first parameter. Thus, argument positioning varies. We normalize them here. */elementsWrapped,argumentIndex;var elements,propertiesMap,options; /* Detect jQuery/Zepto elements being animated via the jQuery.fn method. */if(Type.isWrapped(this)){isUtility=false;argumentIndex=0;elements=this;elementsWrapped=this;}else {isUtility=true;argumentIndex=1;elements=syntacticSugar?arguments[0].elements||arguments[0].e:arguments[0];} /***************
+			 Promises
+			 ***************/var promiseVData={promise:null,resolver:null,rejecter:null}; /* If this call was made via the utility function (which is the default method of invocation when jQuery/Zepto are not being used), and if
+			 promise support was detected, create a promise object for this call and store references to its resolver and rejecter methods. The resolve
+			 method is used when a call completes naturally or is prematurely stopped by the user. In both cases, completeCall() handles the associated
+			 call cleanup and promise resolving logic. The reject method is used when an invalid set of arguments is passed into a Velocity call. */if(isUtility&&Velocity.Promise){promiseVData.promise=new Velocity.Promise(function(resolve,reject){promiseVData.resolver=resolve;promiseVData.rejecter=reject;});}if(syntacticSugar){propertiesMap=arguments[0].properties||arguments[0].p;options=arguments[0].options||arguments[0].o;}else {propertiesMap=arguments[argumentIndex];options=arguments[argumentIndex+1];}elements=sanitizeElements(elements);if(!elements){if(promiseVData.promise){if(!propertiesMap||!options||options.promiseRejectEmpty!==false){promiseVData.rejecter();}else {promiseVData.resolver();}}return;}var elementsLength=elements.length,elementsIndex=0; /***************************
+			 Argument Overloading
+			 ***************************/ /* Note: The stop/finish/pause/resume actions do not accept animation options, and are therefore excluded from this check. */if(!/^(stop|finish|finishAll|pause|resume)$/i.test(propertiesMap)&&!$.isPlainObject(options)){var startingArgumentPosition=argumentIndex+1;options={};for(var i=startingArgumentPosition;i<arguments.length;i++){if(!Type.isArray(arguments[i])&&(/^(fast|normal|slow)$/i.test(arguments[i])||/^\d/.test(arguments[i]))){options.duration=arguments[i];}else if(Type.isString(arguments[i])||Type.isArray(arguments[i])){options.easing=arguments[i];}else if(Type.isFunction(arguments[i])){options.complete=arguments[i];}}} /*********************
+			 Action Detection
+			 *********************/var action;switch(propertiesMap){case "scroll":action="scroll";break;case "reverse":action="reverse";break;case "pause": /*******************
+					 Action: Pause
+					 *******************/var currentTime=new Date().getTime();$.each(elements,function(i,element){pauseDelayOnElement(element,currentTime);}); /* Pause and Resume are call-wide (not on a per element basis). Thus, calling pause or resume on a 
+					 single element will cause any calls that containt tweens for that element to be paused/resumed
+					 as well. */$.each(Velocity.State.calls,function(i,activeCall){var found=false;if(activeCall){$.each(activeCall[1],function(k,activeElement){var queueName=options===undefined?"":options;if(queueName!==true&&activeCall[2].queue!==queueName&&!(options===undefined&&activeCall[2].queue===false)){return true;}$.each(elements,function(l,element){if(element===activeElement){activeCall[5]={resume:false};found=true;return false;}});if(found){return false;}});}});return getChain();case "resume": /*******************
+					 Action: Resume
+					 *******************/$.each(elements,function(i,element){resumeDelayOnElement(element,currentTime);}); /* Pause and Resume are call-wide (not on a per elemnt basis). Thus, calling pause or resume on a 
+					 single element will cause any calls that containt tweens for that element to be paused/resumed
+					 as well. */$.each(Velocity.State.calls,function(i,activeCall){var found=false;if(activeCall){$.each(activeCall[1],function(k,activeElement){var queueName=options===undefined?"":options;if(queueName!==true&&activeCall[2].queue!==queueName&&!(options===undefined&&activeCall[2].queue===false)){return true;}if(!activeCall[5]){return true;}$.each(elements,function(l,element){if(element===activeElement){activeCall[5].resume=true;found=true;return false;}});if(found){return false;}});}});return getChain();case "finish":case "finishAll":case "stop": /*******************
+					 Action: Stop
+					 *******************/$.each(elements,function(i,element){if(VData(element)&&VData(element).delayTimer){clearTimeout(VData(element).delayTimer.setTimeout);if(VData(element).delayTimer.next){VData(element).delayTimer.next();}delete VData(element).delayTimer;}if(propertiesMap==="finishAll"&&(options===true||Type.isString(options))){$.each($.queue(element,Type.isString(options)?options:""),function(_,item){if(Type.isFunction(item)){item();}});$.queue(element,Type.isString(options)?options:"",[]);}});var callsToStop=[]; /* Note: The stop command runs prior to Velocity's Queueing phase since its behavior is intended to take effect *immediately*,
+					 regardless of the element's current queue state. */$.each(Velocity.State.calls,function(i,activeCall){if(activeCall){$.each(activeCall[1],function(k,activeElement){var queueName=options===undefined?"":options;if(queueName!==true&&activeCall[2].queue!==queueName&&!(options===undefined&&activeCall[2].queue===false)){return true;}$.each(elements,function(l,element){if(element===activeElement){if(options===true||Type.isString(options)){$.each($.queue(element,Type.isString(options)?options:""),function(_,item){if(Type.isFunction(item)){item(null,true);}});$.queue(element,Type.isString(options)?options:"",[]);}if(propertiesMap==="stop"){var data=VData(element);if(data&&data.tweensContainer&&queueName!==false){$.each(data.tweensContainer,function(m,activeTween){activeTween.endValue=activeTween.currentValue;});}callsToStop.push(i);}else if(propertiesMap==="finish"||propertiesMap==="finishAll"){activeCall[2].duration=1;}}});});}});if(propertiesMap==="stop"){$.each(callsToStop,function(i,j){completeCall(j,true);});if(promiseVData.promise){promiseVData.resolver(elements);}}return getChain();default:if($.isPlainObject(propertiesMap)&&!Type.isEmptyObject(propertiesMap)){action="start"; /****************
+						 Redirects
+						 ****************/}else if(Type.isString(propertiesMap)&&Velocity.Redirects[propertiesMap]){opts=$.extend({},options);var durationOriginal=opts.duration,delayOriginal=opts.delay||0;if(opts.backwards===true){elements=$.extend(true,[],elements).reverse();}$.each(elements,function(elementIndex,element){if(parseFloat(opts.stagger)){opts.delay=delayOriginal+parseFloat(opts.stagger)*elementIndex;}else if(Type.isFunction(opts.stagger)){opts.delay=delayOriginal+opts.stagger.call(element,elementIndex,elementsLength);} /* If the drag option was passed in, successively increase/decrease (depending on the presense of opts.backwards)
+							 the duration of each element's animation, using floors to prevent producing very short durations. */if(opts.drag){opts.duration=parseFloat(durationOriginal)||(/^(callout|transition)/.test(propertiesMap)?1000:DURATION_DEFAULT); /* For each element, take the greater duration of: A) animation completion percentage relative to the original duration,
+								 B) 75% of the original duration, or C) a 200ms fallback (in case duration is already set to a low value).
+								 The end result is a baseline of 75% of the redirect's duration that increases/decreases as the end of the element set is approached. */opts.duration=Math.max(opts.duration*(opts.backwards?1-elementIndex/elementsLength:(elementIndex+1)/elementsLength),opts.duration*0.75,200);}Velocity.Redirects[propertiesMap].call(element,element,opts||{},elementIndex,elementsLength,elements,promiseVData.promise?promiseVData:undefined);});return getChain();}else {var abortError="Velocity: First argument ("+propertiesMap+") was not a property map, a known action, or a registered redirect. Aborting.";if(promiseVData.promise){promiseVData.rejecter(new Error(abortError));}else {console.log(abortError);}return getChain();}} /**************************
+			 Call-Wide Variables
+			 **************************/var callUnitConversionVData={lastParent:null,lastPosition:null,lastFontSize:null,lastPercentToPxWidth:null,lastPercentToPxHeight:null,lastEmToPx:null,remToPx:null,vwToPx:null,vhToPx:null};var call=[]; /************************
+			 Element Processing
+			 ************************/ /* Element processing consists of three parts -- data processing that cannot go stale and data processing that *can* go stale (i.e. third-party style modifications):
+			 1) Pre-Queueing: Element-wide variables, including the element's data storage, are instantiated. Call options are prepared. If triggered, the Stop action is executed.
+			 2) Queueing: The logic that runs once this call has reached its point of execution in the element's jQuery.queue() stack. Most logic is placed here to avoid risking it becoming stale.
+			 3) Pushing: Consolidation of the tween data followed by its push onto the $ in-progress calls container.
+			 `elementArrayIndex` allows passing index of the element in the original array to value functions.
+			 If `elementsIndex` were used instead the index would be determined by the elements' per-element queue.
+			 */function processElement(element,elementArrayIndex){ /*************************
+				 Part I: Pre-Queueing
+				 *************************/ /***************************
+				 Element-Wide Variables
+				 ***************************/var opts=$.extend({},Velocity.defaults,options),tweensContainer={},elementUnitConversionVData; /******************
+				 Element Init
+				 ******************/if(VData(element)===undefined){Velocity.init(element);} /******************
+				 Option: Delay
+				 ******************/if(parseFloat(opts.delay)&&opts.queue!==false){$.queue(element,opts.queue,function(next){Velocity.velocityQueueEntryFlag=true; /* The ensuing queue item (which is assigned to the "next" argument that jQuery.queue() automatically passes in) will be triggered after a setTimeout delay.
+						 The setTimeout is stored so that it can be subjected to clearTimeout() if this animation is prematurely stopped via Velocity's "stop" command, and
+						 delayBegin/delayTime is used to ensure we can "pause" and "resume" a tween that is still mid-delay. */ /* Temporarily store delayed elements to facilite access for $ pause/resume */var callIndex=Velocity.State.delayedElements.count++;Velocity.State.delayedElements[callIndex]=element;var delayComplete=function(index){return function(){Velocity.State.delayedElements[index]=false;next();};}(callIndex);VData(element).delayBegin=new Date().getTime();VData(element).delay=parseFloat(opts.delay);VData(element).delayTimer={setTimeout:setTimeout(next,parseFloat(opts.delay)),next:delayComplete};});} /*********************
+				 Option: Duration
+				 *********************/switch(opts.duration.toString().toLowerCase()){case "fast":opts.duration=200;break;case "normal":opts.duration=DURATION_DEFAULT;break;case "slow":opts.duration=600;break;default:opts.duration=parseFloat(opts.duration)||1;} /************************
+				 Global Option: Mock
+				 ************************/if(Velocity.mock!==false){if(Velocity.mock===true){opts.duration=opts.delay=1;}else {opts.duration*=parseFloat(Velocity.mock)||1;opts.delay*=parseFloat(Velocity.mock)||1;}} /*******************
+				 Option: Easing
+				 *******************/opts.easing=getEasing(opts.easing,opts.duration); /**********************
+				 Option: Callbacks
+				 **********************/if(opts.begin&&!Type.isFunction(opts.begin)){opts.begin=null;}if(opts.progress&&!Type.isFunction(opts.progress)){opts.progress=null;}if(opts.complete&&!Type.isFunction(opts.complete)){opts.complete=null;} /*********************************
+				 Option: Display & Visibility
+				 *********************************/ /* Refer to Velocity's documentation (VelocityJS.org/#displayAndVisibility) for a description of the display and visibility options' behavior. */if(opts.display!==undefined&&opts.display!==null){opts.display=opts.display.toString().toLowerCase();if(opts.display==="auto"){opts.display=Velocity.CSS.Values.getDisplayType(element);}}if(opts.visibility!==undefined&&opts.visibility!==null){opts.visibility=opts.visibility.toString().toLowerCase();} /**********************
+				 Option: mobileHA
+				 **********************/ /* Note: You can read more about the use of mobileHA in Velocity's documentation: VelocityJS.org/#mobileHA. */opts.mobileHA=opts.mobileHA&&Velocity.State.isMobile&&!Velocity.State.isGingerbread; /***********************
+				 Part II: Queueing
+				 ***********************/function buildQueue(next){var data,lastTweensContainer; /*******************
+					 Option: Begin
+					 *******************/if(opts.begin&&elementsIndex===0){try{opts.begin.call(elements,elements);}catch(error){setTimeout(function(){throw error;},1);}} /*****************************************
+					 Tween VData Construction (for Scroll)
+					 *****************************************/if(action==="scroll"){var scrollDirection=/^x$/i.test(opts.axis)?"Left":"Top",scrollOffset=parseFloat(opts.offset)||0,scrollPositionCurrent,scrollPositionCurrentAlternate,scrollPositionEnd;if(opts.container){if(Type.isWrapped(opts.container)||Type.isNode(opts.container)){opts.container=opts.container[0]||opts.container;scrollPositionCurrent=opts.container["scroll"+scrollDirection]; /* jQuery.position() values are relative to the container's currently viewable area (without taking into account the container's true dimensions
+								 -- say, for example, if the container was not overflowing). Thus, the scroll end value is the sum of the child element's position *and*
+								 the scroll container's current scroll position. */scrollPositionEnd=scrollPositionCurrent+$(element).position()[scrollDirection.toLowerCase()]+scrollOffset;}else {opts.container=null;}}else {scrollPositionCurrent=Velocity.State.scrollAnchor[Velocity.State["scrollProperty"+scrollDirection]];scrollPositionCurrentAlternate=Velocity.State.scrollAnchor[Velocity.State["scrollProperty"+(scrollDirection==="Left"?"Top":"Left")]];scrollPositionEnd=$(element).offset()[scrollDirection.toLowerCase()]+scrollOffset;}tweensContainer={scroll:{rootPropertyValue:false,startValue:scrollPositionCurrent,currentValue:scrollPositionCurrent,endValue:scrollPositionEnd,unitType:"",easing:opts.easing,scrollVData:{container:opts.container,direction:scrollDirection,alternateValue:scrollPositionCurrentAlternate}},element:element};if(Velocity.debug){console.log("tweensContainer (scroll): ",tweensContainer.scroll,element);} /******************************************
+						 Tween VData Construction (for Reverse)
+						 ******************************************/ /* Note: Reverse calls do not need to be consecutively chained onto a currently-animating element in order to operate on cached values;
+						 there is no harm to reverse being called on a potentially stale data cache since reverse's behavior is simply defined
+						 as reverting to the element's values as they were prior to the previous *Velocity* call. */}else if(action==="reverse"){data=VData(element);if(!data){return;}if(!data.tweensContainer){$.dequeue(element,opts.queue);return;}else { /*********************
+							 Options Parsing
+							 *********************/if(data.opts.display==="none"){data.opts.display="auto";}if(data.opts.visibility==="hidden"){data.opts.visibility="visible";}data.opts.loop=false;data.opts.begin=null;data.opts.complete=null;if(!options.easing){delete opts.easing;}if(!options.duration){delete opts.duration;}opts=$.extend({},data.opts,opts); /*************************************
+							 Tweens Container Reconstruction
+							 *************************************/lastTweensContainer=$.extend(true,{},data?data.tweensContainer:null);for(var lastTween in lastTweensContainer){if(lastTweensContainer.hasOwnProperty(lastTween)&&lastTween!=="element"){var lastStartValue=lastTweensContainer[lastTween].startValue;lastTweensContainer[lastTween].startValue=lastTweensContainer[lastTween].currentValue=lastTweensContainer[lastTween].endValue;lastTweensContainer[lastTween].endValue=lastStartValue;if(!Type.isEmptyObject(options)){lastTweensContainer[lastTween].easing=opts.easing;}if(Velocity.debug){console.log("reverse tweensContainer ("+lastTween+"): "+JSON.stringify(lastTweensContainer[lastTween]),element);}}}tweensContainer=lastTweensContainer;} /*****************************************
+						 Tween VData Construction (for Start)
+						 *****************************************/}else if(action==="start"){ /*************************
+						 Value Transferring
+						 *************************/ /* If this queue entry follows a previous Velocity-initiated queue entry *and* if this entry was created
+						 while the element was in the process of being animated by Velocity, then this current call is safe to use
+						 the end values from the prior call as its start values. Velocity attempts to perform this value transfer
+						 process whenever possible in order to avoid requerying the DOM. */ /* Note: Conversely, animation reversal (and looping) *always* perform inter-call value transfers; they never requery the DOM. */data=VData(element);if(data&&data.tweensContainer&&data.isAnimating===true){lastTweensContainer=data.tweensContainer;} /***************************
+						 Tween VData Calculation
+						 ***************************/ /* Property map values can either take the form of 1) a single value representing the end value,
+						 or 2) an array in the form of [ endValue, [, easing] [, startValue] ].
+						 The optional third parameter is a forcefed startValue to be used instead of querying the DOM for
+						 the element's current value. Read Velocity's docmentation to learn more about forcefeeding: VelocityJS.org/#forcefeeding */var parsePropertyValue=function parsePropertyValue(valueVData,skipResolvingEasing){var endValue,easing,startValue;if(Type.isFunction(valueVData)){valueVData=valueVData.call(element,elementArrayIndex,elementsLength);}if(Type.isArray(valueVData)){endValue=valueVData[0];if(!Type.isArray(valueVData[1])&&/^[\d-]/.test(valueVData[1])||Type.isFunction(valueVData[1])||CSS.RegEx.isHex.test(valueVData[1])){startValue=valueVData[1];}else if(Type.isString(valueVData[1])&&!CSS.RegEx.isHex.test(valueVData[1])&&Velocity.Easings[valueVData[1]]||Type.isArray(valueVData[1])){easing=skipResolvingEasing?valueVData[1]:getEasing(valueVData[1],opts.duration);startValue=valueVData[2];}else {startValue=valueVData[1]||valueVData[2];}}else {endValue=valueVData;}if(!skipResolvingEasing){easing=easing||opts.easing;}if(Type.isFunction(endValue)){endValue=endValue.call(element,elementArrayIndex,elementsLength);}if(Type.isFunction(startValue)){startValue=startValue.call(element,elementArrayIndex,elementsLength);}return [endValue||0,easing,startValue];};var fixPropertyValue=function fixPropertyValue(property,valueVData){var rootProperty=CSS.Hooks.getRoot(property),rootPropertyValue=false,endValue=valueVData[0],easing=valueVData[1],startValue=valueVData[2],pattern; /**************************
+							 Start Value Sourcing
+							 **************************/if((!data||!data.isSVG)&&rootProperty!=="tween"&&CSS.Names.prefixCheck(rootProperty)[1]===false&&CSS.Normalizations.registered[rootProperty]===undefined){if(Velocity.debug){console.log("Skipping ["+rootProperty+"] due to a lack of browser support.");}return;}if((opts.display!==undefined&&opts.display!==null&&opts.display!=="none"||opts.visibility!==undefined&&opts.visibility!=="hidden")&&/opacity|filter/.test(property)&&!startValue&&endValue!==0){startValue=0;} /* If values have been transferred from the previous Velocity call, extract the endValue and rootPropertyValue
+							 for all of the current call's properties that were *also* animated in the previous call. */if(opts._cacheValues&&lastTweensContainer&&lastTweensContainer[property]){if(startValue===undefined){startValue=lastTweensContainer[property].endValue+lastTweensContainer[property].unitType;}rootPropertyValue=data.rootPropertyValueCache[rootProperty];}else {if(CSS.Hooks.registered[property]){if(startValue===undefined){rootPropertyValue=CSS.getPropertyValue(element,rootProperty);startValue=CSS.getPropertyValue(element,property,rootPropertyValue);}else {rootPropertyValue=CSS.Hooks.templates[rootProperty][1];}}else if(startValue===undefined){startValue=CSS.getPropertyValue(element,property);}} /**************************
+							 Value VData Extraction
+							 **************************/var separatedValue,endValueUnitType,startValueUnitType,operator=false;var separateValue=function separateValue(property,value){var unitType,numericValue;numericValue=(value||"0").toString().toLowerCase().replace(/[%A-z]+$/,function(match){unitType=match;return "";});if(!unitType){unitType=CSS.Values.getUnitType(property);}return [numericValue,unitType];};if(startValue!==endValue&&Type.isString(startValue)&&Type.isString(endValue)){pattern="";var iStart=0, // index in startValue
+iEnd=0, // index in endValue
+aStart=[], // array of startValue numbers
+aEnd=[], // array of endValue numbers
+inCalc=0, // Keep track of being inside a "calc()" so we don't duplicate it
+inRGB=0, // Keep track of being inside an RGB as we can't use fractional values
+inRGBA=0; // Keep track of being inside an RGBA as we must pass fractional for the alpha channel
+startValue=CSS.Hooks.fixColors(startValue);endValue=CSS.Hooks.fixColors(endValue);while(iStart<startValue.length&&iEnd<endValue.length){var cStart=startValue[iStart],cEnd=endValue[iEnd];if(/[\d\.-]/.test(cStart)&&/[\d\.-]/.test(cEnd)){var tStart=cStart, // temporary character buffer
+tEnd=cEnd, // temporary character buffer
+dotStart=".", // Make sure we can only ever match a single dot in a decimal
+dotEnd="."; // Make sure we can only ever match a single dot in a decimal
+while(++iStart<startValue.length){cStart=startValue[iStart];if(cStart===dotStart){dotStart=".."; // Can never match two characters
+}else if(!/\d/.test(cStart)){break;}tStart+=cStart;}while(++iEnd<endValue.length){cEnd=endValue[iEnd];if(cEnd===dotEnd){dotEnd=".."; // Can never match two characters
+}else if(!/\d/.test(cEnd)){break;}tEnd+=cEnd;}var uStart=CSS.Hooks.getUnit(startValue,iStart), // temporary unit type
+uEnd=CSS.Hooks.getUnit(endValue,iEnd); // temporary unit type
+iStart+=uStart.length;iEnd+=uEnd.length;if(uStart===uEnd){ // Same units
+if(tStart===tEnd){ // Same numbers, so just copy over
+pattern+=tStart+uStart;}else { // Different numbers, so store them
+pattern+="{"+aStart.length+(inRGB?"!":"")+"}"+uStart;aStart.push(parseFloat(tStart));aEnd.push(parseFloat(tEnd));}}else { // Different units, so put into a "calc(from + to)" and animate each side to/from zero
+var nStart=parseFloat(tStart),nEnd=parseFloat(tEnd);pattern+=(inCalc<5?"calc":"")+"("+(nStart?"{"+aStart.length+(inRGB?"!":"")+"}":"0")+uStart+" + "+(nEnd?"{"+(aStart.length+(nStart?1:0))+(inRGB?"!":"")+"}":"0")+uEnd+")";if(nStart){aStart.push(nStart);aEnd.push(0);}if(nEnd){aStart.push(0);aEnd.push(nEnd);}}}else if(cStart===cEnd){pattern+=cStart;iStart++;iEnd++; // Keep track of being inside a calc()
+if(inCalc===0&&cStart==="c"||inCalc===1&&cStart==="a"||inCalc===2&&cStart==="l"||inCalc===3&&cStart==="c"||inCalc>=4&&cStart==="("){inCalc++;}else if(inCalc&&inCalc<5||inCalc>=4&&cStart===")"&&--inCalc<5){inCalc=0;} // Keep track of being inside an rgb() / rgba()
+if(inRGB===0&&cStart==="r"||inRGB===1&&cStart==="g"||inRGB===2&&cStart==="b"||inRGB===3&&cStart==="a"||inRGB>=3&&cStart==="("){if(inRGB===3&&cStart==="a"){inRGBA=1;}inRGB++;}else if(inRGBA&&cStart===","){if(++inRGBA>3){inRGB=inRGBA=0;}}else if(inRGBA&&inRGB<(inRGBA?5:4)||inRGB>=(inRGBA?4:3)&&cStart===")"&&--inRGB<(inRGBA?5:4)){inRGB=inRGBA=0;}}else {inCalc=0; // TODO: changing units, fixing colours
+break;}}if(iStart!==startValue.length||iEnd!==endValue.length){if(Velocity.debug){console.error("Trying to pattern match mis-matched strings [\""+endValue+"\", \""+startValue+"\"]");}pattern=undefined;}if(pattern){if(aStart.length){if(Velocity.debug){console.log("Pattern found \""+pattern+"\" -> ",aStart,aEnd,"["+startValue+","+endValue+"]");}startValue=aStart;endValue=aEnd;endValueUnitType=startValueUnitType="";}else {pattern=undefined;}}}if(!pattern){separatedValue=separateValue(property,startValue);startValue=separatedValue[0];startValueUnitType=separatedValue[1];separatedValue=separateValue(property,endValue);endValue=separatedValue[0].replace(/^([+-\/*])=/,function(match,subMatch){operator=subMatch;return "";});endValueUnitType=separatedValue[1];startValue=parseFloat(startValue)||0;endValue=parseFloat(endValue)||0; /***************************************
+								 Property-Specific Value Conversion
+								 ***************************************/if(endValueUnitType==="%"){ /* A %-value fontSize/lineHeight is relative to the parent's fontSize (as opposed to the parent's dimensions),
+									 which is identical to the em unit's behavior, so we piggyback off of that. */if(/^(fontSize|lineHeight)$/.test(property)){endValue=endValue/100;endValueUnitType="em";}else if(/^scale/.test(property)){endValue=endValue/100;endValueUnitType="";}else if(/(Red|Green|Blue)$/i.test(property)){endValue=endValue/100*255;endValueUnitType="";}}} /***************************
+							 Unit Ratio Calculation
+							 ***************************/ /* When queried, the browser returns (most) CSS property values in pixels. Therefore, if an endValue with a unit type of
+							 %, em, or rem is animated toward, startValue must be converted from pixels into the same unit type as endValue in order
+							 for value manipulation logic (increment/decrement) to proceed. Further, if the startValue was forcefed or transferred
+							 from a previous call, startValue may also not be in pixels. Unit conversion logic therefore consists of two steps:
+							 1) Calculating the ratio of %/em/rem/vh/vw relative to pixels
+							 2) Converting startValue into the same unit of measurement as endValue based on these ratios. */var calculateUnitRatios=function calculateUnitRatios(){ /************************
+								 Same Ratio Checks
+								 ************************/var sameRatioIndicators={myParent:element.parentNode||document.body,position:CSS.getPropertyValue(element,"position"),fontSize:CSS.getPropertyValue(element,"fontSize")},samePercentRatio=sameRatioIndicators.position===callUnitConversionVData.lastPosition&&sameRatioIndicators.myParent===callUnitConversionVData.lastParent,sameEmRatio=sameRatioIndicators.fontSize===callUnitConversionVData.lastFontSize;callUnitConversionVData.lastParent=sameRatioIndicators.myParent;callUnitConversionVData.lastPosition=sameRatioIndicators.position;callUnitConversionVData.lastFontSize=sameRatioIndicators.fontSize; /***************************
+								 Element-Specific Units
+								 ***************************/var measurement=100,unitRatios={};if(!sameEmRatio||!samePercentRatio){var dummy=data&&data.isSVG?document.createElementNS("http://www.w3.org/2000/svg","rect"):document.createElement("div");Velocity.init(dummy);sameRatioIndicators.myParent.appendChild(dummy); /* To accurately and consistently calculate conversion ratios, the element's cascaded overflow and box-sizing are stripped.
+									 Similarly, since width/height can be artificially constrained by their min-/max- equivalents, these are controlled for as well. */$.each(["overflow","overflowX","overflowY"],function(i,property){Velocity.CSS.setPropertyValue(dummy,property,"hidden");});Velocity.CSS.setPropertyValue(dummy,"position",sameRatioIndicators.position);Velocity.CSS.setPropertyValue(dummy,"fontSize",sameRatioIndicators.fontSize);Velocity.CSS.setPropertyValue(dummy,"boxSizing","content-box");$.each(["minWidth","maxWidth","width","minHeight","maxHeight","height"],function(i,property){Velocity.CSS.setPropertyValue(dummy,property,measurement+"%");});Velocity.CSS.setPropertyValue(dummy,"paddingLeft",measurement+"em");unitRatios.percentToPxWidth=callUnitConversionVData.lastPercentToPxWidth=(parseFloat(CSS.getPropertyValue(dummy,"width",null,true))||1)/measurement;unitRatios.percentToPxHeight=callUnitConversionVData.lastPercentToPxHeight=(parseFloat(CSS.getPropertyValue(dummy,"height",null,true))||1)/measurement;unitRatios.emToPx=callUnitConversionVData.lastEmToPx=(parseFloat(CSS.getPropertyValue(dummy,"paddingLeft"))||1)/measurement;sameRatioIndicators.myParent.removeChild(dummy);}else {unitRatios.emToPx=callUnitConversionVData.lastEmToPx;unitRatios.percentToPxWidth=callUnitConversionVData.lastPercentToPxWidth;unitRatios.percentToPxHeight=callUnitConversionVData.lastPercentToPxHeight;} /***************************
+								 Element-Agnostic Units
+								 ***************************/if(callUnitConversionVData.remToPx===null){callUnitConversionVData.remToPx=parseFloat(CSS.getPropertyValue(document.body,"fontSize"))||16;}if(callUnitConversionVData.vwToPx===null){callUnitConversionVData.vwToPx=parseFloat(window.innerWidth)/100;callUnitConversionVData.vhToPx=parseFloat(window.innerHeight)/100;}unitRatios.remToPx=callUnitConversionVData.remToPx;unitRatios.vwToPx=callUnitConversionVData.vwToPx;unitRatios.vhToPx=callUnitConversionVData.vhToPx;if(Velocity.debug>=1){console.log("Unit ratios: "+JSON.stringify(unitRatios),element);}return unitRatios;}; /********************
+							 Unit Conversion
+							 ********************/ /* The * and / operators, which are not passed in with an associated unit, inherently use startValue's unit. Skip value and unit conversion. */if(/[\/*]/.test(operator)){endValueUnitType=startValueUnitType;}else if(startValueUnitType!==endValueUnitType&&startValue!==0){ /* Unit conversion is also skipped when endValue is 0, but *startValueUnitType* must be used for tween values to remain accurate. */if(endValue===0){endValueUnitType=startValueUnitType;}else {elementUnitConversionVData=elementUnitConversionVData||calculateUnitRatios(); /* Note: W3C spec mandates that all of margin and padding's properties (even top and bottom) are %-relative to the *width* of the parent element. */var axis=/margin|padding|left|right|width|text|word|letter/i.test(property)||/X$/.test(property)||property==="x"?"x":"y";switch(startValueUnitType){case "%": /* Note: translateX and translateY are the only properties that are %-relative to an element's own dimensions -- not its parent's dimensions.
+											 Velocity does not include a special conversion process to account for this behavior. Therefore, animating translateX/Y from a % value
+											 to a non-% value will produce an incorrect start value. Fortunately, this sort of cross-unit conversion is rarely done by users in practice. */startValue*=axis==="x"?elementUnitConversionVData.percentToPxWidth:elementUnitConversionVData.percentToPxHeight;break;case "px":break;default:startValue*=elementUnitConversionVData[startValueUnitType+"ToPx"];}switch(endValueUnitType){case "%":startValue*=1/(axis==="x"?elementUnitConversionVData.percentToPxWidth:elementUnitConversionVData.percentToPxHeight);break;case "px":break;default:startValue*=1/elementUnitConversionVData[endValueUnitType+"ToPx"];}}} /*********************
+							 Relative Values
+							 *********************/ /* Note: Relative *percent values* do not behave how most people think; while one would expect "+=50%"
+							 to increase the property 1.5x its current value, it in fact increases the percent units in absolute terms:
+							 50 points is added on top of the current % value. */switch(operator){case "+":endValue=startValue+endValue;break;case "-":endValue=startValue-endValue;break;case "*":endValue=startValue*endValue;break;case "/":endValue=startValue/endValue;break;} /**************************
+							 tweensContainer Push
+							 **************************/tweensContainer[property]={rootPropertyValue:rootPropertyValue,startValue:startValue,currentValue:startValue,endValue:endValue,unitType:endValueUnitType,easing:easing};if(pattern){tweensContainer[property].pattern=pattern;}if(Velocity.debug){console.log("tweensContainer ("+property+"): "+JSON.stringify(tweensContainer[property]),element);}};for(var property in propertiesMap){if(!propertiesMap.hasOwnProperty(property)){continue;}var propertyName=CSS.Names.camelCase(property),valueVData=parsePropertyValue(propertiesMap[property]);if(CSS.Lists.colors.indexOf(propertyName)>=0){var endValue=valueVData[0],easing=valueVData[1],startValue=valueVData[2];if(CSS.RegEx.isHex.test(endValue)){var colorComponents=["Red","Green","Blue"],endValueRGB=CSS.Values.hexToRgb(endValue),startValueRGB=startValue?CSS.Values.hexToRgb(startValue):undefined;for(var i=0;i<colorComponents.length;i++){var dataArray=[endValueRGB[i]];if(easing){dataArray.push(easing);}if(startValueRGB!==undefined){dataArray.push(startValueRGB[i]);}fixPropertyValue(propertyName+colorComponents[i],dataArray);}continue;}}fixPropertyValue(propertyName,valueVData);}tweensContainer.element=element;} /*****************
+					 Call Push
+					 *****************/if(tweensContainer.element){CSS.Values.addClass(element,"velocity-animating");call.push(tweensContainer);data=VData(element);if(data){if(opts.queue===""){data.tweensContainer=tweensContainer;data.opts=opts;}data.isAnimating=true;}if(elementsIndex===elementsLength-1){Velocity.State.calls.push([call,elements,opts,null,promiseVData.resolver,null,0]);if(Velocity.State.isTicking===false){Velocity.State.isTicking=true;tick();}}else {elementsIndex++;}}}if(opts.queue===false){if(opts.delay){ /* Temporarily store delayed elements to facilitate access for $ pause/resume */var callIndex=Velocity.State.delayedElements.count++;Velocity.State.delayedElements[callIndex]=element;var delayComplete=function(index){return function(){Velocity.State.delayedElements[index]=false;buildQueue();};}(callIndex);VData(element).delayBegin=new Date().getTime();VData(element).delay=parseFloat(opts.delay);VData(element).delayTimer={setTimeout:setTimeout(buildQueue,parseFloat(opts.delay)),next:delayComplete};}else {buildQueue();}}else {$.queue(element,opts.queue,function(next,clearQueue){if(clearQueue===true){if(promiseVData.promise){promiseVData.resolver(elements);}return true;}Velocity.velocityQueueEntryFlag=true;buildQueue(next);});} /*********************
+				 Auto-Dequeuing
+				 *********************/ /* As per jQuery's jQuery.queue() behavior, to fire the first non-custom-queue entry on an element, the element
+				 must be dequeued if its queue stack consists *solely* of the current call. (This can be determined by checking
+				 for the "inprogress" item that jQuery prepends to active queue stack arrays.) Regardless, whenever the element's
+				 queue is further appended with additional items -- including jQuery.delay()'s or even jQuery.animate() calls, the queue's
+				 first entry is automatically fired. This behavior contrasts that of custom queues, which never auto-fire. */ /* Note: Unfortunately, most people don't fully grasp jQuery's powerful, yet quirky, jQuery.queue() function.
+				 Lean more here: http://stackoverflow.com/questions/1058158/can-somebody-explain-jquery-queue-to-me */if((opts.queue===""||opts.queue==="fx")&&$.queue(element)[0]!=="inprogress"){$.dequeue(element);}} /**************************
+			 Element Set Iteration
+			 **************************/$.each(elements,function(i,element){if(Type.isNode(element)){processElement(element,i);}}); /******************
+			 Option: Loop
+			 ******************/opts=$.extend({},Velocity.defaults,options);opts.loop=parseInt(opts.loop,10);var reverseCallsCount=opts.loop*2-1;if(opts.loop){for(var x=0;x<reverseCallsCount;x++){ /* Since the logic for the reverse action occurs inside Queueing and therefore this call's options object
+					 isn't parsed until then as well, the current call's delay option must be explicitly passed into the reverse
+					 call so that the delay logic that occurs inside *Pre-Queueing* can process it. */var reverseOptions={delay:opts.delay,progress:opts.progress};if(x===reverseCallsCount-1){reverseOptions.display=opts.display;reverseOptions.visibility=opts.visibility;reverseOptions.complete=opts.complete;}animate(elements,"reverse",reverseOptions);}} /***************
+			 Chaining
+			 ***************/return getChain();};Velocity=$.extend(animate,Velocity);Velocity.animate=animate; /**************
+		 Timing
+		 **************/var ticker=window.requestAnimationFrame; /* Inactive browser tabs pause rAF, which results in all active animations immediately sprinting to their completion states when the tab refocuses.
+		 To get around this, we dynamically switch rAF to setTimeout (which the browser *doesn't* pause) when the tab loses focus. We skip this for mobile
+		 devices to avoid wasting battery power on inactive tabs. */if(!Velocity.State.isMobile&&document.hidden!==undefined){var updateTicker=function updateTicker(){if(document.hidden){ticker=function ticker(callback){return setTimeout(function(){callback(true);},16);};tick();}else {ticker=window.requestAnimationFrame;}};updateTicker();document.addEventListener("visibilitychange",updateTicker);} /************
+		 Tick
+		 ************/function tick(timestamp){if(timestamp){var timeCurrent=Velocity.timestamp&&timestamp!==true?timestamp:performance.now(); /********************
+				 Call Iteration
+				 ********************/var callsLength=Velocity.State.calls.length;if(callsLength>10000){Velocity.State.calls=compactSparseArray(Velocity.State.calls);callsLength=Velocity.State.calls.length;}for(var i=0;i<callsLength;i++){if(!Velocity.State.calls[i]){continue;} /************************
+					 Call-Wide Variables
+					 ************************/var callContainer=Velocity.State.calls[i],call=callContainer[0],opts=callContainer[2],timeStart=callContainer[3],firstTick=!!timeStart,tweenDummyValue=null,pauseObject=callContainer[5],millisecondsEllapsed=callContainer[6];if(!timeStart){timeStart=Velocity.State.calls[i][3]=timeCurrent-16;}if(pauseObject){if(pauseObject.resume===true){timeStart=callContainer[3]=Math.round(timeCurrent-millisecondsEllapsed-16);callContainer[5]=null;}else {continue;}}millisecondsEllapsed=callContainer[6]=timeCurrent-timeStart;var percentComplete=Math.min(millisecondsEllapsed/opts.duration,1); /**********************
+					 Element Iteration
+					 **********************/for(var j=0,callLength=call.length;j<callLength;j++){var tweensContainer=call[j],element=tweensContainer.element;if(!VData(element)){continue;}var transformPropertyExists=false; /**********************************
+						 Display & Visibility Toggling
+						 **********************************/if(opts.display!==undefined&&opts.display!==null&&opts.display!=="none"){if(opts.display==="flex"){var flexValues=["-webkit-box","-moz-box","-ms-flexbox","-webkit-flex"];$.each(flexValues,function(i,flexValue){CSS.setPropertyValue(element,"display",flexValue);});}CSS.setPropertyValue(element,"display",opts.display);}if(opts.visibility!==undefined&&opts.visibility!=="hidden"){CSS.setPropertyValue(element,"visibility",opts.visibility);} /************************
+						 Property Iteration
+						 ************************/for(var property in tweensContainer){if(tweensContainer.hasOwnProperty(property)&&property!=="element"){var tween=tweensContainer[property],currentValue, /* Easing can either be a pre-genereated function or a string that references a pre-registered easing
+										 on the Velocity.Easings object. In either case, return the appropriate easing *function*. */easing=Type.isString(tween.easing)?Velocity.Easings[tween.easing]:tween.easing; /******************************
+								 Current Value Calculation
+								 ******************************/if(Type.isString(tween.pattern)){var patternReplace=percentComplete===1?function($0,index,round){var result=tween.endValue[index];return round?Math.round(result):result;}:function($0,index,round){var startValue=tween.startValue[index],tweenDelta=tween.endValue[index]-startValue,result=startValue+tweenDelta*easing(percentComplete,opts,tweenDelta);return round?Math.round(result):result;};currentValue=tween.pattern.replace(/{(\d+)(!)?}/g,patternReplace);}else if(percentComplete===1){currentValue=tween.endValue;}else {var tweenDelta=tween.endValue-tween.startValue;currentValue=tween.startValue+tweenDelta*easing(percentComplete,opts,tweenDelta);}if(!firstTick&&currentValue===tween.currentValue){continue;}tween.currentValue=currentValue;if(property==="tween"){tweenDummyValue=currentValue;}else { /******************
+									 Hooks: Part I
+									 ******************/var hookRoot;if(CSS.Hooks.registered[property]){hookRoot=CSS.Hooks.getRoot(property);var rootPropertyValueCache=VData(element).rootPropertyValueCache[hookRoot];if(rootPropertyValueCache){tween.rootPropertyValue=rootPropertyValueCache;}} /*****************
+									 DOM Update
+									 *****************/var adjustedSetVData=CSS.setPropertyValue(element,property,tween.currentValue+(IE<9&&parseFloat(currentValue)===0?"":tween.unitType),tween.rootPropertyValue,tween.scrollVData); /*******************
+									 Hooks: Part II
+									 *******************/if(CSS.Hooks.registered[property]){if(CSS.Normalizations.registered[hookRoot]){VData(element).rootPropertyValueCache[hookRoot]=CSS.Normalizations.registered[hookRoot]("extract",null,adjustedSetVData[1]);}else {VData(element).rootPropertyValueCache[hookRoot]=adjustedSetVData[1];}} /***************
+									 Transforms
+									 ***************/if(adjustedSetVData[0]==="transform"){transformPropertyExists=true;}}}} /****************
+						 mobileHA
+						 ****************/if(opts.mobileHA){if(VData(element).transformCache.translate3d===undefined){VData(element).transformCache.translate3d="(0px, 0px, 0px)";transformPropertyExists=true;}}if(transformPropertyExists){CSS.flushTransformCache(element);}}if(opts.display!==undefined&&opts.display!=="none"){Velocity.State.calls[i][2].display=false;}if(opts.visibility!==undefined&&opts.visibility!=="hidden"){Velocity.State.calls[i][2].visibility=false;}if(opts.progress){opts.progress.call(callContainer[1],callContainer[1],percentComplete,Math.max(0,timeStart+opts.duration-timeCurrent),timeStart,tweenDummyValue);}if(percentComplete===1){completeCall(i);}}}if(Velocity.State.isTicking){ticker(tick);}} /**********************
+		 Call Completion
+		 **********************/function completeCall(callIndex,isStopped){if(!Velocity.State.calls[callIndex]){return false;}var call=Velocity.State.calls[callIndex][0],elements=Velocity.State.calls[callIndex][1],opts=Velocity.State.calls[callIndex][2],resolver=Velocity.State.calls[callIndex][4];var remainingCallsExist=false; /*************************
+			 Element Finalization
+			 *************************/for(var i=0,callLength=call.length;i<callLength;i++){var element=call[i].element;if(!isStopped&&!opts.loop){if(opts.display==="none"){CSS.setPropertyValue(element,"display",opts.display);}if(opts.visibility==="hidden"){CSS.setPropertyValue(element,"visibility",opts.visibility);}}var data=VData(element);if(opts.loop!==true&&($.queue(element)[1]===undefined||!/\.velocityQueueEntryFlag/i.test($.queue(element)[1]))){if(data){data.isAnimating=false;data.rootPropertyValueCache={};var transformHAPropertyExists=false;$.each(CSS.Lists.transforms3D,function(i,transformName){var defaultValue=/^scale/.test(transformName)?1:0,currentValue=data.transformCache[transformName];if(data.transformCache[transformName]!==undefined&&new RegExp("^\\("+defaultValue+"[^.]").test(currentValue)){transformHAPropertyExists=true;delete data.transformCache[transformName];}});if(opts.mobileHA){transformHAPropertyExists=true;delete data.transformCache.translate3d;}if(transformHAPropertyExists){CSS.flushTransformCache(element);}CSS.Values.removeClass(element,"velocity-animating");}} /*********************
+				 Option: Complete
+				 *********************/if(!isStopped&&opts.complete&&!opts.loop&&i===callLength-1){try{opts.complete.call(elements,elements);}catch(error){setTimeout(function(){throw error;},1);}} /**********************
+				 Promise Resolving
+				 **********************/if(resolver&&opts.loop!==true){resolver(elements);} /****************************
+				 Option: Loop (Infinite)
+				 ****************************/if(data&&opts.loop===true&&!isStopped){ /* If a rotateX/Y/Z property is being animated by 360 deg with loop:true, swap tween start/end values to enable
+					 continuous iterative rotation looping. (Otherise, the element would just rotate back and forth.) */$.each(data.tweensContainer,function(propertyName,tweenContainer){if(/^rotate/.test(propertyName)&&(parseFloat(tweenContainer.startValue)-parseFloat(tweenContainer.endValue))%360===0){var oldStartValue=tweenContainer.startValue;tweenContainer.startValue=tweenContainer.endValue;tweenContainer.endValue=oldStartValue;}if(/^backgroundPosition/.test(propertyName)&&parseFloat(tweenContainer.endValue)===100&&tweenContainer.unitType==="%"){tweenContainer.endValue=0;tweenContainer.startValue=100;}});Velocity(element,"reverse",{loop:true,delay:opts.delay});} /***************
+				 Dequeueing
+				 ***************/if(opts.queue!==false){$.dequeue(element,opts.queue);}} /************************
+			 Calls Array Cleanup
+			 ************************/ /* Since this call is complete, set it to false so that the rAF tick skips it. This array is later compacted via compactSparseArray().
+			 (For performance reasons, the call is set to false instead of being deleted from the array: http://www.html5rocks.com/en/tutorials/speed/v8/) */Velocity.State.calls[callIndex]=false;for(var j=0,callsLength=Velocity.State.calls.length;j<callsLength;j++){if(Velocity.State.calls[j]!==false){remainingCallsExist=true;break;}}if(remainingCallsExist===false){Velocity.State.isTicking=false;delete Velocity.State.calls;Velocity.State.calls=[];}} /******************
+		 Frameworks
+		 ******************/$.Velocity=Velocity;if($$2!==window){$.fn.velocity=animate;$.fn.velocity.defaults=Velocity.defaults;} /***********************
+		 Packaged Redirects
+		 ***********************/$.each(["Down","Up"],function(i,direction){Velocity.Redirects["slide"+direction]=function(element,options,elementsIndex,elementsSize,elements,promiseVData){var opts=$.extend({},options),begin=opts.begin,complete=opts.complete,inlineValues={},computedValues={height:"",marginTop:"",marginBottom:"",paddingTop:"",paddingBottom:""};if(opts.display===undefined){opts.display=direction==="Down"?Velocity.CSS.Values.getDisplayType(element)==="inline"?"inline-block":"block":"none";}opts.begin=function(){if(elementsIndex===0&&begin){begin.call(elements,elements);}for(var property in computedValues){if(!computedValues.hasOwnProperty(property)){continue;}inlineValues[property]=element.style[property];var propertyValue=CSS.getPropertyValue(element,property);computedValues[property]=direction==="Down"?[propertyValue,0]:[0,propertyValue];}inlineValues.overflow=element.style.overflow;element.style.overflow="hidden";};opts.complete=function(){for(var property in inlineValues){if(inlineValues.hasOwnProperty(property)){element.style[property]=inlineValues[property];}}if(elementsIndex===elementsSize-1){if(complete){complete.call(elements,elements);}if(promiseVData){promiseVData.resolver(elements);}}};Velocity(element,computedValues,opts);};});$.each(["In","Out"],function(i,direction){Velocity.Redirects["fade"+direction]=function(element,options,elementsIndex,elementsSize,elements,promiseVData){var opts=$.extend({},options),complete=opts.complete,propertiesMap={opacity:direction==="In"?1:0};if(elementsIndex!==0){opts.begin=null;}if(elementsIndex!==elementsSize-1){opts.complete=null;}else {opts.complete=function(){if(complete){complete.call(elements,elements);}if(promiseVData){promiseVData.resolver(elements);}};}if(opts.display===undefined){opts.display=direction==="In"?"auto":"none";}Velocity(this,propertiesMap,opts);};});$.easing={linear:function linear(p){return p;},swing:function swing(p){return 0.5-Math.cos(p*Math.PI)/2;},jswing:function jswing(p){return 0.5-Math.cos(p*Math.PI)/2;},easeInOutMaterial:function easeInOutMaterial(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t+b;return c/4*((t-=2)*t*t+2)+b;},_default:"swing"};$.extend($.easing,{def:'easeOutQuad',swing:function swing(x,t,b,c,d){ //alert(jQuery.easing.default);
 return $.easing[$.easing.def](x,t,b,c,d);},easeInQuad:function easeInQuad(x,t,b,c,d){return c*(t/=d)*t+b;},easeOutQuad:function easeOutQuad(x,t,b,c,d){return -c*(t/=d)*(t-2)+b;},easeInOutQuad:function easeInOutQuad(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t+b;return -c/2*(--t*(t-2)-1)+b;},easeInCubic:function easeInCubic(x,t,b,c,d){return c*(t/=d)*t*t+b;},easeOutCubic:function easeOutCubic(x,t,b,c,d){return c*((t=t/d-1)*t*t+1)+b;},easeInOutCubic:function easeInOutCubic(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t+b;return c/2*((t-=2)*t*t+2)+b;},easeInQuart:function easeInQuart(x,t,b,c,d){return c*(t/=d)*t*t*t+b;},easeOutQuart:function easeOutQuart(x,t,b,c,d){return -c*((t=t/d-1)*t*t*t-1)+b;},easeInOutQuart:function easeInOutQuart(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t+b;return -c/2*((t-=2)*t*t*t-2)+b;},easeInQuint:function easeInQuint(x,t,b,c,d){return c*(t/=d)*t*t*t*t+b;},easeOutQuint:function easeOutQuint(x,t,b,c,d){return c*((t=t/d-1)*t*t*t*t+1)+b;},easeInOutQuint:function easeInOutQuint(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t*t+b;return c/2*((t-=2)*t*t*t*t+2)+b;},easeInSine:function easeInSine(x,t,b,c,d){return -c*Math.cos(t/d*(Math.PI/2))+c+b;},easeOutSine:function easeOutSine(x,t,b,c,d){return c*Math.sin(t/d*(Math.PI/2))+b;},easeInOutSine:function easeInOutSine(x,t,b,c,d){return -c/2*(Math.cos(Math.PI*t/d)-1)+b;},easeInExpo:function easeInExpo(x,t,b,c,d){return t==0?b:c*Math.pow(2,10*(t/d-1))+b;},easeOutExpo:function easeOutExpo(x,t,b,c,d){return t==d?b+c:c*(-Math.pow(2,-10*t/d)+1)+b;},easeInOutExpo:function easeInOutExpo(x,t,b,c,d){if(t==0)return b;if(t==d)return b+c;if((t/=d/2)<1)return c/2*Math.pow(2,10*(t-1))+b;return c/2*(-Math.pow(2,-10*--t)+2)+b;},easeInCirc:function easeInCirc(x,t,b,c,d){return -c*(Math.sqrt(1-(t/=d)*t)-1)+b;},easeOutCirc:function easeOutCirc(x,t,b,c,d){return c*Math.sqrt(1-(t=t/d-1)*t)+b;},easeInOutCirc:function easeInOutCirc(x,t,b,c,d){if((t/=d/2)<1)return -c/2*(Math.sqrt(1-t*t)-1)+b;return c/2*(Math.sqrt(1-(t-=2)*t)+1)+b;},easeInElastic:function easeInElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);return -(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;},easeOutElastic:function easeOutElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);return a*Math.pow(2,-10*t)*Math.sin((t*d-s)*(2*Math.PI)/p)+c+b;},easeInOutElastic:function easeInOutElastic(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d/2)==2)return b+c;if(!p)p=d*(.3*1.5);if(a<Math.abs(c)){a=c;var s=p/4;}else var s=p/(2*Math.PI)*Math.asin(c/a);if(t<1)return -.5*(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p))+b;return a*Math.pow(2,-10*(t-=1))*Math.sin((t*d-s)*(2*Math.PI)/p)*.5+c+b;},easeInBack:function easeInBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*(t/=d)*t*((s+1)*t-s)+b;},easeOutBack:function easeOutBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*((t=t/d-1)*t*((s+1)*t+s)+1)+b;},easeInOutBack:function easeInOutBack(x,t,b,c,d,s){if(s==undefined)s=1.70158;if((t/=d/2)<1)return c/2*(t*t*(((s*=1.525)+1)*t-s))+b;return c/2*((t-=2)*t*(((s*=1.525)+1)*t+s)+2)+b;},easeInBounce:function easeInBounce(x,t,b,c,d){return c-$.easing.easeOutBounce(x,d-t,0,c,d)+b;},easeOutBounce:function easeOutBounce(x,t,b,c,d){if((t/=d)<1/2.75){return c*(7.5625*t*t)+b;}else if(t<2/2.75){return c*(7.5625*(t-=1.5/2.75)*t+.75)+b;}else if(t<2.5/2.75){return c*(7.5625*(t-=2.25/2.75)*t+.9375)+b;}else {return c*(7.5625*(t-=2.625/2.75)*t+.984375)+b;}},easeInOutBounce:function easeInOutBounce(x,t,b,c,d){if(t<d/2)return $.easing.easeInBounce(x,t*2,0,c,d)*.5+b;return $.easing.easeOutBounce(x,t*2-d,0,c,d)*.5+c*.5+b;}});$.fn.animate=$.fn.animate||$.fn.velocity;$.fn.slideDown=$.fn.slideDown||function(){return this.each(function(){$(this).velocity('slideDown');});};$.fn.slideUp=$.fn.slideUp||function(){return this.each(function(){$(this).velocity('slideDown');});};$.fn.fadeOut=function(speed,easing,callback){return this.each(function(){$(this).velocity({opacity:'hide'},speed,easing,callback);});};$.fn.fadeIn=function(speed,easing,callback){return this.each(function(){$(this).velocity({opacity:'show'},speed,easing,callback);});};$.fn.stop=$.fn.stop||function(){return this.each(function(){$(this).velocity('stop');});};
 
 // Source: src/helpers/materialize_initial.js
+var $$1 = $;
 var Materialize = {};
 var Waves = {};
 var $$ = document.querySelectorAll.bind(document);
@@ -253,18 +308,18 @@ Materialize.guid = guidfn();
 
 // Source: src/helpers/collapsible.js
 
-$.fn.collapsible = function (options) {
+$$1.fn.collapsible = function (options) {
   var defaults = {
     accordion: undefined
   };
 
-  options = $.extend(defaults, options);
+  options = $$1.extend(defaults, options);
 
   return this.each(function () {
 
-    var $this = $(this);
+    var $this = $$1(this);
 
-    var $panel_headers = $(this).find('> li > .collapsible-header');
+    var $panel_headers = $$1(this).find('> li > .collapsible-header');
 
     var collapsible_type = $this.data("collapsible");
 
@@ -282,7 +337,7 @@ $.fn.collapsible = function (options) {
       if (object.hasClass('active')) {
         object.parent().addClass('active');
         object.siblings('.collapsible-body').velocity('slideDown', function () {
-          $(this).css('height', '');
+          $$1(this).css('height', '');
         }).trigger('shown');
       } else {
         object.parent().removeClass('active');
@@ -298,7 +353,7 @@ $.fn.collapsible = function (options) {
       if (object.hasClass('active')) {
         object.parent().addClass('active');
         object.siblings('.collapsible-body').velocity('slideDown', function () {
-          $(this).css('height', '');
+          $$1(this).css('height', '');
         }).trigger('shown');
       } else {
         object.parent().removeClass('active');
@@ -332,8 +387,8 @@ $.fn.collapsible = function (options) {
 
     // Add click handler to only direct collapsible header children
     $this.on('click.collapse', '> li > .collapsible-header', function (e) {
-      var $header = $(this),
-          element = $(e.target);
+      var $header = $$1(this),
+          element = $$1(e.target);
 
       if (isChildrenOfPanelHeader(element)) {
         element = getPanelHeader(element);
@@ -360,26 +415,26 @@ $.fn.collapsible = function (options) {
     } else {
       // Handle Expandables
       $panel_headers.filter('.active').each(function () {
-        expandableOpen($(this));
+        expandableOpen($$1(this));
       });
     }
   });
 };
 
-$(document).ready(function () {
-  $('.collapsible').collapsible();
+$$1(document).ready(function () {
+  $$1('.collapsible').collapsible();
 });
 
 // Source: src/helpers/dropdown.js
 
 // Add posibility to scroll to selected option
 // usefull for select for example
-$.fn.scrollTo = function (elem) {
-  $(this).scrollTop($(this).scrollTop() - $(this).offset().top + $(elem).offset().top);
+$$1.fn.scrollTo = function (elem) {
+  $$1(this).scrollTop($$1(this).scrollTop() - $$1(this).offset().top + $$1(elem).offset().top);
   return this;
 };
 
-$.fn.dropdown = function (option) {
+$$1.fn.dropdown = function (option) {
   var defaults = {
     inDuration: 300,
     outDuration: 225,
@@ -391,12 +446,12 @@ $.fn.dropdown = function (option) {
   };
 
   this.each(function () {
-    var origin = $(this);
-    var options = $.extend({}, defaults, option);
+    var origin = $$1(this);
+    var options = $$1.extend({}, defaults, option);
     var isFocused = false;
 
     // Dropdown menu
-    var activates = $("#" + origin.attr('data-activates'));
+    var activates = $$1("#" + origin.attr('data-activates'));
 
     function updateOptions() {
       if (origin.data('induration') !== undefined) options.inDuration = origin.data('inDuration');
@@ -441,7 +496,7 @@ $.fn.dropdown = function (option) {
       var windowHeight = window.innerHeight;
       var originHeight = origin.innerHeight();
       var offsetLeft = origin.offset().left;
-      var offsetTop = origin.offset().top - $(window).scrollTop();
+      var offsetTop = origin.offset().top - $$1(window).scrollTop();
       var currAlignment = options.alignment;
       var gutterSpacing = 0;
       var leftPosition = 0;
@@ -459,7 +514,7 @@ $.fn.dropdown = function (option) {
         scrollOffset = wrapper[0].scrollTop;
       }
 
-      if (offsetLeft + activates.innerWidth() > $(window).width()) {
+      if (offsetLeft + activates.innerWidth() > $$1(window).width()) {
         // Dropdown goes past screen on right, force right alignment
         currAlignment = 'right';
       } else if (offsetLeft - activates.innerWidth() + origin.innerWidth() < 0) {
@@ -504,7 +559,7 @@ $.fn.dropdown = function (option) {
         duration: options.inDuration,
         easing: 'easeOutCubic',
         complete: function complete() {
-          $(this).css('height', '');
+          $$1(this).css('height', '');
         }
       }).animate({
         opacity: 1
@@ -541,7 +596,7 @@ $.fn.dropdown = function (option) {
       origin.on('mouseleave', function (e) {
         // If hover on origin then to something other than dropdown content, then close
         var toEl = e.toElement || e.relatedTarget; // added browser compatibility for target element
-        if (!$(toEl).closest('.dropdown-content').is(activates)) {
+        if (!$$1(toEl).closest('.dropdown-content').is(activates)) {
           activates.stop(true, true);
           hideDropdown();
           open = false;
@@ -551,7 +606,7 @@ $.fn.dropdown = function (option) {
       activates.on('mouseleave', function (e) {
         // Mouse out
         var toEl = e.toElement || e.relatedTarget;
-        if (!$(toEl).closest('.dropdown-button').is(origin)) {
+        if (!$$1(toEl).closest('.dropdown-button').is(origin)) {
           activates.stop(true, true);
           hideDropdown();
           open = false;
@@ -564,21 +619,21 @@ $.fn.dropdown = function (option) {
         origin.unbind('click.' + origin.attr('id'));
         origin.bind('click.' + origin.attr('id'), function (e) {
           if (!isFocused) {
-            if (origin[0] == e.currentTarget && !origin.hasClass('active') && $(e.target).closest('.dropdown-content').length === 0) {
+            if (origin[0] == e.currentTarget && !origin.hasClass('active') && $$1(e.target).closest('.dropdown-content').length === 0) {
               e.preventDefault(); // Prevents button click from moving window
               placeDropdown('click');
             }
             // If origin is clicked and menu is open, close menu
             else if (origin.hasClass('active')) {
                 hideDropdown();
-                $(document).unbind('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'));
+                $$1(document).unbind('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'));
               }
             // If menu open, add click close handler to document
             if (activates.hasClass('active')) {
-              $(document).bind('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'), function (e) {
+              $$1(document).bind('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'), function (e) {
                 if (!activates.is(e.target) && !origin.is(e.target) && !origin.find(e.target).length) {
                   hideDropdown();
-                  $(document).unbind('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'));
+                  $$1(document).unbind('click.' + activates.attr('id') + ' touchstart.' + activates.attr('id'));
                 }
               });
             }
@@ -593,9 +648,9 @@ $.fn.dropdown = function (option) {
     origin.on('close', hideDropdown);
   });
 }; // End dropdown plugin
-$.fn.material_select = function (callback) {
-  $(this).each(function () {
-    var $select = $(this);
+$$1.fn.material_select = function (callback) {
+  $$1(this).each(function () {
+    var $select = $$1(this);
 
     if ($select.hasClass('browser-default')) {
       return; // Continue to next (return false breaks out of entire loop)
@@ -609,7 +664,7 @@ $.fn.material_select = function (callback) {
       $select.parent().find('input').remove();
 
       $select.unwrap();
-      $('ul#select-options-' + lastID).remove();
+      $$1('ul#select-options-' + lastID).remove();
     }
 
     // If destroying the select, remove the selelct-id and reset it to it's uninitialized state.
@@ -620,9 +675,9 @@ $.fn.material_select = function (callback) {
 
     var uniqueID = Materialize.guid();
     $select.data('select-id', uniqueID);
-    var wrapper = $('<div class="select-wrapper"></div>');
+    var wrapper = $$1('<div class="select-wrapper"></div>');
     wrapper.addClass($select.attr('class'));
-    var options = $('<ul id="select-options-' + uniqueID + '" class="dropdown-content select-dropdown ' + (multiple ? 'multiple-select-dropdown' : '') + '"></ul>'),
+    var options = $$1('<ul id="select-options-' + uniqueID + '" class="dropdown-content select-dropdown ' + (multiple ? 'multiple-select-dropdown' : '') + '"></ul>'),
         selectChildren = $select.children('option, optgroup'),
         valuesSelected = [],
         optionsHover = false;
@@ -645,62 +700,62 @@ $.fn.material_select = function (callback) {
 
         // Check for multiple type.
         if (type === 'multiple') {
-          options.append($('<li class="' + disabledClass + '"><img src="' + icon_url + '"' + classString + '><span><input type="checkbox"' + disabledClass + '/><label></label>' + option.html() + '</span></li>'));
+          options.append($$1('<li class="' + disabledClass + '"><img src="' + icon_url + '"' + classString + '><span><input type="checkbox"' + disabledClass + '/><label></label>' + option.html() + '</span></li>'));
         } else {
-          options.append($('<li class="' + disabledClass + optgroupClass + '"><img src="' + icon_url + '"' + classString + '><span>' + option.html() + '</span></li>'));
+          options.append($$1('<li class="' + disabledClass + optgroupClass + '"><img src="' + icon_url + '"' + classString + '><span>' + option.html() + '</span></li>'));
         }
         return true;
       }
 
       // Check for multiple type.
       if (type === 'multiple') {
-        options.append($('<li class="' + disabledClass + '"><span><input type="checkbox"' + disabledClass + '/><label></label>' + option.html() + '</span></li>'));
+        options.append($$1('<li class="' + disabledClass + '"><span><input type="checkbox"' + disabledClass + '/><label></label>' + option.html() + '</span></li>'));
       } else {
-        options.append($('<li class="' + disabledClass + optgroupClass + '"><span>' + option.html() + '</span></li>'));
+        options.append($$1('<li class="' + disabledClass + optgroupClass + '"><span>' + option.html() + '</span></li>'));
       }
     };
 
     /* Create dropdown structure. */
     if (selectChildren.length) {
       selectChildren.each(function () {
-        if ($(this).is('option')) {
+        if ($$1(this).is('option')) {
           // Direct descendant option.
           if (multiple) {
-            appendOptionWithIcon($select, $(this), 'multiple');
+            appendOptionWithIcon($select, $$1(this), 'multiple');
           } else {
-            appendOptionWithIcon($select, $(this));
+            appendOptionWithIcon($select, $$1(this));
           }
-        } else if ($(this).is('optgroup')) {
+        } else if ($$1(this).is('optgroup')) {
           // Optgroup.
-          var selectOptions = $(this).children('option');
-          options.append($('<li class="optgroup"><span>' + $(this).attr('label') + '</span></li>'));
+          var selectOptions = $$1(this).children('option');
+          options.append($$1('<li class="optgroup"><span>' + $$1(this).attr('label') + '</span></li>'));
 
           selectOptions.each(function () {
-            appendOptionWithIcon($select, $(this), 'optgroup-option');
+            appendOptionWithIcon($select, $$1(this), 'optgroup-option');
           });
         }
       });
     }
 
     options.find('li:not(.optgroup)').each(function (i) {
-      $(this).click(function (e) {
+      $$1(this).click(function (e) {
         // Check if option element is disabled
-        if (!$(this).hasClass('disabled') && !$(this).hasClass('optgroup')) {
+        if (!$$1(this).hasClass('disabled') && !$$1(this).hasClass('optgroup')) {
           var selected = true;
 
           if (multiple) {
-            $('input[type="checkbox"]', this).prop('checked', function (i, v) {
+            $$1('input[type="checkbox"]', this).prop('checked', function (i, v) {
               return !v;
             });
-            selected = toggleEntryFromArray(valuesSelected, $(this).index(), $select);
+            selected = toggleEntryFromArray(valuesSelected, $$1(this).index(), $select);
             $newSelect.trigger('focus');
           } else {
             options.find('li').removeClass('active');
-            $(this).toggleClass('active');
-            $newSelect.val($(this).text());
+            $$1(this).toggleClass('active');
+            $newSelect.val($$1(this).text());
           }
 
-          activateOption(options, $(this));
+          activateOption(options, $$1(this));
           $select.find('option').eq(i).prop('selected', selected);
           // Trigger onchange() event
           $select.trigger('change');
@@ -714,13 +769,13 @@ $.fn.material_select = function (callback) {
     // Wrap Elements
     $select.wrap(wrapper);
     // Add Select Display Element
-    var dropdownIcon = $('<span class="caret">&#9660;</span>');
+    var dropdownIcon = $$1('<span class="caret">&#9660;</span>');
     if ($select.is(':disabled')) dropdownIcon.addClass('disabled');
 
     // escape double quotes
     var sanitizedLabelHtml = label.replace(/"/g, '&quot;');
 
-    var $newSelect = $('<input type="text" class="select-dropdown" readonly="true" ' + ($select.is(':disabled') ? 'disabled' : '') + ' data-activates="select-options-' + uniqueID + '" value="' + sanitizedLabelHtml + '"/>');
+    var $newSelect = $$1('<input type="text" class="select-dropdown" readonly="true" ' + ($select.is(':disabled') ? 'disabled' : '') + ' data-activates="select-options-' + uniqueID + '" value="' + sanitizedLabelHtml + '"/>');
     $select.before($newSelect);
     $newSelect.before(dropdownIcon);
 
@@ -735,21 +790,21 @@ $.fn.material_select = function (callback) {
 
     // Copy tabindex
     if ($select.attr('tabindex')) {
-      $($newSelect[0]).attr('tabindex', $select.attr('tabindex'));
+      $$1($newSelect[0]).attr('tabindex', $select.attr('tabindex'));
     }
 
     $select.addClass('initialized');
 
     $newSelect.on({
       'focus': function focus() {
-        if ($('ul.select-dropdown').not(options[0]).is(':visible')) {
-          $('input.select-dropdown').trigger('close');
+        if ($$1('ul.select-dropdown').not(options[0]).is(':visible')) {
+          $$1('input.select-dropdown').trigger('close');
         }
         if (!options.is(':visible')) {
-          $(this).trigger('open', ['focus']);
-          var label = $(this).val();
+          $$1(this).trigger('open', ['focus']);
+          var label = $$1(this).val();
           var selectedOption = options.find('li').filter(function () {
-            return $(this).text().toLowerCase() === label.toLowerCase();
+            return $$1(this).text().toLowerCase() === label.toLowerCase();
           })[0];
           activateOption(options, selectedOption);
         }
@@ -761,7 +816,7 @@ $.fn.material_select = function (callback) {
 
     $newSelect.on('blur', function () {
       if (!multiple) {
-        $(this).trigger('close');
+        $$1(this).trigger('close');
       }
       options.find('li.selected').removeClass('selected');
     });
@@ -772,7 +827,7 @@ $.fn.material_select = function (callback) {
       optionsHover = false;
     });
 
-    $(window).on({
+    $$1(window).on({
       'click': function click() {
         multiple && (optionsHover || $newSelect.trigger('close'));
       }
@@ -781,7 +836,7 @@ $.fn.material_select = function (callback) {
     // Add initial multiple selections.
     if (multiple) {
       $select.find("option:selected:not(:disabled)").each(function () {
-        var index = $(this).index();
+        var index = $$1(this).index();
 
         toggleEntryFromArray(valuesSelected, index, $select);
         options.find("li").eq(index).find(":checkbox").prop("checked", true);
@@ -792,7 +847,7 @@ $.fn.material_select = function (callback) {
     var activateOption = function activateOption(collection, newOption) {
       if (newOption) {
         collection.find('li.selected').removeClass('selected');
-        var option = $(newOption);
+        var option = $$1(newOption);
         option.addClass('selected');
         options.scrollTo(option);
       }
@@ -829,7 +884,7 @@ $.fn.material_select = function (callback) {
 
         var string = filterQuery.join(''),
             newOption = options.find('li').filter(function () {
-          return $(this).text().toLowerCase().indexOf(string) === 0;
+          return $$1(this).text().toLowerCase().indexOf(string) === 0;
         })[0];
 
         if (newOption) {
@@ -841,7 +896,7 @@ $.fn.material_select = function (callback) {
       if (e.which == 13) {
         var activeOption = options.find('li.selected:not(.disabled)')[0];
         if (activeOption) {
-          $(activeOption).trigger('click');
+          $$1(activeOption).trigger('click');
           if (!multiple) {
             $newSelect.trigger('close');
           }
@@ -913,8 +968,8 @@ $.fn.material_select = function (callback) {
     select.siblings('input.select-dropdown').val(value);
   }
 };
-$(document).ready(function () {
-  $('.dropdown-button').dropdown();
+$$1(document).ready(function () {
+  $$1('.dropdown-button').dropdown();
 });
 
 // Source: src/helpers/leanModal.js
@@ -926,10 +981,10 @@ var _generateID = function _generateID() {
   return 'materialize-lean-overlay-' + _lastID;
 };
 
-$.fn.extend({
+$$1.fn.extend({
   openModal: function openModal(options) {
 
-    var $body = $('body');
+    var $body = $$1('body');
     var oldWidth = $body.innerWidth();
     $body.css('overflow', 'hidden');
     $body.width(oldWidth);
@@ -943,14 +998,14 @@ $.fn.extend({
       dismissible: true,
       starting_top: '4%'
     },
-        $modal = $(this);
+        $modal = $$1(this);
 
     if ($modal.hasClass('open')) {
       return;
     }
 
     var overlayID = _generateID(),
-        $overlay = $('<div class="lean-overlay"></div>'),
+        $overlay = $$1('<div class="lean-overlay"></div>'),
         lStack = ++_stack;
 
     // Store a reference of the overlay
@@ -958,17 +1013,17 @@ $.fn.extend({
     $modal.data('overlay-id', overlayID).css('z-index', 1000 + lStack * 2 + 1);
     $modal.addClass('open');
 
-    $("body").append($overlay);
+    $$1("body").append($overlay);
 
     // Override defaults
-    options = $.extend(defaults, options);
+    options = $$1.extend(defaults, options);
 
     if (options.dismissible) {
       $overlay.click(function () {
         $modal.closeModal(options);
       });
       // Return on ESC
-      $(document).on('keyup.leanModal' + overlayID, function (e) {
+      $$1(document).on('keyup.leanModal' + overlayID, function (e) {
         if (e.keyCode === 27) {
           // ESC key
           $modal.closeModal(options);
@@ -1016,7 +1071,7 @@ $.fn.extend({
         }
       });
     } else {
-      $.Velocity.hook($modal, "scaleX", 0.7);
+      $$1.Velocity.hook($modal, "scaleX", 0.7);
       $modal.css({
         top: options.starting_top
       });
@@ -1039,27 +1094,27 @@ $.fn.extend({
   }
 });
 
-$.fn.extend({
+$$1.fn.extend({
   closeModal: function closeModal(options) {
     var defaults = {
       out_duration: 250,
       complete: undefined
     },
-        $modal = $(this),
+        $modal = $$1(this),
         overlayID = $modal.data('overlay-id'),
-        $overlay = $('#' + overlayID);
+        $overlay = $$1('#' + overlayID);
     $modal.removeClass('open');
 
-    options = $.extend(defaults, options);
+    options = $$1.extend(defaults, options);
 
     // Enable scrolling
-    $('body').css({
+    $$1('body').css({
       overflow: '',
       width: ''
     });
 
     $modal.find('.modal-close').off('click.close');
-    $(document).off('keyup.leanModal' + overlayID);
+    $$1(document).off('keyup.leanModal' + overlayID);
 
     $overlay.velocity({
       opacity: 0
@@ -1101,7 +1156,7 @@ $.fn.extend({
         duration: options.out_duration,
         complete: function complete() {
 
-          $(this).css('display', 'none');
+          $$1(this).css('display', 'none');
           // Call complete callback
           if (typeof options.complete === "function") {
             options.complete();
@@ -1114,7 +1169,7 @@ $.fn.extend({
   }
 });
 
-$.fn.extend({
+$$1.fn.extend({
   leanModal: function leanModal(option) {
     return this.each(function () {
 
@@ -1123,13 +1178,13 @@ $.fn.extend({
       },
 
       // Override defaults
-      options = $.extend(defaults, option);
+      options = $$1.extend(defaults, option);
 
       // Close Handlers
-      $(this).click(function (e) {
-        options.starting_top = ($(this).offset().top - $(window).scrollTop()) / 1.15;
-        var modal_id = $(this).attr("href") || '#' + $(this).data('target');
-        $(modal_id).openModal(options);
+      $$1(this).click(function (e) {
+        options.starting_top = ($$1(this).offset().top - $$1(window).scrollTop()) / 1.15;
+        var modal_id = $$1(this).attr("href") || '#' + $$1(this).data('target');
+        $$1(modal_id).openModal(options);
         e.preventDefault();
       }); // done set on click
     }); // done return
@@ -1138,22 +1193,22 @@ $.fn.extend({
 
 // Source: node_modules/materialize-css/js/materialbox.js
 
-$.fn.materialbox = function () {
+$$1.fn.materialbox = function () {
 
   return this.each(function () {
 
-    if ($(this).hasClass('initialized')) {
+    if ($$1(this).hasClass('initialized')) {
       return;
     }
 
-    $(this).addClass('initialized');
+    $$1(this).addClass('initialized');
 
     var overlayActive = false;
     var doneAnimating = true;
     var inDuration = 275;
     var outDuration = 200;
-    var origin = $(this);
-    var placeholder = $('<div></div>').addClass('material-placeholder');
+    var origin = $$1(this);
+    var placeholder = $$1('<div></div>').addClass('material-placeholder');
     var originalWidth = 0;
     var originalHeight = 0;
     var ancestorsChanged;
@@ -1194,8 +1249,8 @@ $.fn.materialbox = function () {
       ancestorsChanged = undefined;
       ancestor = placeholder[0].parentNode;
       var count = 0;
-      while (ancestor !== null && !$(ancestor).is(document)) {
-        var curr = $(ancestor);
+      while (ancestor !== null && !$$1(ancestor).is(document)) {
+        var curr = $$1(ancestor);
         if (curr.css('overflow') !== 'visible') {
           curr.css('overflow', 'visible');
           if (ancestorsChanged === undefined) {
@@ -1211,7 +1266,7 @@ $.fn.materialbox = function () {
       origin.css({ position: 'absolute', 'z-index': 1000 }).data('width', originalWidth).data('height', originalHeight);
 
       // Add overlay
-      var overlay = $('<div id="materialbox-overlay"></div>').css({
+      var overlay = $$1('<div id="materialbox-overlay"></div>').css({
         opacity: 0
       }).click(function () {
         if (doneAnimating === true) returnToOriginal();
@@ -1223,9 +1278,9 @@ $.fn.materialbox = function () {
 
       // Add and animate caption if it exists
       if (origin.data('caption') !== "") {
-        var $photo_caption = $('<div class="materialbox-caption"></div>');
+        var $photo_caption = $$1('<div class="materialbox-caption"></div>');
         $photo_caption.text(origin.data('caption'));
-        $('body').append($photo_caption);
+        $$1('body').append($photo_caption);
         $photo_caption.css({ "display": "inline" });
         $photo_caption.velocity({ opacity: 1 }, { duration: inDuration, queue: false, easing: 'easeOutQuad' });
       }
@@ -1254,8 +1309,8 @@ $.fn.materialbox = function () {
             origin.css({ left: 0, top: 0 }).velocity({
               height: newHeight,
               width: newWidth,
-              left: $(document).scrollLeft() + windowWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
-              top: $(document).scrollTop() + windowHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
+              left: $$1(document).scrollLeft() + windowWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
+              top: $$1(document).scrollTop() + windowHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
             }, {
               duration: inDuration,
               queue: false,
@@ -1270,8 +1325,8 @@ $.fn.materialbox = function () {
           origin.css('left', 0).css('top', 0).velocity({
             height: newHeight,
             width: newWidth,
-            left: $(document).scrollLeft() + windowWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
-            top: $(document).scrollTop() + windowHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
+            left: $$1(document).scrollLeft() + windowWidth / 2 - origin.parent('.material-placeholder').offset().left - newWidth / 2,
+            top: $$1(document).scrollTop() + windowHeight / 2 - origin.parent('.material-placeholder').offset().top - newHeight / 2
           }, {
             duration: inDuration,
             queue: false,
@@ -1284,14 +1339,14 @@ $.fn.materialbox = function () {
     }); // End origin on click
 
     // Return on scroll
-    $(window).scroll(function () {
+    $$1(window).scroll(function () {
       if (overlayActive) {
         returnToOriginal();
       }
     });
 
     // Return on ESC
-    $(document).keyup(function (e) {
+    $$1(document).keyup(function (e) {
 
       if (e.keyCode === 27 && doneAnimating === true) {
         // ESC key
@@ -1313,16 +1368,16 @@ $.fn.materialbox = function () {
       var originalHeight = origin.data('height');
 
       origin.velocity("stop", true);
-      $('#materialbox-overlay').velocity("stop", true);
-      $('.materialbox-caption').velocity("stop", true);
+      $$1('#materialbox-overlay').velocity("stop", true);
+      $$1('.materialbox-caption').velocity("stop", true);
 
-      $('#materialbox-overlay').velocity({ opacity: 0 }, {
+      $$1('#materialbox-overlay').velocity({ opacity: 0 }, {
         duration: outDuration, // Delay prevents animation overlapping
         queue: false, easing: 'easeOutQuad',
         complete: function complete() {
           // Remove Overlay
           overlayActive = false;
-          $(this).remove();
+          $$1(this).remove();
         }
       });
 
@@ -1338,7 +1393,7 @@ $.fn.materialbox = function () {
       });
 
       // Remove Caption + reset css settings on image
-      $('.materialbox-caption').velocity({ opacity: 0 }, {
+      $$1('.materialbox-caption').velocity({ opacity: 0 }, {
         duration: outDuration, // Delay prevents animation overlapping
         queue: false, easing: 'easeOutQuad',
         complete: function complete() {
@@ -1363,7 +1418,7 @@ $.fn.materialbox = function () {
           // Remove class
           origin.removeClass('active');
           doneAnimating = true;
-          $(this).remove();
+          $$1(this).remove();
 
           // Remove overflow overrides on ancestors
           if (ancestorsChanged) {
@@ -1375,13 +1430,13 @@ $.fn.materialbox = function () {
   });
 };
 
-$(document).ready(function () {
-  $('.materialboxed').materialbox();
+$$1(document).ready(function () {
+  $$1('.materialboxed').materialbox();
 });
 
 // Source: node_modules/materialize-css/js/tooltip.js
 
-$.fn.tooltip = function (options) {
+$$1.fn.tooltip = function (options) {
   var timeout = null,
       margin = 5;
 
@@ -1393,27 +1448,27 @@ $.fn.tooltip = function (options) {
   // Remove tooltip from the activator
   if (options === "remove") {
     this.each(function () {
-      $('#' + $(this).attr('data-tooltip-id')).remove();
-      $(this).off('mouseenter.tooltip mouseleave.tooltip');
+      $$1('#' + $$1(this).attr('data-tooltip-id')).remove();
+      $$1(this).off('mouseenter.tooltip mouseleave.tooltip');
     });
     return false;
   }
 
-  options = $.extend(defaults, options);
+  options = $$1.extend(defaults, options);
 
   return this.each(function () {
     var tooltipId = Materialize.guid();
-    var origin = $(this);
+    var origin = $$1(this);
     origin.attr('data-tooltip-id', tooltipId);
 
     // Create Text span
-    var tooltip_text = $('<span></span>').text(origin.attr('data-tooltip'));
+    var tooltip_text = $$1('<span></span>').text(origin.attr('data-tooltip'));
 
     // Create tooltip
-    var newTooltip = $('<div></div>');
-    newTooltip.addClass('material-tooltip').append(tooltip_text).appendTo($('body')).attr('id', tooltipId);
+    var newTooltip = $$1('<div></div>');
+    newTooltip.addClass('material-tooltip').append(tooltip_text).appendTo($$1('body')).attr('id', tooltipId);
 
-    var backdrop = $('<div></div>').addClass('backdrop');
+    var backdrop = $$1('<div></div>').addClass('backdrop');
     backdrop.appendTo(newTooltip);
     backdrop.css({ top: 0, left: 0 });
 
@@ -1562,72 +1617,72 @@ var repositionWithinScreen = function repositionWithinScreen(x, y, width, height
 
   if (newY < 0) {
     newY = 4;
-  } else if (newY + height > window.innerHeight + $(window).scrollTop) {
+  } else if (newY + height > window.innerHeight + $$1(window).scrollTop) {
     newY -= newY + height - window.innerHeight;
   }
 
   return { x: newX, y: newY };
 };
 
-$(document).ready(function () {
-  $('.tooltipped').tooltip();
+$$1(document).ready(function () {
+  $$1('.tooltipped').tooltip();
 });
 
 // Source: node_modules/materialize-css/js/cards.js
 
-$(document).ready(function () {
+$$1(document).ready(function () {
 
-  $(document).on('click.card', '.card', function (e) {
-    if ($(this).find('> .card-reveal').length) {
-      if ($(e.target).is($('.card-reveal .card-title')) || $(e.target).is($('.card-reveal .card-title i'))) {
+  $$1(document).on('click.card', '.card', function (e) {
+    if ($$1(this).find('> .card-reveal').length) {
+      if ($$1(e.target).is($$1('.card-reveal .card-title')) || $$1(e.target).is($$1('.card-reveal .card-title i'))) {
         // Make Reveal animate down and display none
-        $(this).find('.card-reveal').velocity({ translateY: 0 }, {
+        $$1(this).find('.card-reveal').velocity({ translateY: 0 }, {
           duration: 225,
           queue: false,
           easing: 'easeInOutQuad',
           complete: function complete() {
-            $(this).css({ display: 'none' });
+            $$1(this).css({ display: 'none' });
           }
         });
-      } else if ($(e.target).is($('.card .activator')) || $(e.target).is($('.card .activator i'))) {
-        $(e.target).closest('.card').css('overflow', 'hidden');
-        $(this).find('.card-reveal').css({ display: 'block' }).velocity("stop", false).velocity({ translateY: '-100%' }, { duration: 300, queue: false, easing: 'easeInOutQuad' });
+      } else if ($$1(e.target).is($$1('.card .activator')) || $$1(e.target).is($$1('.card .activator i'))) {
+        $$1(e.target).closest('.card').css('overflow', 'hidden');
+        $$1(this).find('.card-reveal').css({ display: 'block' }).velocity("stop", false).velocity({ translateY: '-100%' }, { duration: 300, queue: false, easing: 'easeInOutQuad' });
       }
     }
 
-    $('.card-reveal').closest('.card').css('overflow', 'hidden');
+    $$1('.card-reveal').closest('.card').css('overflow', 'hidden');
   });
 });
 
 // Source: node_modules/materialize-css/js/chips.js
 
-$(document).ready(function () {
+$$1(document).ready(function () {
 
-  $(document).on('click.chip', '.chip .material-icons', function (e) {
-    $(this).parent().remove();
+  $$1(document).on('click.chip', '.chip .material-icons', function (e) {
+    $$1(this).parent().remove();
   });
 });
 
 // Source: node_modules/materialize-css/js/buttons.js
 
-$(document).ready(function () {
+$$1(document).ready(function () {
 
   // jQuery reverse
-  $.fn.reverse = [].reverse;
+  $$1.fn.reverse = [].reverse;
 
   // Hover behaviour: make sure this doesn't work on .click-to-toggle FABs!
-  $(document).on('mouseenter.fixedActionBtn', '.fixed-action-btn:not(.click-to-toggle)', function (e) {
-    var $this = $(this);
+  $$1(document).on('mouseenter.fixedActionBtn', '.fixed-action-btn:not(.click-to-toggle)', function (e) {
+    var $this = $$1(this);
     openFABMenu($this);
   });
-  $(document).on('mouseleave.fixedActionBtn', '.fixed-action-btn:not(.click-to-toggle)', function (e) {
-    var $this = $(this);
+  $$1(document).on('mouseleave.fixedActionBtn', '.fixed-action-btn:not(.click-to-toggle)', function (e) {
+    var $this = $$1(this);
     closeFABMenu($this);
   });
 
   // Toggle-on-click behaviour.
-  $(document).on('click.fixedActionBtn', '.fixed-action-btn.click-to-toggle > a', function (e) {
-    var $this = $(this);
+  $$1(document).on('click.fixedActionBtn', '.fixed-action-btn.click-to-toggle > a', function (e) {
+    var $this = $$1(this);
     var $menu = $this.parent();
     if ($menu.hasClass('active')) {
       closeFABMenu($menu);
@@ -1637,12 +1692,12 @@ $(document).ready(function () {
   });
 });
 
-$.fn.extend({
+$$1.fn.extend({
   openFAB: function openFAB() {
-    openFABMenu($(this));
+    openFABMenu($$1(this));
   },
   closeFAB: function closeFAB() {
-    closeFABMenu($(this));
+    closeFABMenu($$1(this));
   }
 });
 
@@ -1665,7 +1720,7 @@ var openFABMenu = function openFABMenu(btn) {
 
     var time = 0;
     $this.find('ul .btn-floating').reverse().each(function () {
-      $(this).velocity({ opacity: "1", scaleX: "1", scaleY: "1", translateY: "0", translateX: '0' }, { duration: 80, delay: time });
+      $$1(this).velocity({ opacity: "1", scaleX: "1", scaleY: "1", translateY: "0", translateX: '0' }, { duration: 80, delay: time });
       time += 40;
     });
   }
@@ -1687,6 +1742,601 @@ var closeFABMenu = function closeFABMenu(btn) {
   var time = 0;
   $this.find('ul .btn-floating').velocity("stop", true);
   $this.find('ul .btn-floating').velocity({ opacity: "0", scaleX: ".4", scaleY: ".4", translateY: offsetY + 'px', translateX: offsetX + 'px' }, { duration: 80 });
+};
+
+// Source: node_modules/materialize-css/js/forms.js
+
+$$1(document).ready(function () {
+
+  // Function to update labels of text fields
+  Materialize.updateTextFields = function () {
+    var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea';
+    $$1(input_selector).each(function (index, element) {
+      if ($$1(element).val().length > 0 || element.autofocus || $$1(this).attr('placeholder') !== undefined || $$1(element)[0].validity.badInput === true) {
+        $$1(this).siblings('label, i').addClass('active');
+      } else {
+        $$1(this).siblings('label, i').removeClass('active');
+      }
+    });
+  };
+
+  // Text based inputs
+  var input_selector = 'input[type=text], input[type=password], input[type=email], input[type=url], input[type=tel], input[type=number], input[type=search], textarea';
+
+  // Add active if form auto complete
+  $$1(document).on('change', input_selector, function () {
+    if ($$1(this).val().length !== 0 || $$1(this).attr('placeholder') !== undefined) {
+      $$1(this).siblings('label').addClass('active');
+    }
+    validate_field($$1(this));
+  });
+
+  // Add active if input element has been pre-populated on document ready
+  $$1(document).ready(function () {
+    Materialize.updateTextFields();
+  });
+
+  // HTML DOM FORM RESET handling
+  $$1(document).on('reset', function (e) {
+    var formReset = $$1(e.target);
+    if (formReset.is('form')) {
+      formReset.find(input_selector).removeClass('valid').removeClass('invalid');
+      formReset.find(input_selector).each(function () {
+        if ($$1(this).attr('value') === '') {
+          $$1(this).siblings('label, i').removeClass('active');
+        }
+      });
+
+      // Reset select
+      formReset.find('select.initialized').each(function () {
+        var reset_text = formReset.find('option[selected]').text();
+        formReset.siblings('input.select-dropdown').val(reset_text);
+      });
+    }
+  });
+
+  // Add active when element has focus
+  $$1(document).on('focus', input_selector, function () {
+    $$1(this).siblings('label, i').addClass('active');
+  });
+
+  $$1(document).on('blur', input_selector, function () {
+    var $inputElement = $$1(this);
+    if ($inputElement.val().length === 0 && $inputElement[0].validity.badInput !== true && $inputElement.attr('placeholder') === undefined) {
+      $inputElement.siblings('label, i').removeClass('active');
+    }
+
+    if ($inputElement.val().length === 0 && $inputElement[0].validity.badInput !== true && $inputElement.attr('placeholder') !== undefined) {
+      $inputElement.siblings('i').removeClass('active');
+    }
+    validate_field($inputElement);
+  });
+
+  window.validate_field = function (object) {
+    var hasLength = object.attr('length') !== undefined;
+    var lenAttr = parseInt(object.attr('length'));
+    var len = object.val().length;
+
+    if (object.val().length === 0 && object[0].validity.badInput === false) {
+      if (object.hasClass('validate')) {
+        object.removeClass('valid');
+        object.removeClass('invalid');
+      }
+    } else {
+      if (object.hasClass('validate')) {
+        // Check for character counter attributes
+        if (object.is(':valid') && hasLength && len <= lenAttr || object.is(':valid') && !hasLength) {
+          object.removeClass('invalid');
+          object.addClass('valid');
+        } else {
+          object.removeClass('valid');
+          object.addClass('invalid');
+        }
+      }
+    }
+  };
+
+  // Radio and Checkbox focus class
+  var radio_checkbox = 'input[type=radio], input[type=checkbox]';
+  $$1(document).on('keyup.radio', radio_checkbox, function (e) {
+    // TAB, check if tabbing to radio or checkbox.
+    if (e.which === 9) {
+      $$1(this).addClass('tabbed');
+      var $this = $$1(this);
+      $this.one('blur', function (e) {
+
+        $$1(this).removeClass('tabbed');
+      });
+      return;
+    }
+  });
+
+  // Textarea Auto Resize
+  var hiddenDiv = $$1('.hiddendiv').first();
+  if (!hiddenDiv.length) {
+    hiddenDiv = $$1('<div class="hiddendiv common"></div>');
+    $$1('body').append(hiddenDiv);
+  }
+  var text_area_selector = '.materialize-textarea';
+
+  function textareaAutoResize($textarea) {
+    // Set font properties of hiddenDiv
+
+    var fontFamily = $textarea.css('font-family');
+    var fontSize = $textarea.css('font-size');
+
+    if (fontSize) {
+      hiddenDiv.css('font-size', fontSize);
+    }
+    if (fontFamily) {
+      hiddenDiv.css('font-family', fontFamily);
+    }
+
+    if ($textarea.attr('wrap') === "off") {
+      hiddenDiv.css('overflow-wrap', "normal").css('white-space', "pre");
+    }
+
+    hiddenDiv.text($textarea.val() + '\n');
+    var content = hiddenDiv.html().replace(/\n/g, '<br>');
+    hiddenDiv.html(content);
+
+    // When textarea is hidden, width goes crazy.
+    // Approximate with half of window size
+
+    if ($textarea.is(':visible')) {
+      hiddenDiv.css('width', $textarea.width());
+    } else {
+      hiddenDiv.css('width', $$1(window).width() / 2);
+    }
+
+    $textarea.css('height', hiddenDiv.height());
+  }
+
+  $$1(text_area_selector).each(function () {
+    var $textarea = $$1(this);
+    if ($textarea.val().length) {
+      textareaAutoResize($textarea);
+    }
+  });
+
+  $$1('body').on('keyup keydown autoresize', text_area_selector, function () {
+    textareaAutoResize($$1(this));
+  });
+
+  // File Input Path
+  $$1(document).on('change', '.file-field input[type="file"]', function () {
+    var file_field = $$1(this).closest('.file-field');
+    var path_input = file_field.find('input.file-path');
+    var files = $$1(this)[0].files;
+    var file_names = [];
+    for (var i = 0; i < files.length; i++) {
+      file_names.push(files[i].name);
+    }
+    path_input.val(file_names.join(", "));
+    path_input.trigger('change');
+  });
+
+  /****************
+  *  Range Input  *
+  ****************/
+
+  var range_type = 'input[type=range]';
+  var range_mousedown = false;
+  var left;
+
+  $$1(range_type).each(function () {
+    var thumb = $$1('<span class="thumb"><span class="value"></span></span>');
+    $$1(this).after(thumb);
+  });
+
+  var range_wrapper = '.range-field';
+  $$1(document).on('change', range_type, function (e) {
+    var thumb = $$1(this).siblings('.thumb');
+    thumb.find('.value').html($$1(this).val());
+  });
+
+  $$1(document).on('input mousedown touchstart', range_type, function (e) {
+    var thumb = $$1(this).siblings('.thumb');
+    var width = $$1(this).outerWidth();
+
+    // If thumb indicator does not exist yet, create it
+    if (thumb.length <= 0) {
+      thumb = $$1('<span class="thumb"><span class="value"></span></span>');
+      $$1(this).after(thumb);
+    }
+
+    // Set indicator value
+    thumb.find('.value').html($$1(this).val());
+
+    range_mousedown = true;
+    $$1(this).addClass('active');
+
+    if (!thumb.hasClass('active')) {
+      thumb.velocity({ height: "30px", width: "30px", top: "-20px", marginLeft: "-15px" }, { duration: 300, easing: 'easeOutExpo' });
+    }
+
+    if (e.type !== 'input') {
+      if (e.pageX === undefined || e.pageX === null) {
+        //mobile
+        left = e.originalEvent.touches[0].pageX - $$1(this).offset().left;
+      } else {
+        // desktop
+        left = e.pageX - $$1(this).offset().left;
+      }
+      if (left < 0) {
+        left = 0;
+      } else if (left > width) {
+        left = width;
+      }
+      thumb.addClass('active').css('left', left);
+    }
+
+    thumb.find('.value').html($$1(this).val());
+  });
+
+  $$1(document).on('mouseup touchend', range_wrapper, function () {
+    range_mousedown = false;
+    $$1(this).removeClass('active');
+  });
+
+  $$1(document).on('mousemove touchmove', range_wrapper, function (e) {
+    var thumb = $$1(this).children('.thumb');
+    var left;
+    if (range_mousedown) {
+      if (!thumb.hasClass('active')) {
+        thumb.velocity({ height: '30px', width: '30px', top: '-20px', marginLeft: '-15px' }, { duration: 300, easing: 'easeOutExpo' });
+      }
+      if (e.pageX === undefined || e.pageX === null) {
+        //mobile
+        left = e.originalEvent.touches[0].pageX - $$1(this).offset().left;
+      } else {
+        // desktop
+        left = e.pageX - $$1(this).offset().left;
+      }
+      var width = $$1(this).outerWidth();
+
+      if (left < 0) {
+        left = 0;
+      } else if (left > width) {
+        left = width;
+      }
+      thumb.addClass('active').css('left', left);
+      thumb.find('.value').html(thumb.siblings(range_type).val());
+    }
+  });
+
+  $$1(document).on('mouseout touchleave', range_wrapper, function () {
+    if (!range_mousedown) {
+
+      var thumb = $$1(this).children('.thumb');
+
+      if (thumb.hasClass('active')) {
+        thumb.velocity({ height: '0', width: '0', top: '10px', marginLeft: '-6px' }, { duration: 100 });
+      }
+      thumb.removeClass('active');
+    }
+  });
+}); // End of $(document).ready
+
+/*******************
+ *  Select Plugin  *
+ ******************/
+$$1.fn.material_select = function (callback) {
+  $$1(this).each(function () {
+    var $select = $$1(this);
+
+    if ($select.hasClass('browser-default')) {
+      return; // Continue to next (return false breaks out of entire loop)
+    }
+
+    var multiple = $select.attr('multiple') ? true : false,
+        lastID = $select.data('select-id'); // Tear down structure if Select needs to be rebuilt
+
+    if (lastID) {
+      $select.parent().find('span.caret').remove();
+      $select.parent().find('input').remove();
+
+      $select.unwrap();
+      $$1('ul#select-options-' + lastID).remove();
+    }
+
+    // If destroying the select, remove the selelct-id and reset it to it's uninitialized state.
+    if (callback === 'destroy') {
+      $select.data('select-id', null).removeClass('initialized');
+      return;
+    }
+
+    var uniqueID = Materialize.guid();
+    $select.data('select-id', uniqueID);
+    var wrapper = $$1('<div class="select-wrapper"></div>');
+    wrapper.addClass($select.attr('class'));
+    var options = $$1('<ul id="select-options-' + uniqueID + '" class="dropdown-content select-dropdown ' + (multiple ? 'multiple-select-dropdown' : '') + '"></ul>'),
+        selectChildren = $select.children('option, optgroup'),
+        valuesSelected = [],
+        optionsHover = false;
+
+    var label = $select.find('option:selected').html() || $select.find('option:first').html() || "";
+
+    // Function that renders and appends the option taking into
+    // account type and possible image icon.
+    var appendOptionWithIcon = function appendOptionWithIcon(select, option, type) {
+      // Add disabled attr if disabled
+      var disabledClass = option.is(':disabled') ? 'disabled ' : '';
+      var optgroupClass = type === 'optgroup-option' ? 'optgroup-option ' : '';
+
+      // add icons
+      var icon_url = option.data('icon');
+      var classes = option.attr('class');
+      if (!!icon_url) {
+        var classString = '';
+        if (!!classes) classString = ' class="' + classes + '"';
+
+        // Check for multiple type.
+        if (type === 'multiple') {
+          options.append($$1('<li class="' + disabledClass + '"><img src="' + icon_url + '"' + classString + '><span><input type="checkbox"' + disabledClass + '/><label></label>' + option.html() + '</span></li>'));
+        } else {
+          options.append($$1('<li class="' + disabledClass + optgroupClass + '"><img src="' + icon_url + '"' + classString + '><span>' + option.html() + '</span></li>'));
+        }
+        return true;
+      }
+
+      // Check for multiple type.
+      if (type === 'multiple') {
+        options.append($$1('<li class="' + disabledClass + '"><span><input type="checkbox"' + disabledClass + '/><label></label>' + option.html() + '</span></li>'));
+      } else {
+        options.append($$1('<li class="' + disabledClass + optgroupClass + '"><span>' + option.html() + '</span></li>'));
+      }
+    };
+
+    /* Create dropdown structure. */
+    if (selectChildren.length) {
+      selectChildren.each(function () {
+        if ($$1(this).is('option')) {
+          // Direct descendant option.
+          if (multiple) {
+            appendOptionWithIcon($select, $$1(this), 'multiple');
+          } else {
+            appendOptionWithIcon($select, $$1(this));
+          }
+        } else if ($$1(this).is('optgroup')) {
+          // Optgroup.
+          var selectOptions = $$1(this).children('option');
+          options.append($$1('<li class="optgroup"><span>' + $$1(this).attr('label') + '</span></li>'));
+
+          selectOptions.each(function () {
+            appendOptionWithIcon($select, $$1(this), 'optgroup-option');
+          });
+        }
+      });
+    }
+
+    options.find('li:not(.optgroup)').each(function (i) {
+      $$1(this).click(function (e) {
+        // Check if option element is disabled
+        if (!$$1(this).hasClass('disabled') && !$$1(this).hasClass('optgroup')) {
+          var selected = true;
+
+          if (multiple) {
+            $$1('input[type="checkbox"]', this).prop('checked', function (i, v) {
+              return !v;
+            });
+            selected = toggleEntryFromArray(valuesSelected, $$1(this).index(), $select);
+            $newSelect.trigger('focus');
+          } else {
+            options.find('li').removeClass('active');
+            $$1(this).toggleClass('active');
+            $newSelect.val($$1(this).text());
+          }
+
+          activateOption(options, $$1(this));
+          $select.find('option').eq(i).prop('selected', selected);
+          // Trigger onchange() event
+          $select.trigger('change');
+          if (typeof callback !== 'undefined') callback();
+        }
+
+        e.stopPropagation();
+      });
+    });
+
+    // Wrap Elements
+    $select.wrap(wrapper);
+    // Add Select Display Element
+    var dropdownIcon = $$1('<span class="caret">&#9660;</span>');
+    if ($select.is(':disabled')) dropdownIcon.addClass('disabled');
+
+    // escape double quotes
+    var sanitizedLabelHtml = label.replace(/"/g, '&quot;');
+
+    var $newSelect = $$1('<input type="text" class="select-dropdown" readonly="true" ' + ($select.is(':disabled') ? 'disabled' : '') + ' data-activates="select-options-' + uniqueID + '" value="' + sanitizedLabelHtml + '"/>');
+    $select.before($newSelect);
+    $newSelect.before(dropdownIcon);
+
+    $newSelect.after(options);
+    // Check if section element is disabled
+    if (!$select.is(':disabled')) {
+      $newSelect.dropdown({ 'hover': false, 'closeOnClick': false });
+    }
+
+    // Copy tabindex
+    if ($select.attr('tabindex')) {
+      $$1($newSelect[0]).attr('tabindex', $select.attr('tabindex'));
+    }
+
+    $select.addClass('initialized');
+
+    $newSelect.on({
+      'focus': function focus() {
+        if ($$1('ul.select-dropdown').not(options[0]).is(':visible')) {
+          $$1('input.select-dropdown').trigger('close');
+        }
+        if (!options.is(':visible')) {
+          $$1(this).trigger('open', ['focus']);
+          var label = $$1(this).val();
+          var selectedOption = options.find('li').filter(function () {
+            return $$1(this).text().toLowerCase() === label.toLowerCase();
+          })[0];
+          activateOption(options, selectedOption);
+        }
+      },
+      'click': function click(e) {
+        e.stopPropagation();
+      }
+    });
+
+    $newSelect.on('blur', function () {
+      if (!multiple) {
+        $$1(this).trigger('close');
+      }
+      options.find('li.selected').removeClass('selected');
+    });
+
+    options.hover(function () {
+      optionsHover = true;
+    }, function () {
+      optionsHover = false;
+    });
+
+    $$1(window).on({
+      'click': function click() {
+        multiple && (optionsHover || $newSelect.trigger('close'));
+      }
+    });
+
+    // Add initial multiple selections.
+    if (multiple) {
+      $select.find("option:selected:not(:disabled)").each(function () {
+        var index = $$1(this).index();
+
+        toggleEntryFromArray(valuesSelected, index, $select);
+        options.find("li").eq(index).find(":checkbox").prop("checked", true);
+      });
+    }
+
+    // Make option as selected and scroll to selected position
+    var activateOption = function activateOption(collection, newOption) {
+      if (newOption) {
+        collection.find('li.selected').removeClass('selected');
+        var option = $$1(newOption);
+        option.addClass('selected');
+        options.scrollTo(option);
+      }
+    };
+
+    // Allow user to search by typing
+    // this array is cleared after 1 second
+    var filterQuery = [],
+        onKeyDown = function onKeyDown(e) {
+      // TAB - switch to another input
+      if (e.which == 9) {
+        $newSelect.trigger('close');
+        return;
+      }
+
+      // ARROW DOWN WHEN SELECT IS CLOSED - open select options
+      if (e.which == 40 && !options.is(':visible')) {
+        $newSelect.trigger('open');
+        return;
+      }
+
+      // ENTER WHEN SELECT IS CLOSED - submit form
+      if (e.which == 13 && !options.is(':visible')) {
+        return;
+      }
+
+      e.preventDefault();
+
+      // CASE WHEN USER TYPE LETTERS
+      var letter = String.fromCharCode(e.which).toLowerCase(),
+          nonLetters = [9, 13, 27, 38, 40];
+      if (letter && nonLetters.indexOf(e.which) === -1) {
+        filterQuery.push(letter);
+
+        var string = filterQuery.join(''),
+            newOption = options.find('li').filter(function () {
+          return $$1(this).text().toLowerCase().indexOf(string) === 0;
+        })[0];
+
+        if (newOption) {
+          activateOption(options, newOption);
+        }
+      }
+
+      // ENTER - select option and close when select options are opened
+      if (e.which == 13) {
+        var activeOption = options.find('li.selected:not(.disabled)')[0];
+        if (activeOption) {
+          $$1(activeOption).trigger('click');
+          if (!multiple) {
+            $newSelect.trigger('close');
+          }
+        }
+      }
+
+      // ARROW DOWN - move to next not disabled option
+      if (e.which == 40) {
+        if (options.find('li.selected').length) {
+          newOption = options.find('li.selected').next('li:not(.disabled)')[0];
+        } else {
+          newOption = options.find('li:not(.disabled)')[0];
+        }
+        activateOption(options, newOption);
+      }
+
+      // ESC - close options
+      if (e.which == 27) {
+        $newSelect.trigger('close');
+      }
+
+      // ARROW UP - move to previous not disabled option
+      if (e.which == 38) {
+        newOption = options.find('li.selected').prev('li:not(.disabled)')[0];
+        if (newOption) activateOption(options, newOption);
+      }
+
+      // Automaticaly clean filter query so user can search again by starting letters
+      setTimeout(function () {
+        filterQuery = [];
+      }, 1000);
+    };
+
+    $newSelect.on('keydown', onKeyDown);
+  });
+
+  function toggleEntryFromArray(entriesArray, entryIndex, select) {
+    var index = entriesArray.indexOf(entryIndex),
+        notAdded = index === -1;
+
+    if (notAdded) {
+      entriesArray.push(entryIndex);
+    } else {
+      entriesArray.splice(index, 1);
+    }
+
+    select.siblings('ul.dropdown-content').find('li').eq(entryIndex).toggleClass('active');
+
+    // use notAdded instead of true (to detect if the option is selected or not)
+    select.find('option').eq(entryIndex).prop('selected', notAdded);
+    setValueToInput(entriesArray, select);
+
+    return notAdded;
+  }
+
+  function setValueToInput(entriesArray, select) {
+    var value = '';
+
+    for (var i = 0, count = entriesArray.length; i < count; i++) {
+      var text = select.find('option').eq(entriesArray[i]).text();
+
+      i === 0 ? value += text : value += ', ' + text;
+    }
+
+    if (value === '') {
+      value = select.find('option:disabled').eq(0).text();
+    }
+
+    select.siblings('input.select-dropdown').val(value);
+  }
 };
 
 // Source: src/helpers/waves.js
@@ -1722,11 +2372,11 @@ var validate_field = function validate_field(object) {
 };
 
 Materialize.elementOrParentIsFixed = function (element) {
-  var $element = $(element);
+  var $element = $$1(element);
   var $checkElements = $element.add($element.parents());
   var isFixed = false;
   $checkElements.each(function () {
-    if ($(this).css("position") === "fixed") {
+    if ($$1(this).css("position") === "fixed") {
       isFixed = true;
       return false;
     }
@@ -1740,31 +2390,31 @@ Materialize.input_selector = ['input[type=text]', 'input[type=password]', 'input
 // Function to update labels of text fields
 Materialize.updateTextFields = function () {
 
-  $(Materialize.input_selector).each(function (index, element) {
-    if ($(element).val().length > 0 || $(this).attr('placeholder') !== undefined || $(element)[0].validity.badInput === true) {
-      $(this).siblings('label').addClass('active');
+  $$1(Materialize.input_selector).each(function (index, element) {
+    if ($$1(element).val().length > 0 || $$1(this).attr('placeholder') !== undefined || $$1(element)[0].validity.badInput === true) {
+      $$1(this).siblings('label').addClass('active');
     } else {
-      $(this).siblings('label, i').removeClass('active');
+      $$1(this).siblings('label, i').removeClass('active');
     }
   });
 };
 
-$(document).ready(function () {
+$$1(document).ready(function () {
   // Add active if form auto complete
-  $(document).on('change', Materialize.input_selector, function () {
-    if ($(this).val().length !== 0 || $(this).attr('placeholder') !== undefined) {
-      $(this).siblings('label').addClass('active');
+  $$1(document).on('change', Materialize.input_selector, function () {
+    if ($$1(this).val().length !== 0 || $$1(this).attr('placeholder') !== undefined) {
+      $$1(this).siblings('label').addClass('active');
     }
-    validate_field($(this));
+    validate_field($$1(this));
   });
 
   // Add active when element has focus
-  $(document).on('focus', Materialize.input_selector, function () {
-    $(this).siblings('label, i').addClass('active');
+  $$1(document).on('focus', Materialize.input_selector, function () {
+    $$1(this).siblings('label, i').addClass('active');
   });
 
-  $(document).on('blur', Materialize.input_selector, function () {
-    var $inputElement = $(this);
+  $$1(document).on('blur', Materialize.input_selector, function () {
+    var $inputElement = $$1(this);
     if ($inputElement.val().length === 0 && $inputElement[0].validity.badInput !== true && $inputElement.attr('placeholder') === undefined) {
       $inputElement.siblings('label, i').removeClass('active');
     }
@@ -1778,13 +2428,13 @@ $(document).ready(function () {
   Materialize.updateTextFields();
 
   // HTML DOM FORM RESET handling
-  $(document).on('reset', function (e) {
-    var formReset = $(e.target);
+  $$1(document).on('reset', function (e) {
+    var formReset = $$1(e.target);
     if (formReset.is('form')) {
       formReset.find(Materialize.input_selector).removeClass('valid').removeClass('invalid');
       formReset.find(Materialize.input_selector).each(function () {
-        if ($(this).attr('value') === '') {
-          $(this).siblings('label, i').removeClass('active');
+        if ($$1(this).attr('value') === '') {
+          $$1(this).siblings('label, i').removeClass('active');
         }
       });
 
@@ -2135,7 +2785,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 */
 
-$.fn.modal = function (option) {
+$$1.fn.modal = function (option) {
   var defaults = {
     dismissible: true, // Modal can be dismissed by clicking outside of the modal
     opacity: 0.5, // Opacity of modal background
@@ -2149,15 +2799,15 @@ $.fn.modal = function (option) {
     } // Callback for Modal close
   };
 
-  var options = $.extend(defaults, option);
+  var options = $$1.extend(defaults, option);
 
   return this.each(function () {
     if (option === 'show') {
-      $(this).openModal();
+      $$1(this).openModal();
     } else if (options === 'hide') {
-      $(this).closeModal();
+      $$1(this).closeModal();
     } else {
-      $(this).leanModal(options);
+      $$1(this).leanModal(options);
     }
   });
 };
@@ -2168,25 +2818,25 @@ $.fn.modal = function (option) {
  * @param  {String} html  definicion del elemento a crear
  * @return {jQuery Object} uno o mas elementos que calzan con el criterio de seleccion
  */
-$.getOrCreate = function (selector, html) {
-  var elemento = $(selector);
+$$1.getOrCreate = function (selector, html) {
+  var elemento = $$1(selector);
 
   if (elemento.length === 0) {
-    elemento = $(html);
+    elemento = $$1(html);
   }
 
   return elemento;
 };
 
-$.fn.tabs = function (methodOrOptions) {
+$$1.fn.tabs = function (methodOrOptions) {
   var wavesmethods = {
     init: function init() {
       return this.each(function () {
 
         // For each set of tabs, we want to keep track of
         // which tab is active and its associated content
-        var $this = $(this),
-            window_width = $(window).width();
+        var $this = $$1(this),
+            window_width = $$1(window).width();
 
         $this.width('100%');
         var $active,
@@ -2197,14 +2847,14 @@ $.fn.tabs = function (methodOrOptions) {
             $index = 0;
 
         // If the location.hash matches one of the links, use that as the active tab.
-        $active = $($links.filter('[href="' + location.hash + '"]'));
+        $active = $$1($links.filter('[href="' + location.hash + '"]'));
 
         // If no match is found, use the first link or any with class 'active' as the initial active tab.
         if ($active.length === 0) {
-          $active = $(this).find('li.tab a.active').first();
+          $active = $$1(this).find('li.tab a.active').first();
         }
         if ($active.length === 0) {
-          $active = $(this).find('li.tab a').first();
+          $active = $$1(this).find('li.tab a').first();
         }
 
         $active.addClass('active');
@@ -2214,7 +2864,7 @@ $.fn.tabs = function (methodOrOptions) {
         }
 
         if ($active[0] !== undefined) {
-          $content = $($active[0].hash);
+          $content = $$1($active[0].hash);
         }
 
         // append indicator then set indicator width to tab width
@@ -2228,7 +2878,7 @@ $.fn.tabs = function (methodOrOptions) {
             "left": $index * $tab_width
           });
         }
-        $(window).resize(function () {
+        $$1(window).resize(function () {
           $tabs_width = $this.width();
           $tab_width = Math.max($tabs_width, $this[0].scrollWidth) / $links.length;
           if ($index < 0) {
@@ -2246,12 +2896,12 @@ $.fn.tabs = function (methodOrOptions) {
 
         // Hide the remaining content
         $links.not($active).each(function () {
-          $(this.hash).hide();
+          $$1(this.hash).hide();
         });
 
         // Bind the click event handler
         $this.on('click', 'a', function (e) {
-          if ($(this).parent().hasClass('disabled')) {
+          if ($$1(this).parent().hasClass('disabled')) {
             e.preventDefault();
             return;
           }
@@ -2266,14 +2916,14 @@ $.fn.tabs = function (methodOrOptions) {
           }
 
           // Update the variables with the new link and content
-          $active = $(this);
-          $content = $(this.hash);
+          $active = $$1(this);
+          $content = $$1(this.hash);
           $links = $this.find('li.tab a');
 
           // Make the tab active.
           $active.addClass('active');
           var $prev_index = $index;
-          $index = $links.index($(this));
+          $index = $links.index($$1(this));
           if ($index < 0) {
             $index = 0;
           }
@@ -2334,7 +2984,7 @@ $.fn.tabs = function (methodOrOptions) {
     // Default to "init"
     return wavesmethods.init.apply(this, arguments);
   } else {
-    $.error('Method ' + methodOrOptions + ' does not exist on $.tooltip');
+    $$1.error('Method ' + methodOrOptions + ' does not exist on $.tooltip');
   }
 };
 
@@ -2365,45 +3015,45 @@ function textareaAutoResize($textarea) {
   if ($textarea.is(':visible')) {
     hiddenDiv.css('width', $textarea.width());
   } else {
-    hiddenDiv.css('width', $(window).width() / 2);
+    hiddenDiv.css('width', $$1(window).width() / 2);
   }
 
   $textarea.css('height', hiddenDiv.height());
 }
 
-$(document).ready(function () {
+$$1(document).ready(function () {
 
-  $('ul.tabs').tabs();
+  $$1('ul.tabs').tabs();
   // Dismissible Collections
 
   // Handle HTML5 autofocus
-  $('input[autofocus]').siblings('label, i').addClass('active');
+  $$1('input[autofocus]').siblings('label, i').addClass('active');
 
   // Textarea Auto Resize
-  var hiddenDiv = $('.hiddendiv').first();
+  var hiddenDiv = $$1('.hiddendiv').first();
   if (!hiddenDiv.length) {
-    hiddenDiv = $('<div class="hiddendiv common"></div>');
-    $('body').append(hiddenDiv);
+    hiddenDiv = $$1('<div class="hiddendiv common"></div>');
+    $$1('body').append(hiddenDiv);
   }
   var text_area_selector = '.materialize-textarea';
 
-  $(text_area_selector).each(function () {
-    var $textarea = $(this);
+  $$1(text_area_selector).each(function () {
+    var $textarea = $$1(this);
     if ($textarea.val().length) {
       textareaAutoResize($textarea);
     }
   });
 
-  $('body').on('keyup keydown autoresize', text_area_selector, function () {
-    textareaAutoResize($(this));
+  $$1('body').on('keyup keydown autoresize', text_area_selector, function () {
+    textareaAutoResize($$1(this));
   });
 
   // File Input Path
 
-  $(document).on('change', '.file-field input[type="file"]', function () {
-    var file_field = $(this).closest('.file-field');
+  $$1(document).on('change', '.file-field input[type="file"]', function () {
+    var file_field = $$1(this).closest('.file-field');
     var path_input = file_field.find('input.file-path');
-    var files = $(this)[0].files;
+    var files = $$1(this)[0].files;
     var file_names = [];
     for (var i = 0; i < files.length; i++) {
       file_names.push(files[i].name);

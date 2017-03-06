@@ -17,31 +17,30 @@ build: jquery helpers
 
 material:	
 	grunt concat
+	jspm build jquery_ui/material_helper.js dist/material_helper.js --skip-source-maps --skip-encode-names --global-name material_helper
+	csplit -n2 -s -b material%d\.js dist/material_helper.js "/var requestAnimationFrame/"
+	csplit -n2 -s -b material0%d\.js xxmaterial1.js "/Object.defineProperty/"
+	cat src/helpers/prefix.js xxmaterial00.js src/helpers/suffix.js > src/jquery_shim/material_helper.js
+	rm xx*
+	grunt build:material:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-ajax/xhr:-manipulation/_evalUrl
+
+bootstrap:
+	jspm build jquery_ui/bootstrap_helper.js dist/bootstrap_helper.js --skip-source-maps --skip-encode-names --global-name bootstrap_helper
+	csplit -n2 -s -b bootstrap%d\.js dist/bootstrap_helper.js "/var widgetUuid/"
+	csplit -n2 -s -b bootstrap0%d\.js xxbootstrap1.js "/Object.defineProperty/"
+	cat src/helpers/prefix.js xxbootstrap00.js src/helpers/suffix.js > src/jquery_shim/bootstrap_helper.js
+	rm xx*
+	grunt build:bootstrap:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-ajax/xhr:-manipulation/_evalUrl
+
 
 test:
 	grunt test:fast
 	grunt test:bootstrap
 	grunt test:material
 
-helpers: material build_helpers helper_replacement bundled_helpers
+helpers: material bootstrap
 
-bundled_helpers:
-	grunt build:material:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-ajax/xhr:-manipulation/_evalUrl
-	grunt build:bootstrap:*:-deprecated:-manipulation/_evalUrl:-exports/amd:-ajax/jsonp:-ajax/load:-ajax/parseXML:-ajax/script:-ajax/var/location:-ajax/var/nonce:-ajax/var/rquery:-ajax/xhr:-manipulation/_evalUrl
 
-build_helpers:	
-	jspm build jquery_ui/material_helper.js dist/material_helper.js --skip-source-maps --skip-encode-names --global-name material_helper
-	jspm build jquery_ui/bootstrap_helper.js dist/bootstrap_helper.js --skip-source-maps --skip-encode-names --global-name bootstrap_helper
-
-helper_replacement:
-	csplit -n2 -s -b bootstrap%d\.js dist/bootstrap_helper.js "/var widgetUuid/"
-	csplit -n2 -s -b material%d\.js dist/material_helper.js "/var requestAnimationFrame/"
-
-	csplit -n2 -s -b bootstrap0%d\.js xxbootstrap1.js "/Object.defineProperty/"
-	csplit -n2 -s -b material0%d\.js xxmaterial1.js "/Object.defineProperty/"
-	cat src/helpers/prefix.js xxmaterial00.js src/helpers/suffix.js > src/jquery_shim/material_helper.js
-	cat src/helpers/prefix.js xxbootstrap00.js src/helpers/suffix.js > src/jquery_shim/bootstrap_helper.js
-	rm xx*
 
 
 

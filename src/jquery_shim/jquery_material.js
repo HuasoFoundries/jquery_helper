@@ -37,7 +37,7 @@ define([
 	"./plugins/jquery.ajaxprogress",
 	"./plugins/jquery.cookie",
 	"./plugins/jquery.serializejson",
-	"./bootstrap_helper"
+	"./material_helper"
 
 ], function (jQuery) {
 

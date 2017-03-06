@@ -1,10 +1,12 @@
-import $ from 'jquery';
+import jQuery from 'jquery';
 import {
     Velocity
 } from './velocity.js';
 
 
-var Materialize = {},
+
+var $ = jQuery,
+    Materialize = {},
     Waves = {},
     $$ = document.querySelectorAll.bind(document);
 

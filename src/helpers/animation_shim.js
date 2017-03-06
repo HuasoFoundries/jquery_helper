@@ -1,4 +1,4 @@
-$.easing = {
+jQuery.easing = {
     linear: function (p) {
         return p;
     },
@@ -16,11 +16,11 @@ $.easing = {
 };
 
 
-$.extend($.easing, {
+jQuery.extend(jQuery.easing, {
     def: 'easeOutQuad',
     swing: function (x, t, b, c, d) {
-        //alert($.easing.default);
-        return $.easing[$.easing.def](x, t, b, c, d);
+        //alert(jQuery.easing.default);
+        return jQuery.easing[jQuery.easing.def](x, t, b, c, d);
     },
     easeInQuad: function (x, t, b, c, d) {
         return c * (t /= d) * t + b;
@@ -147,7 +147,7 @@ $.extend($.easing, {
         return c / 2 * ((t -= 2) * t * (((s *= (1.525)) + 1) * t + s) + 2) + b;
     },
     easeInBounce: function (x, t, b, c, d) {
-        return c - $.easing.easeOutBounce(x, d - t, 0, c, d) + b;
+        return c - jQuery.easing.easeOutBounce(x, d - t, 0, c, d) + b;
     },
     easeOutBounce: function (x, t, b, c, d) {
         if ((t /= d) < (1 / 2.75)) {
@@ -161,43 +161,43 @@ $.extend($.easing, {
         }
     },
     easeInOutBounce: function (x, t, b, c, d) {
-        if (t < d / 2) return $.easing.easeInBounce(x, t * 2, 0, c, d) * .5 + b;
-        return $.easing.easeOutBounce(x, t * 2 - d, 0, c, d) * .5 + c * .5 + b;
+        if (t < d / 2) return jQuery.easing.easeInBounce(x, t * 2, 0, c, d) * .5 + b;
+        return jQuery.easing.easeOutBounce(x, t * 2 - d, 0, c, d) * .5 + c * .5 + b;
     }
 });
 
-$.fn.animate = $.fn.animate || $.fn.velocity;
+jQuery.fn.animate = jQuery.fn.animate || jQuery.fn.velocity;
 
-$.fn.slideDown = $.fn.slideDown || function () {
+jQuery.fn.slideDown = jQuery.fn.slideDown || function () {
     return this.each(function () {
-        $(this).velocity('slideDown');
+        jQuery(this).velocity('slideDown');
     });
 };
-$.fn.slideUp = $.fn.slideUp || function () {
+jQuery.fn.slideUp = jQuery.fn.slideUp || function () {
     return this.each(function () {
-        $(this).velocity('slideDown');
+        jQuery(this).velocity('slideDown');
     });
 };
 
-$.fn.fadeOut = function (speed, easing, callback) {
+jQuery.fn.fadeOut = function (speed, easing, callback) {
     return this.each(function () {
-        $(this).velocity({
+        jQuery(this).velocity({
             opacity: 'hide'
         }, speed, easing, callback);
     });
 };
 
-$.fn.fadeIn = function (speed, easing, callback) {
+jQuery.fn.fadeIn = function (speed, easing, callback) {
     return this.each(function () {
-        $(this).velocity({
+        jQuery(this).velocity({
             opacity: 'show'
         }, speed, easing, callback);
     });
 };
 
-$.fn.stop = $.fn.stop || function () {
+jQuery.fn.stop = jQuery.fn.stop || function () {
     return this.each(function () {
-        $(this).velocity('stop');
+        jQuery(this).velocity('stop');
     });
 };
 

@@ -1,4 +1,4 @@
-import $ from 'jquery';
+import jQuery from 'jquery';
 import {
 	Materialize
 } from './materialize.js';
