@@ -9,7 +9,7 @@ require("jsdom").env("", function (errors, window) {
 	global.window = window;
 
 	var ensureJQuery = require("./lib/ensure_jquery"),
-		jQuery = require("../../dist/material_helper.js");
+		jQuery = require("../../dist/jquery_material.js");
 
 	ensureJQuery(jQuery);
 

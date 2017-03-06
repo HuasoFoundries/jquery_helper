@@ -7,7 +7,7 @@ require("jsdom").env("", function (errors, window) {
 
 	var ensureJQuery = require("./lib/ensure_jquery"),
 		ensureGlobalNotCreated = require("./lib/ensure_global_not_created"),
-		jQuery = require("../../../dist/jquery.js")(window);
+		jQuery = require("../../dist/jquery_bootstrap.js")(window);
 
 	ensureJQuery(jQuery);
 	ensureGlobalNotCreated(module.exports);

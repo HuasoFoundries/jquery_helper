@@ -14,7 +14,8 @@ module.exports = function (grunt) {
 				requirejs = require("requirejs"),
 				baseFolder = __dirname + '/..',
 				jqFolder = baseFolder + "/node_modules/jquery",
-				srcFolder = this.data.srcFolder;
+				srcFolder = this.data.srcFolder,
+				indexFile = this.data.indexFile;
 
 
 
@@ -184,7 +185,7 @@ module.exports = function (grunt) {
 
 			var config = assign(this.data.rjsconfig, {
 					baseUrl: srcFolder,
-					name: "jquery",
+					name: indexFile,
 
 					// Allow strict mode
 					useStrict: true,

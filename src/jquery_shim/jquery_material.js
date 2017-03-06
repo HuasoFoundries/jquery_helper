@@ -36,7 +36,8 @@ define([
 	"./plugins/jquery.waitforChild",
 	"./plugins/jquery.ajaxprogress",
 	"./plugins/jquery.cookie",
-	"./plugins/jquery.serializejson"
+	"./plugins/jquery.serializejson",
+	"./bootstrap_helper"
 
 ], function (jQuery) {
 

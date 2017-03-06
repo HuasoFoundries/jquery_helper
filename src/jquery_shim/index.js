@@ -14,7 +14,10 @@ import './plugins_es6/jquery.ajaxprogress.js';
 //import './plugins/jquery-csv.js';
 
 
-
-
-
+export {
+	$
+};
+export {
+	$ as jQuery
+};
 export default $;

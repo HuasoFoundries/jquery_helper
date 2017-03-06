@@ -47,6 +47,7 @@ module.exports = function (grunt) {
 				dest: "src/jquery_shim/jquery.es6.js",
 				//srcFolder: __dirname + '/src/jquery_shim',
 				srcFolder: __dirname + '/node_modules/jquery/src',
+				indexFile: 'jquery',
 				minimum: [
 					"core",
 					"selector"
@@ -71,9 +72,10 @@ module.exports = function (grunt) {
 
 			full: {
 				//globals: grunt.file.read("src/helpers/global.js"),
-				wrapper: grunt.file.read("src/wrapper.js"),
+				wrapper: grunt.file.read("src/helpers/wrapper_umd.js"),
 				dest: "dist/jquery.js",
 				srcFolder: __dirname + '/src/jquery_shim',
+				indexFile: 'jquery',
 				minimum: [
 					"core",
 					"selector"
@@ -106,12 +108,101 @@ module.exports = function (grunt) {
 					sizzle: ["css/hiddenVisibleSelectors", "effects/animatedSelector"]
 				}
 			},
+			material: {
+				//globals: grunt.file.read("src/helpers/global.js"),
+				wrapper: grunt.file.read("src/helpers/wrapper_umd.js"),
+				dest: "dist/jquery_material.js",
+				srcFolder: __dirname + '/src/jquery_shim',
+				indexFile: 'jquery_material',
+				minimum: [
+					"core",
+					"selector"
+				],
+				rjsconfig: {
+					generateSourceMaps: false,
+					optimize: "uglify",
+					uglify: {
+						mangle: true,
+						screw_ie8: true,
+						stats: true,
+						lint: true,
+						verbose: true,
+						compress: {
+							dead_code: true,
+							unused: true,
+							join_vars: true
 
+						},
+						output: {
+							beautify: false
+						}
+					}
+
+				},
+				// Exclude specified modules if the module matching the key is removed
+				removeWith: {
+					ajax: ["manipulation/_evalUrl", "event/ajax"],
+					callbacks: ["deferred"],
+					css: ["effects", "dimensions", "offset"],
+					"css/showHide": ["effects"],
+					deferred: {
+						remove: ["ajax", "effects", "queue", "core/ready"],
+						include: ["core/ready-no-deferred"]
+					},
+					sizzle: ["css/hiddenVisibleSelectors", "effects/animatedSelector"]
+				}
+			},
+
+			bootstrap: {
+				//globals: grunt.file.read("src/helpers/global.js"),
+				wrapper: grunt.file.read("src/helpers/wrapper_umd.js"),
+				dest: "dist/jquery_bootstrap.js",
+				srcFolder: __dirname + '/src/jquery_shim',
+				indexFile: 'jquery_bootstrap',
+				minimum: [
+					"core",
+					"selector"
+				],
+				rjsconfig: {
+					generateSourceMaps: false,
+					optimize: "uglify",
+					uglify: {
+						mangle: true,
+						screw_ie8: true,
+						stats: true,
+						lint: true,
+						verbose: true,
+						compress: {
+							dead_code: true,
+							unused: true,
+							join_vars: true
+
+						},
+						output: {
+							beautify: false
+						}
+					}
+
+				},
+				// Exclude specified modules if the module matching the key is removed
+				removeWith: {
+					ajax: ["manipulation/_evalUrl", "event/ajax"],
+					callbacks: ["deferred"],
+					css: ["effects", "dimensions", "offset"],
+					"css/showHide": ["effects"],
+					deferred: {
+						remove: ["ajax", "effects", "queue", "core/ready"],
+						include: ["core/ready-no-deferred"]
+					},
+					sizzle: ["css/hiddenVisibleSelectors", "effects/animatedSelector"]
+				}
+			},
 			min: {
 				//globals: grunt.file.read("src/helpers/global.js"),
-				wrapper: grunt.file.read("src/wrapper.js"),
+				wrapper: grunt.file.read("src/helpers/wrapper_umd.js"),
 				dest: "dist/jquery.min.js",
 				srcFolder: __dirname + '/src/jquery_shim',
+				indexFile: 'jquery',
 				minimum: [
 					"core",
 					"selector"
@@ -166,6 +257,7 @@ module.exports = function (grunt) {
 
 
 	grunt.registerTask("test:fast", "jquery_node_smoke_tests");
+
 
 	grunt.registerTask("test:material", "material_helper_smoke_tests");
 

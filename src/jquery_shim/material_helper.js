@@ -1,11 +1,6 @@
-(function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('jquery')) :
-        typeof define === 'function' && define.amd ? define(['exports', 'jquery'], factory) :
-        (factory((global.material_helper = global.material_helper || {}), global.$));
-}(this, (function (exports, $) {
-    'use strict';
+define(["./jquery_src/core"], function (jQuery) {
+    var $ = jQuery;
 
-    $ = 'default' in $ ? $['default'] : $;
 
     /*! VelocityJS.org (1.2.3). (C) 2014 Julian Shapiro. MIT @license: en.wikipedia.org/wiki/MIT_License */
     var requestAnimationFrame = function requestAnimationFrame(callback, element) {
@@ -80,11 +75,13 @@
         isNode: function isNode(variable) {
             return variable && variable.nodeType;
         },
-        /* Copyright Martin Bohm. MIT License: https://gist.github.com/Tomalak/818a78a226a0738eaade */ isNodeList: function isNodeList(variable) {
+        /* Copyright Martin Bohm. MIT License: https://gist.github.com/Tomalak/818a78a226a0738eaade */
+        isNodeList: function isNodeList(variable) {
             return typeof variable === "object" && /^\[object (HTMLCollection|NodeList|Object)\]$/.test(Object.prototype.toString.call(variable)) && variable.length !== undefined && (
                 variable.length === 0 || typeof variable[0] === "object" && variable[0].nodeType > 0);
         },
-        /* Determine if variable is a wrapped jQuery or Zepto element. */ isWrapped: function isWrapped(variable) {
+        /* Determine if variable is a wrapped jQuery or Zepto element. */
+        isWrapped: function isWrapped(variable) {
             return variable && (variable.jquery || window.Zepto && window.Zepto.zepto.isZ(variable));
         },
         isSVG: function isSVG(variable) {
@@ -140,13 +137,15 @@
             $.data(element, "velocity", {
                 isSVG: Type.isSVG(element),
                 isAnimating: false,
-                /* A reference to the element's live computedStyle object. Learn more here: https://developer.mozilla.org/en/docs/Web/API/window.getComputedStyle */ computedStyle: null,
+                /* A reference to the element's live computedStyle object. Learn more here: https://developer.mozilla.org/en/docs/Web/API/window.getComputedStyle */
+                computedStyle: null,
                 tweensContainer: null,
                 rootPropertyValueCache: {},
                 transformCache: {}
             });
         },
-        /* A parallel to jQuery's $.css(), used for getting/setting Velocity's hooked CSS properties. */ hook: null,
+        /* A parallel to jQuery's $.css(), used for getting/setting Velocity's hooked CSS properties. */
+        hook: null,
         mock: false,
         version: {
             major: 1,
@@ -753,7 +752,8 @@
                     return subMatch.toUpperCase();
                 });
             },
-            /* For SVG elements, some properties (namely, dimensional ones) are GET/SET via the element's HTML attributes (instead of via CSS styles). */ SVGAttribute: function SVGAttribute(
+            /* For SVG elements, some properties (namely, dimensional ones) are GET/SET via the element's HTML attributes (instead of via CSS styles). */
+            SVGAttribute: function SVGAttribute(
                 property) {
                 var SVGAttributes = "width|height|x|y|cx|cy|r|rx|ry|x1|x2|y1|y2";
                 if (IE || Velocity.State.isAndroid && !Velocity.State.isChrome) {
@@ -812,7 +812,8 @@
                     return "px";
                 }
             },
-            /* Note: This function is used for correctly setting the non-"none" display value in certain Velocity redirects, such as fadeIn/Out. */ getDisplayType: function getDisplayType(
+            /* Note: This function is used for correctly setting the non-"none" display value in certain Velocity redirects, such as fadeIn/Out. */
+            getDisplayType: function getDisplayType(
                 element) {
                 var tagName = element && element.tagName.toString().toLowerCase();
                 if (/^(b|big|i|small|tt|abbr|acronym|cite|code|dfn|em|kbd|strong|samp|var|a|bdo|br|img|map|object|q|script|span|sub|sup|button|input|label|select|textarea)$/i.test(
@@ -830,7 +831,8 @@
                     return "block";
                 }
             },
-            /* The class add/remove functions are used to temporarily apply a "velocity-animating" class to elements while they're animating. */ addClass: function addClass(element,
+            /* The class add/remove functions are used to temporarily apply a "velocity-animating" class to elements while they're animating. */
+            addClass: function addClass(element,
                 className) {
                 if (element.classList) {
                     element.classList.add(className);
@@ -1103,7 +1105,8 @@
                   Arguments Assignment
                *************************/
         var syntacticSugar = arguments[0] && (arguments[0].p || $.isPlainObject(arguments[0].properties) && !arguments[0].properties.names || Type.isString(arguments[0].properties)),
-            /* Whether Velocity was called via the utility function (as opposed to on a jQuery/Zepto object). */ isUtility,
+            /* Whether Velocity was called via the utility function (as opposed to on a jQuery/Zepto object). */
+            isUtility,
             /* When Velocity is called via the utility function ($.Velocity()/Velocity()), elements are explicitly
                           passed in as the first parameter. Thus, argument positioning varies. We normalize them here. */
             elementsWrapped, argumentIndex;
@@ -9636,27 +9639,6 @@
     $.datepicker.uuid = new Date().getTime();
     $.datepicker.version = "1.12.1";
 
-    var datepicker = $.datepicker;
-
-    datepicker.regional.es = {
-        closeText: "Cerrar",
-        prevText: "&#x3C;Ant",
-        nextText: "Sig&#x3E;",
-        currentText: "Hoy",
-        monthNames: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
-        monthNamesShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"],
-        dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
-        dayNamesShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"],
-        dayNamesMin: ["D", "L", "M", "X", "J", "V", "S"],
-        weekHeader: "Sm",
-        dateFormat: "dd/mm/yy",
-        firstDay: 1,
-        isRTL: false,
-        showMonthAfterYear: false,
-        yearSuffix: ""
-    };
-    datepicker.setDefaults(datepicker.regional.es);
-
     /*!
      * jQuery UI Rotatable
      */
@@ -13596,9 +13578,6 @@
         }
 
     });
+    return jQuery;
 
-    Object.defineProperty(exports, '__esModule', {
-        value: true
-    });
-
-})));
+});

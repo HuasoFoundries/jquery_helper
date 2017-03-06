@@ -33,22 +33,14 @@ SystemJS.config({
     }
   },
   packages: {
-    "jquery_helper": {
-      "main": "jquery.js"
-    },
+
     "jquery_ui": {
       "main": "index.js",
       "map": {
         "jquery": "dist/jquery.js"
       }
     },
-    "jquery_ui_es6": {
-      "main": "index.js",
-      "format": "esm",
-      "map": {
-        "jquery": "dist/jquery.esm.js"
-      }
-    },
+
     "jquery_shim": {
       "main": "index.js",
       "format": "esm"
@@ -59,8 +51,8 @@ SystemJS.config({
     "jquery": "dist/jquery.js",
     "hammerjs": "src/libs/hammer.es6.js",
     "jquery_shim": "src/jquery_shim",
-    "jquery_ui": "src/jquery_ui",
-    "jquery_ui_es6": "src/jquery_ui"
+    "jquery_ui": "src/jquery_shim/jquery_ui"
+
   }
 });
 

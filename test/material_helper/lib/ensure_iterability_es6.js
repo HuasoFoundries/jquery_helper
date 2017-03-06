@@ -8,7 +8,7 @@ module.exports = function ensureIterability() {
 
 		var i,
 			ensureJQuery = require("./ensure_jquery"),
-			jQuery = require("../../../dist/material_helper.js")(window),
+			jQuery = require("../../../dist/jquery_material.js")(window),
 			elem = jQuery("<div></div><span></span><a></a>"),
 			result = "";
 

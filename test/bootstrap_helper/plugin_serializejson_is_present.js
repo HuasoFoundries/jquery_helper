@@ -9,7 +9,7 @@ require("jsdom").env("", function (errors, window) {
 	global.window = window;
 
 	var ensureJQuery = require("./lib/ensure_jquery"),
-		jQuery = require("../../../dist/jquery.min.js");
+		jQuery = require("../../dist/jquery_bootstrap.js");
 
 	ensureJQuery(jQuery);
 

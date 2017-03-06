@@ -4,7 +4,7 @@ import $ from 'jquery';
 import './widget.js';
 import './widgets/mouse.js';
 import './widgets/draggable.js';
-
+import './widgets/datepicker.js';
 import './widgets/rotatable.js';
 import './widgets/droppable.js';
 import './widgets/resizable.js';

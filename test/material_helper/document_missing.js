@@ -2,7 +2,7 @@
 
 var assert = require("assert"),
 	ensureGlobalNotCreated = require("./lib/ensure_global_not_created"),
-	jQueryFactory = require("../../dist/material_helper.js");
+	jQueryFactory = require("../../dist/jquery_material.js");
 
 assert.throws(function () {
 	jQueryFactory({});

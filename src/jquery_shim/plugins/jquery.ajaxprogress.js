@@ -1,19 +1,5 @@
-/**
- * Entry point to build jQuery + plugins using grunt
- * @return {[type]}         [description]
- */
-define([
-	"./core.js",
+define(["../jquery_src/core"], function (jQuery) {
 
-	'./plugins/jquery.hotkeys.js',
-	'./plugins/jquery.cookie.js',
-	'./plugins/jquery.waitforChild.js',
-	'./plugins/jquery.serializejson.js'
-	//'./plugins/jquery.csv.js'
-
-], function (jQuery) {
-
-	"use strict";
 
 	(function addXhrProgressEvent($) {
 		var originalXhr = $.ajaxSettings.xhr;
@@ -38,6 +24,5 @@ define([
 		});
 	})(jQuery);
 
-	return (window.jQuery = window.$ = jQuery);
-
+	return jQuery;
 });

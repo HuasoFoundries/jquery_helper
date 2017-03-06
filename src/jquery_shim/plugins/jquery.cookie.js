@@ -5,7 +5,7 @@
  * Copyright 2013 Klaus Hartl
  * Released under the MIT license
  */
-define(["../../../node_modules/jquery/src/core"], function (jQuery) {
+define(["../jquery_src/core"], function (jQuery) {
 
 
 
@@ -107,5 +107,7 @@ define(["../../../node_modules/jquery/src/core"], function (jQuery) {
 		}));
 		return !jQuery.cookie(key);
 	};
+
+	return jQuery;
 
 });

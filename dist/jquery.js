@@ -1,5 +1,5 @@
 /*!
- * jQuery JavaScript Library vundefined -deprecated,-manipulation/_evalUrl,-exports/amd,-ajax/jsonp,-ajax/load,-ajax/parseXML,-ajax/script,-ajax/var/location,-ajax/var/nonce,-ajax/var/rquery,-ajax/xhr
+ * jQuery JavaScript Library v2.0.5 -deprecated,-manipulation/_evalUrl,-exports/amd,-ajax/jsonp,-ajax/load,-ajax/parseXML,-ajax/script,-ajax/var/location,-ajax/var/nonce,-ajax/var/rquery,-ajax/xhr
  * https://jquery.com/
  *
  * Includes Sizzle.js
@@ -9,7 +9,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2017-03-06T17:24Z
+ * Date: 2017-03-06T20:28Z
  */
 
 /*!
@@ -22,6 +22,32 @@
  *
  * Date: 2016-08-08
  */
+
+/*!
+ * jQuery waitforChild Plugin v0.0.1
+ * https://github.com/amenadiel/jquery.waitforChild
+ *
+ * Copyright 2015 Felipe Figueroa
+ * Released under the MIT license
+ */
+
+/*!
+ * jQuery Cookie Plugin v1.4.1
+ * https://github.com/carhartl/jquery-cookie
+ *
+ * Copyright 2013 Klaus Hartl
+ * Released under the MIT license
+ */
+
+/*!
+  SerializeJSON jQuery plugin.
+  https://github.com/marioizquierdo/jquery.serializeJSON
+  version 2.7.2 (Dec, 2015)
+
+  Copyright (c) 2012, 2015 Mario Izquierdo
+  Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
+  and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
+*/
 
 !function(global, factory) {
     "use strict";
@@ -3092,7 +3118,18 @@
             });
         }
         return jQuerythis;
-    };
+    }, function($) {
+        var originalXhr = $.ajaxSettings.xhr;
+        $.ajaxSetup({
+            progress: function(e) {},
+            xhr: function() {
+                var req = originalXhr(), _this = this;
+                return req && "function" == typeof req.addEventListener && req.addEventListener("progress", function(evt) {
+                    _this.progress && _this.progress(evt);
+                }, !1), req;
+            }
+        });
+    }(jQuery);
     var pluses = /\+/g, config = jQuery.cookie = function(key, value, options) {
         if (void 0 !== value && !jQuery.isFunction(value)) {
             if (options = jQuery.extend({}, config.defaults, options), "number" == typeof options.expires) {
