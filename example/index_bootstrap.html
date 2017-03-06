@@ -97,28 +97,41 @@
 </head>
 
 <body>
-    <ul>
-        <li id="draggable" class="ui-state-highlight">Drag me down</li>
-    </ul>
-    <ul id="sortable">
-        <li class="ui-state-default">Item 1</li>
-        <li class="ui-state-default">Item 2</li>
-        <li class="ui-state-default">Item 3</li>
-        <li class="ui-state-default">Item 4</li>
-        <li class="ui-state-default">Item 5</li>
-    </ul>
-    <div id="resizable" class="ui-widget-content">
-        <h4 class="ui-widget-header">Resize larger / smaller</h4>
+    <div class="container">
+        <div class="row">
+            <div class="span4">
+                <h4>Draggable + Sortable</h4>
+                <ul>
+                    <li id="draggable" class="ui-state-highlight">Drag me down</li>
+                </ul>
+                <ul id="sortable">
+                    <li class="ui-state-default">Item 1</li>
+                    <li class="ui-state-default">Item 2</li>
+                    <li class="ui-state-default">Item 3</li>
+                    <li class="ui-state-default">Item 4</li>
+                    <li class="ui-state-default">Item 5</li>
+                </ul>
+            </div>
+            <div class="span4">
+                <h4>Draggable + Resizable + Rotatable</h4>
+                <div id="resizable" class="ui-widget-content">
+                    <h4 class="ui-widget-header">Resize larger / smaller</h4>
+                </div>
+            </div>
+            <div class="span4">
+                <h4>Datepicker</h4>
+                <p>
+                    <br>
+                    <label for="datepicker_ini">Initial Date:
+                        <input type="text" id="datepicker_ini">
+                    </label>
+                    <label for="datepicker_fin">Final Date:
+                        <input type="text" id="datepicker_fin">
+                    </label>
+                </p>
+            </div>
+        </div>
     </div>
-    <p>
-        <br>
-        <label for="datepicker_ini">Initial Date:
-            <input type="text" id="datepicker_ini">
-        </label>
-        <label for="datepicker_fin">Final Date:
-            <input type="text" id="datepicker_fin">
-        </label>
-    </p>
 </body>
 
 </html>
