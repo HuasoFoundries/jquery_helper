@@ -6,7 +6,7 @@
     <title>jQuery UI Button - Default functionality</title>
     <link rel="stylesheet" href="/example/smoothness/jquery-ui.css">
     <script src="/dist/jquery.min.js"></script>
-    <script src="/dist/bootstrap_helper.min.js"></script>
+    <script src="/dist/bootstrap_helper.js"></script>
     <style>
     ul {
         list-style-type: none;
@@ -14,24 +14,24 @@
         padding: 0;
         margin-bottom: 10px;
     }
-    
+
     li {
         margin: 5px;
         padding: 5px;
         width: 150px;
     }
-    
+
     #resizable {
         width: 200px;
         height: 150px;
         padding: 5px;
     }
-    
+
     #resizable h3 {
         text-align: center;
         margin: 0;
     }
-    
+
     .ui-rotatable-handle {
         height: 16px;
         width: 16px;
@@ -43,7 +43,7 @@
     }
     </style>
     <script>
-    jQuery(function() {
+    jQuery(function () {
 
 
         jQuery("#draggable").draggable({
@@ -68,11 +68,11 @@
             .draggable()
             .rotatable({
                 // Callback fired on rotation start.
-                start: function(event, ui) {},
+                start: function (event, ui) {},
                 // Callback fired during rotation.
-                rotate: function(event, ui) {},
+                rotate: function (event, ui) {},
                 // Callback fired on rotation end.
-                stop: function(event, ui) {},
+                stop: function (event, ui) {},
                 // Set the rotation center at (25%, 75%).
                 rotationCenterX: 25.0,
                 rotationCenterY: 75.0
