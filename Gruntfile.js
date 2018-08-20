@@ -24,7 +24,7 @@ module.exports = function (grunt) {
 			},
 			nodeSmokeTests: {
 				files: {
-					"test/ig_jquery/node_smoke_tests/lib/ensure_iterability.js": "test/ig_jquery/node_smoke_tests/lib/ensure_iterability_es6.js"
+					"test/node_smoke_tests/lib/ensure_iterability.js": "test/node_smoke_tests/lib/ensure_iterability_es6.js"
 				}
 			}
 		},
@@ -246,12 +246,7 @@ module.exports = function (grunt) {
 	grunt.loadTasks('grunt_tasks');
 
 
-	grunt.registerTask("test:fast", "jquery_node_smoke_tests");
-
-
-	grunt.registerTask("test:material", "material_helper_smoke_tests");
-
-	grunt.registerTask("test:bootstrap", "bootstrap_helper_smoke_tests");
+	grunt.registerTask("test:fast", "all_smoke_tests");
 
 
 

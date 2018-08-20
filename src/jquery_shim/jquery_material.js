@@ -1,5 +1,4 @@
 define([
-
 	"./jquery_src/core",
 	"./jquery_src/selector",
 	"./jquery_src/traversing",
@@ -12,7 +11,6 @@ define([
 	"./jquery_src/queue/delay",
 	"./jquery_src/attributes",
 	"./jquery_src/event",
-	"./jquery_src/event/alias",
 	"./jquery_src/event/focusin",
 	"./jquery_src/manipulation",
 	"./jquery_src/manipulation/_evalUrl",

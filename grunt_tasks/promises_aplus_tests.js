@@ -9,14 +9,16 @@ module.exports = function (grunt) {
 	grunt.registerTask("promises_aplus_tests:deferred", function () {
 		spawnTest(this.async(),
 			"./node_modules/.bin/promises-aplus-tests",
-			"test/ig_jquery/promises_aplus_adapters/deferred.js"
+			"test/promises_aplus_adapters/deferred.js",
+			"../../dist/jquery.js"
 		);
 	});
 
 	grunt.registerTask("promises_aplus_tests:when", function () {
 		spawnTest(this.async(),
 			"./node_modules/.bin/promises-aplus-tests",
-			"test/ig_jquery/promises_aplus_adapters/when.js"
+			"test/promises_aplus_adapters/when.js",
+			"../../dist/jquery.js"
 		);
 	});
 };

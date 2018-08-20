@@ -9,10 +9,9 @@ require("jsdom").env("", function (errors, window) {
 	global.window = window;
 
 	var ensureJQuery = require("./lib/ensure_jquery"),
-		jQuery = require("../../dist/jquery_material.js");
+		jQuery = require(process.env.jquery_path);
 
 	ensureJQuery(jQuery);
 
-
-	assert(typeof jQuery.fn.serializeJSON === 'function', "jQuery.fn.serializeJSON is an object in CommonJS environment.");
+	assert(typeof jQuery.fn.waitforChild === 'function', "jQuery.fn.waitforChild is a function");
 });

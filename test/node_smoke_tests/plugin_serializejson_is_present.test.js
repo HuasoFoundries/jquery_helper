@@ -9,10 +9,10 @@ require("jsdom").env("", function (errors, window) {
 	global.window = window;
 
 	var ensureJQuery = require("./lib/ensure_jquery"),
-		jQuery = require("../../dist/jquery_bootstrap.js");
+		jQuery = require(process.env.jquery_path);
 
 	ensureJQuery(jQuery);
 
 
-	assert(typeof jQuery.cookie === 'function', "jQuery.cookie is a function");
+	assert(typeof jQuery.fn.serializeJSON === 'function', "jQuery.fn.serializeJSON is an object in CommonJS environment.");
 });

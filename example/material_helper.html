@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>jQuery UI Button - Default functionality</title>
+    <link rel="stylesheet" href="/example/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.0/css/materialize.css">
+    <script src="/dist/jquery.min.js"></script>
+    <script src="/dist/material_helper.js"></script>
+    <style>
+    ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        margin-bottom: 10px;
+    }
+
+    li {
+        margin: 5px;
+        padding: 5px;
+        width: 150px;
+    }
+
+    #resizable {
+        width: 200px;
+        height: 150px;
+        padding: 5px;
+    }
+
+    #resizable h3 {
+        text-align: center;
+        margin: 0;
+    }
+
+    .ui-rotatable-handle {
+        height: 16px;
+        width: 16px;
+        cursor: pointer;
+        background-image: url(/example/rotate.png);
+        background-size: 100%;
+        left: 2px;
+        bottom: 2px;
+    }
+    </style>
+    <script>
+    jQuery(function () {
+
+
+        jQuery("#draggable").draggable({
+            connectToSortable: "#sortable",
+            helper: "clone",
+            revert: "invalid"
+        });
+
+        jQuery("#sortable").sortable({
+            revert: true
+        });
+
+        jQuery("ul, li").disableSelection();
+
+        var today = new Date();
+        jQuery("#datepicker_fin").datepicker({
+            "dateFormat": "dd/mm/yy",
+        }).datepicker("setDate", today);
+
+        today.setMonth(today.getMonth() - 1);
+
+        jQuery("#datepicker_ini").datepicker({
+            "dateFormat": "dd/mm/yy",
+        }).datepicker("setDate", today);
+
+        jQuery("#resizable").resizable({
+                maxHeight: 250,
+                maxWidth: 350,
+                minHeight: 150,
+                minWidth: 200
+            })
+            .draggable()
+            .rotatable({
+                // Callback fired on rotation start.
+                start: function (event, ui) {},
+                // Callback fired during rotation.
+                rotate: function (event, ui) {},
+                // Callback fired on rotation end.
+                stop: function (event, ui) {},
+                // Set the rotation center at (25%, 75%).
+                rotationCenterX: 25.0,
+                rotationCenterY: 75.0
+            });
+
+        $('#material_select_example').material_select();
+    });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col s4">
+                <h4>Draggable + Sortable</h4>
+                <ul>
+                    <li id="draggable" class="ui-state-highlight">Drag me down</li>
+                </ul>
+                <ul id="sortable">
+                    <li class="ui-state-default">Item 1</li>
+                    <li class="ui-state-default">Item 2</li>
+                    <li class="ui-state-default">Item 3</li>
+                    <li class="ui-state-default">Item 4</li>
+                    <li class="ui-state-default">Item 5</li>
+                </ul>
+            </div>
+            <div class="col s4">
+                <h4>Resizable, Draggable & Rotatable</h4>
+                <div id="resizable" class="ui-widget-content">
+                    <b class="ui-widget-header">Resize larger / smaller</b>
+                </div>
+            </div>
+            <div class="col s4">
+                <h4>Date Picker</h4>
+                <p>
+                    <br>
+                    <label for="datepicker_ini">Initial Date:
+                        <input type="text" id="datepicker_ini">
+                    </label>
+                    <label for="datepicker_fin">Final Date:
+                        <input type="text" id="datepicker_fin">
+                    </label>
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s4">
+                <div class="input-field col s12">
+                    <select id="material_select_example">
+                        <option value="" disabled selected>Choose your option</option>
+                        <option value="1">Option 1</option>
+                        <option value="2">Option 2</option>
+                        <option value="3">Option 3</option>
+                    </select>
+                    <label>Materialize Select</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
