@@ -9,7 +9,8 @@ module.exports = function (grunt) {
 		testObj = {
 			material_: "../../dist/jquery_material.js",
 			bootstrap_: "../../dist/jquery_bootstrap.js",
-			jquery_: "../../dist/jquery.js"
+			jquery_: "../../dist/jquery.js",
+			jquery_min_: "../../dist/jquery.min.js"
 		};
 
 	// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
