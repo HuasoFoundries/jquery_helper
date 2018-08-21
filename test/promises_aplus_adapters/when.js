@@ -6,6 +6,7 @@ require("jsdom").env("", function (errors, window) {
 		return;
 	}
 
+	//var jQuery = require("../../")(window);
 	var jQuery = require(process.env.jquery_path)(window);
 
 	module.exports.deferred = function () {

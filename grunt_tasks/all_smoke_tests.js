@@ -9,7 +9,7 @@ module.exports = function (grunt) {
 		testObj = {
 			material_: "../../dist/jquery_material.js",
 			bootstrap_: "../../dist/jquery_bootstrap.js",
-			jquery: "../../dist/jquery.js"
+			jquery_: "../../dist/jquery.js"
 		};
 
 	// Fire up all tests defined in test/node_smoke_tests/*.js in spawned sub-processes.
@@ -29,9 +29,9 @@ module.exports = function (grunt) {
 				var taskName = prefix + testFilePath.replace(/\.js$/, "");
 
 				grunt.registerTask(taskName, function () {
-					let testFile = `${testsDir}/${testFilePath}`;
+					//let testFile = `${testsDir}/${testFilePath}`;
 
-					spawnTest(this.async(), testFile, testObj[prefix]);
+					spawnTest(this.async(), "node \"test/node_smoke_tests/" + testFilePath + "\"", testObj[prefix]);
 				});
 
 				nodeSmokeTests.push(taskName);
