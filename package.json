@@ -20,7 +20,7 @@
     "lodash.assign": "^4.0.9",
     "materialize-css": "^0.97.6",
     "requirejs": "^2.2.0",
-    "uglify-js": "^2.7.0",
+    "uglify-js": "^3.12.4",
     "velocity-animate": "^1.2.3"
   },
   "scripts": {
