@@ -8,7 +8,7 @@
     "example": "example"
   },
   "devDependencies": {
-    "babel-eslint": "^6.1.2",
+    "babel-eslint": "^10.1.0",
     "eslint": "^3.1.1",
     "grunt": "^1",
     "grunt-contrib-concat": "^1.0.1",
